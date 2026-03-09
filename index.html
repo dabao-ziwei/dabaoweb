@@ -1,23 +1,342 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Home</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <!--
-      Need a visual blank slate?
-      Remove all code in `styles.css`!
-    -->
-    <link rel="stylesheet" href="styles.css" />
-    <script type="module" src="script.js"></script>
-  </head>
-  <body>
-    <nav>
-      <a href="/" aria-current="page">Home</a>
-      <a href="/page2.html">Other page</a>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大寶 | 紫微斗數</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">大寶 | 紫微斗數</div>
+            <ul class="nav-links">
+                <li><a href="#">線上排盤</a></li>
+                <li><a href="#">線上預約</a></li>
+                <li><a href="#">【實戰紫微斗數】課程</a></li>
+                <li><a href="#">紫微斗數教學文章</a></li>
+            </ul>
+        </div>
     </nav>
-    <main>
-      <h1>Home page</h1>
-    </main>
-  </body>
+
+    <div class="announcement">
+        <div class="container">
+            <h3>【公告】2026首發！實戰紫微斗數【初階班】(2026/3/4開課)早鳥特惠中，詳洽官方Line</h3>
+        </div>
+    </div>
+
+    <section class="hero container">
+        <div class="hero-image">
+            <img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000004-a96b4a96b5/003.jpeg?ph=10e227894e" alt="大寶老師">
+        </div>
+        <div class="hero-text">
+            <h1>大寶老師</h1>
+            <h3 class="subtitle">紫微斗數論命專家</h3>
+            <p>擁有十餘年命理經驗的大寶老師，精通【紫微斗數】、【紫微占卜】、【風水改運】、【符咒改運】、【姓名改運】及【吉時擇日】，已成功服務逾萬人，助他們在生活中找到方向與最佳位置。</p>
+            <p>我深信每個人都有其獨特的命盤和人生課題，透過細緻的分析與建議，我將幫助您更了解自己，藉以發掘潛力，掌握機會，做出明智的選擇。</p>
+            <p>商業需要顧問，愛情需要顧問，理財需要顧問，而人生更需要專業的指導。人生道路千百條，透過我的專業紫微斗數命盤分析，我將協助您找到最適合您的那一條人生路徑</p>
+            <p>如果老天真的為您規劃了一條相對顛簸的路徑，也可以透過改善風水、變更姓名、催化符令...幫助您修改運勢，讓您逆風而上，翻轉人生</p>
+            
+            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入【官方Line】立刻預約</a>
+        </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <section class="services container" id="services">
+        <h2 class="section-title">大寶老師的命理諮詢服務</h2>
+        
+        <div class="services-grid">
+            <div class="service-item">
+                <div class="service-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <h3>紫微斗數完整論命</h3>
+                </div>
+                <div class="service-body">
+                    <p>需要出生年、月、日、時、分(又稱生辰八字)來進行紫微斗數排盤，紫微斗數命盤中會記載一個人一生的運勢、事件，透過分析紫微斗數命盤可更細微的掌握人生軌跡，進而做出計畫、事前預防</p>
+                    <br>
+                    <p>服務內容：提醒您未來人生數十年的運勢走向提醒，不包含某個年份的詳細分析(此項請預約流年運勢分析)</p>
+                    <br>
+                    <p>服務時長：60min/一張盤<br>服務費用：NT$4,800/一張盤</p>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <h3>流年運勢分析</h3>
+                </div>
+                <div class="service-body">
+                    <p>需要出生年、月、日、時、分(又稱生辰八字)來進行紫微斗數排盤，紫微斗數命盤中會記載一個人一生的運勢、事件，透過分析紫微斗數命盤可更細微的掌握人生軌跡，進而做出計畫、事前預防</p>
+                    <br>
+                    <p>服務內容：針對某個年份進行流年運勢分析，包含當年度應注意事項(結婚、重病、生子、開刀、車關...)</p>
+                    <br>
+                    <p>服務時長：40min/一張盤<br>服務費用：NT$3,600/一張盤</p>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <h3>紫微占卜</h3>
+                </div>
+                <div class="service-body">
+                    <p>透過4個數字去引動符合您【半年內現況運勢】的斗數盤，可針對【已決定事件】或【尚未決定但已有方向】事件進行吉凶占卜，不需要您的任何個人資訊(姓名、生日...皆不需要)</p>
+                    <br>
+                    <p>服務內容：針對6個月內的運勢進行分析、問題回覆</p>
+                    <br>
+                    <p>服務時長：30min<br>服務費用：NT$1,800</p>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                    <h3>風水佈陣改運</h3>
+                </div>
+                <div class="service-body">
+                    <p>風水即一個人所處環境對一個人潛移默化帶來的影響，居家或辦公的風水會影響一個人的心情、決定事情的速度、思維判斷能力...好風水將造成事半功倍的效果</p>
+                    <br>
+                    <p>服務內容：居家或辦公風水堪輿，與您討論改善方向並給出風水佈局建議</p>
+                    <br>
+                    <p>服務時長：30min/一個物件<br>服務費用：NT$12,800/限雙北、桃園；一個物件(雙北、桃園以外地區、超過一個以上物件請洽官方Line，有專人協助您預約)</p>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+                    <h3>符令改運</h3>
+                </div>
+                <div class="service-body">
+                    <p>大寶老師師承正一道，以最誠心與最正統的畫符步驟(每道符皆依循請神、勅水、勅墨、勅硯、勅紙、勅筆、取筆、下筆、用印、開符、勅符...等繁瑣工序，搭配口訣、手印進行手工撰寫，非一般常見之印刷符)所開之符令具備強大效力，能幫助命主增加財運、事業運、桃花運...讓人生闖蕩路上有如神助，大展身手</p>
+                    <br>
+                    <p>服務內容：依照不同需求開立滿足需求之符咒</p>
+                    <br>
+                    <p>服務費用：每張符令不同，請洽官方Line，有專人協助您(台灣地區購買皆含運費，台灣以外地區依照國家有不同收取不同之運費)</p>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <h3>姓名改運</h3>
+                </div>
+                <div class="service-body">
+                    <p>名字是一個人的代號，是一個人把自己介紹給這個世界的獨有標記，一個好的名字除了要好聽、好記、好寫之外，因為每天使用，所以也默默地影響著個人、公司行號的運勢；大寶老師的取名服務搭配紫微斗數命盤中的星曜、五行，打造出能改善、加強運勢的有利名稱，幫助您出門在外打拼如虎添翼</p>
+                    <br>
+                    <p>服務內容：依照個人或公司負責人的紫微斗數命盤去搭配出好聽、好寫、好記，更能加強運勢、改善運勢的最佳名稱，將提供10組建議供挑選</p>
+                    <br>
+                    <p>服務費用：NT$3,600/次(5個工作天交件)</p>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    <h3>實戰紫微斗數教學</h3>
+                </div>
+                <div class="service-body">
+                    <p>大寶老師的實戰紫微斗數分為初階、進階、高階與職業四個階段，每個階段的學習目標不同，目的是能培養出有良好命理觀念與具備準確論命能力的命理師，讓更多人能掌握紫微斗數的奧秘，自己的命自己算，更能了解自己，替自己改運，創造自己想要的美好人生</p>
+                    <br>
+                    <p>課程週期：每週一次，每期12週<br>課程時長：每週上課2小時</p>
+                    <br>
+                    <p>課程費用：原價NT$25,000，加入官方Line後留意不定時釋出的早鳥報名特惠(最特惠價NT$19,800)</p>
+                </div>
+            </div>
+
+            <div class="service-item">
+                <div class="service-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <h3>異業合作</h3>
+                </div>
+                <div class="service-body">
+                    <p>不論您從事何種行業，若您有想要與命理結合的絕妙想法，歡迎加入官方Line洽談合作</p>
+                </div>
+            </div>
+            
+            <div class="service-item">
+                <div class="service-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <h3>其他項目</h3>
+                </div>
+                <div class="service-body">
+                    <p>您有其他關於命理或是關於大寶老師的服務問題？請先移置網站最下方觀看【常見問題】，或是您也可以加入官方Line諮詢</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="center-btn">
+            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入【官方Line】立刻預約</a>
+        </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <section class="testimonials container" id="testimonials">
+        <h2 class="section-title">客戶回饋</h2>
+        <div class="masonry-grid">
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000106-ba1c9ba1cb/001-1.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000113-d2260d2263/002.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000112-c3659c365b/003-1.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000117-b524bb524d/004.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000115-ae486ae487/005.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000120-b769bb769d/006.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000124-db05ddb05f/007.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000125-e50cfe50d0/008.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000128-ec6ccec6ce/009.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000129-f0b30f0b32/010.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000130-3b0523b054/011.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000133-1d9281d92a/012.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000105-a43fca43fe/013.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000135-3a7d93a7db/014.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000138-49e6849e6a/015.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000140-6a4bc6a4bd/016.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000139-5f5755f577/017.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000143-5a4a45a4a5/018.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000145-8cf868cf88/019.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000147-5b1305b132/020.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000148-5f3775f379/021.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000150-bc319bc31b/022.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000153-5da935da94/023.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000155-95ef995efb/024.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000103-7e6dc7e6de/025.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000157-6563165632/026.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000158-6b0966b098/027.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000160-cbc74cbc76/028.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000162-4fc834fc84/029.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000164-b9dafb9db1/030.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000169-084490844b/031.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000168-c7a2ac7a2b/032.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000170-34d7f34d80/033.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000104-a2a86a2a87/034.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000171-8b3d48b3d5/035.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000173-e2e09e2e0b/036.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000178-39f7b39f7d/037.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000102-5fd035fd05/038.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000179-47ebc47ebd/039.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000180-514c5514c6/040.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000181-c9c18c9c30/041.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000182-35eac35ead/042.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000188-9807e98080/043.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000189-b6323b6325/044.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000192-04f3904f3b/045.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000194-568785687b/046.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000196-287e7287e9/047.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000198-4227442275/048.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000200-e2dc1e2dc4/049.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000202-76dcb76dcc/050.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000204-0de530de55/051.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000206-4c8544c856/052.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000208-8f70f8f710/053.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000210-5b7bd5b7bf/054.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000212-774097740d/055.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000214-bc08dbc08e/056.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000216-b96e7b96e9/057.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000228-563df563e0/058.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000230-e05ede05ee/059.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000240-1966619669/060.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000242-d6ccbd6ccd/061.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000248-cd07dcd080/062.png?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000250-17a1117a12/063.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000252-8bf5d8bf5e/064.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000254-650b0650b3/065.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000256-816bc816c0/066.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000258-c75f9c75fb/067.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000260-7887e7887f/068.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000262-b90a9b90aa/069.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000264-bdb67bdb69/070.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000266-e5afbe5afc/071.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000276-47f8747f89/072.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000280-954a6954a8/073-2.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000282-c90c2c90c4/074.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000284-ed132ed134/075.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000286-e5862e5864/076.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000288-b61d0b61d2/077.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000292-03fd503fd7/078.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+        </div>
+
+        <div class="center-btn">
+            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入【官方Line】立刻預約</a>
+        </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <section class="faq container" id="faq">
+        <h2 class="section-title">常見問題</h2>
+        
+        <div class="faq-list">
+            <details>
+                <summary>【紫微斗數完整論命】跟【紫微占卜】差異？我該預約哪個？</summary>
+                <p>紫微斗數完整論命會需要您的出生年月日、出生時間(也就是生辰八字)的資訊進行排盤，老師會針對您接下來的數十年分析運勢狀況、重大事件。<br><br>紫微占卜則不需要您的任何個人資訊即可進行，針對【已經下的決策】或是【尚未下決策但已有想法】的事情(限6個月內)進行運勢的吉凶占測。<br><br>如果您想通盤了解人生，建議預約紫微斗數完整論命；若您只是想知道6個月的決定吉凶，那預約紫微占卜即可。</p>
+            </details>
+            
+            <details>
+                <summary>【紫微斗數完整論命】跟【流年運勢分析】又差在哪呢？</summary>
+                <p>紫微斗數完整論命的討論範圍是未來數十年的整體走向，而流年運勢分析則是針對某個流年進行逐月的運勢分析，提醒您當年份發生的重大事件與發生月份，讓您可以趨吉避凶、掌握未來。</p>
+            </details>
+
+            <details>
+                <summary>老師在哪裡？需要見面才能進行嗎？</summary>
+                <p>目前大寶老師的所有服務，除【風水堪輿】需現場進行外，其他諮詢服務皆採線上預約，語音通話進行，不須碰面，省去舟車勞頓的麻煩。</p>
+            </details>
+
+            <details>
+                <summary>常算命是不是會越算命越差？</summary>
+                <p>紫微斗數是人生的一張地圖，學會紫微斗數就等於掌握了閱讀人生地圖的能力，就跟您打開導航軟體一樣，在人生的漫長旅途中，若能提前知道哪邊會壅塞、哪邊有車禍、哪裡有休息站...就能及早的規劃自己的行程，讓自身旅程更加順暢，又何來命越算越薄的道理呢？</p>
+            </details>
+
+            <details>
+                <summary>我沒有帶天命也可以學習紫微斗數嗎？</summary>
+                <p>當然可以！只要有興趣、熱情，並且定期的練習，就跟學習一般技能(如開車、游泳、跳舞...)一樣，並不需要什麼條件，更別說要帶什麼天命了。</p>
+            </details>
+
+            <details>
+                <summary>老師有處理【急件】嗎？</summary>
+                <p>大寶老師的服務因為都採預約進行，所以都需要等待，但如果您真的不想等待，可以支付2被原價的服務費優先進行諮詢(但還是要以大寶老師釋出的時段為主)，可洽官方Line，有專人會協助您預約。</p>
+            </details>
+
+            <details>
+                <summary>大寶老師的服務時間是？</summary>
+                <p>每週一至周六，每天10點到20點(最後一個預約時段是2000-2100)。過年定期休假2~3週，加入官方Line可掌握老師最新的預約動態~</p>
+            </details>
+        </div>
+    </section>
+
+    <hr class="section-divider">
+
+    <section class="social container" id="social">
+        <h2 class="section-title">大寶老師的社群</h2>
+        
+        <div class="social-grid">
+            <a href="https://www.threads.net/@read_urface" target="_blank" class="social-card">
+                <div class="social-img-wrapper">
+                    <img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000224-b4851b4853/threads-logo-png_seeklogo-491191.png?ph=10e227894e" alt="Threads">
+                </div>
+            </a>
+
+            <a href="https://www.instagram.com/read_urface/" target="_blank" class="social-card">
+                <div class="social-img-wrapper">
+                    <img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000226-da3eeda3f0/v982-d3-04.jpeg?ph=10e227894e" alt="Instagram">
+                </div>
+            </a>
+        </div>
+        
+        <div class="center-btn">
+            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入【官方Line】立刻預約</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+</body>
 </html>
