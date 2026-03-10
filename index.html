@@ -6,14 +6,19 @@
     <title>大寶 | 紫微斗數</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="container nav-container">
-            <a href="index.html" class="logo" style="text-decoration:none;">大寶 | 紫微斗數</a>
+            <a href="index.html" class="logo">
+                <img src="images/Dabao logo.jpeg" alt="Dabao Logo" class="nav-logo-icon">
+                <span class="logo-text">大寶 | 紫微斗數</span>
+            </a>
             <ul class="nav-links">
                 <li><a href="index.html" style="color:var(--accent-color);">首頁</a></li>
                 <li><a href="chart.html">線上排盤</a></li>
@@ -24,15 +29,15 @@
         </div>
     </nav>
 
-    <div class="announcement">
+    <div class="announcement" id="announcement-banner" title="點擊三次可開啟管理員介面">
         <div class="container">
-            <h3>【公告】2026首發！實戰紫微斗數【初階班】(2026/3/4開課)早鳥特惠中，詳洽官方Line</h3>
+            <h3 id="announcement-text">載入中...</h3>
         </div>
     </div>
 
     <section class="hero container">
         <div class="hero-image">
-            <img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000004-a96b4a96b5/003.jpeg?ph=10e227894e" alt="大寶老師">
+            <img src="images/hero.jpeg" alt="大寶老師">
         </div>
         <div class="hero-text">
             <h1>大寶老師</h1>
@@ -50,84 +55,84 @@
     <section class="testimonials container" id="testimonials">
         <h2 class="section-title">客戶回饋</h2>
         <div class="masonry-grid">
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000106-ba1c9ba1cb/001-1.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000113-d2260d2263/002.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000112-c3659c365b/003-1.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000117-b524bb524d/004.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000115-ae486ae487/005.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000120-b769bb769d/006.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000124-db05ddb05f/007.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000125-e50cfe50d0/008.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000128-ec6ccec6ce/009.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000129-f0b30f0b32/010.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000130-3b0523b054/011.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000133-1d9281d92a/012.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000105-a43fca43fe/013.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000135-3a7d93a7db/014.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000138-49e6849e6a/015.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000140-6a4bc6a4bd/016.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000139-5f5755f577/017.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000143-5a4a45a4a5/018.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000145-8cf868cf88/019.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000147-5b1305b132/020.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000148-5f3775f379/021.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000150-bc319bc31b/022.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000153-5da935da94/023.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000155-95ef995efb/024.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000103-7e6dc7e6de/025.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000157-6563165632/026.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000158-6b0966b098/027.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000160-cbc74cbc76/028.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000162-4fc834fc84/029.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000164-b9dafb9db1/030.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000169-084490844b/031.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000168-c7a2ac7a2b/032.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000170-34d7f34d80/033.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000104-a2a86a2a87/034.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000171-8b3d48b3d5/035.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000173-e2e09e2e0b/036.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000178-39f7b39f7d/037.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000102-5fd035fd05/038.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000179-47ebc47ebd/039.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000180-514c5514c6/040.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000181-c9c18c9c30/041.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000182-35eac35ead/042.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000188-9807e98080/043.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000189-b6323b6325/044.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000192-04f3904f3b/045.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000194-568785687b/046.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000196-287e7287e9/047.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000198-4227442275/048.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000200-e2dc1e2dc4/049.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000202-76dcb76dcc/050.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000204-0de530de55/051.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000206-4c8544c856/052.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000208-8f70f8f710/053.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000210-5b7bd5b7bf/054.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000212-774097740d/055.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000214-bc08dbc08e/056.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000216-b96e7b96e9/057.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000228-563df563e0/058.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000230-e05ede05ee/059.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000240-1966619669/060.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000242-d6ccbd6ccd/061.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000248-cd07dcd080/062.png?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000250-17a1117a12/063.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000252-8bf5d8bf5e/064.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000254-650b0650b3/065.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000256-816bc816c0/066.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000258-c75f9c75fb/067.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000260-7887e7887f/068.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000262-b90a9b90aa/069.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000264-bdb67bdb69/070.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000266-e5afbe5afc/071.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000276-47f8747f89/072.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000280-954a6954a8/073-2.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000282-c90c2c90c4/074.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000284-ed132ed134/075.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000286-e5862e5864/076.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000288-b61d0b61d2/077.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000292-03fd503fd7/078.jpeg?ph=10e227894e" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/001-1.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/002.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/003-1.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/004.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/005.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/006.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/007.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/008.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/009.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/010.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/011.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/012.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/013.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/014.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/015.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/016.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/017.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/018.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/019.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/020.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/021.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/022.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/023.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/024.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/025.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/026.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/027.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/028.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/029.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/030.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/031.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/032.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/033.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/034.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/035.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/036.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/037.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/038.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/039.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/040.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/041.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/042.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/043.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/044.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/045.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/046.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/047.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/048.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/049.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/050.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/051.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/052.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/053.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/054.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/055.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/056.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/057.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/058.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/059.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/060.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/061.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/062.png" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/063.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/064.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/065.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/066.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/067.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/068.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/069.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/070.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/071.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/072.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/073-2.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/074.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/075.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/076.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/077.webp" alt="客戶回饋" loading="lazy"></div>
+            <div class="masonry-item"><img src="images/078.webp" alt="客戶回饋" loading="lazy"></div>
         </div>
         <div class="center-btn">
             <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入【官方Line】立刻預約</a>
@@ -291,13 +296,15 @@
         <div class="social-grid">
             <a href="https://www.threads.net/@read_urface" target="_blank" class="social-card">
                 <div class="social-img-wrapper">
-                    <img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000224-b4851b4853/threads-logo-png_seeklogo-491191.png?ph=10e227894e" alt="Threads">
+                    <img src="images/threads-logo.jpeg" alt="Threads">
                 </div>
+                <p>大寶老師的脆(Threads)，分享論命碰到的真實案例、故事，希望大家能透過文字的描述，更了解老師論命的型態、方式，讓老師在您需要時可以成為您人生的顧問，協助您取得先機、避開難題</p>
             </a>
             <a href="https://www.instagram.com/read_urface/" target="_blank" class="social-card">
                 <div class="social-img-wrapper">
-                    <img src="https://10e227894e.clvaw-cdnwnd.com/44f4d99416880d07dbfd38e155360e4c/200000226-da3eeda3f0/v982-d3-04.jpeg?ph=10e227894e" alt="Instagram">
+                    <img src="images/ig-logo.jpeg" alt="Instagram">
                 </div>
+                <p>大寶老師的IG(Instagram)平台，分享客戶真實的論命回饋，透過客戶直白的回饋，也讓您可以在預約前先聽聽看前人怎麼說，再來決定是否與老師進行進一步的一對一對談</p>
             </a>
         </div>
         <div class="center-btn">
@@ -311,5 +318,98 @@
         </div>
     </footer>
 
+    <div class="admin-modal" id="admin-modal">
+        <div class="admin-modal-content">
+            <h3>✒️ 更新首頁公告</h3>
+            <input type="password" id="admin-pass" class="admin-input" placeholder="請輸入站長密碼">
+            <textarea id="admin-content" class="admin-input" placeholder="請輸入新的公告內容..."></textarea>
+            <div class="admin-actions">
+                <button class="admin-btn btn-cancel" id="admin-cancel">取消</button>
+                <button class="admin-btn btn-save" id="admin-save">儲存發布</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { createClient } = window.supabase;
+            // 這裡已經填入你的專案資訊
+            const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
+            const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
+            const supabase = createClient(supabaseUrl, supabaseKey);
+
+            const annText = document.getElementById('announcement-text');
+            const annBanner = document.getElementById('announcement-banner');
+            
+            // 1. 網頁載入時，自動去資料庫抓最新公告
+            const fetchAnnouncement = async () => {
+                const { data, error } = await supabase.from('announcements').select('content').eq('id', 1).single();
+                if (data && data.content) {
+                    annText.innerText = data.content;
+                } else {
+                    annText.innerText = '歡迎來到 大寶 | 紫微斗數';
+                }
+            };
+            fetchAnnouncement();
+
+            // 2. 點三下的彩蛋邏輯
+            let clickCount = 0;
+            let clickTimer;
+            const modal = document.getElementById('admin-modal');
+            const contentInput = document.getElementById('admin-content');
+            const passInput = document.getElementById('admin-pass');
+            const cancelBtn = document.getElementById('admin-cancel');
+            const saveBtn = document.getElementById('admin-save');
+
+            annBanner.addEventListener('click', () => {
+                clickCount++;
+                if (clickCount === 1) {
+                    // 如果一秒內沒有連點三下，就重置次數
+                    clickTimer = setTimeout(() => { clickCount = 0; }, 1000);
+                }
+                if (clickCount === 3) {
+                    clearTimeout(clickTimer);
+                    clickCount = 0;
+                    // 觸發彩蛋！打開密碼輸入框
+                    contentInput.value = annText.innerText;
+                    passInput.value = '';
+                    modal.style.display = 'flex';
+                }
+            });
+
+            // 關閉視窗
+            cancelBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            // 3. 執行寫入更新
+            saveBtn.addEventListener('click', async () => {
+                const newContent = contentInput.value.trim();
+                const passcode = passInput.value.trim();
+                
+                if(!newContent || !passcode) {
+                    alert('⚠️ 密碼與公告內容不能為空！');
+                    return;
+                }
+
+                saveBtn.innerText = '儲存中...';
+                
+                // 呼叫我們剛剛在 Supabase 寫好的高安全函數
+                const { data, error } = await supabase.rpc('update_announcement', {
+                    new_content: newContent,
+                    admin_passcode: passcode
+                });
+
+                if (data === true) {
+                    annText.innerText = newContent; // 更新畫面上的文字
+                    modal.style.display = 'none';   // 關閉視窗
+                    alert('🎉 公告更新成功！全世界現在都看得到你的新公告了！');
+                } else {
+                    alert('❌ 密碼錯誤！這不是大寶老師該有的密碼！');
+                }
+                saveBtn.innerText = '儲存發布';
+            });
+        });
+    </script>
 </body>
 </html>
