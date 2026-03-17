@@ -53,18 +53,18 @@
             </div>
 
             <div id="tab-ai" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">🤖 AI 提示詞產生器</h2>
-                <p class="text-gray-600 mb-6">點擊下方按鈕，系統會自動抓取最新的公開資料表結構（已自動排除密碼表），並幫你寫好一段給 AI 看的前言。你只要點擊複製，就能直接貼給 AI 進行後續討論。</p>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">🤖 AI 提示詞產生器 (完全體)</h2>
+                <p class="text-gray-600 mb-6">點擊下方按鈕，系統會自動抓取「資料庫結構」與「最新網頁原始碼」，組合成最完整的 AI 提示詞。一鍵複製後即可直接貼給 AI 進行開發討論。</p>
                 
                 <button id="btn-fetch-ai" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg mb-6 transition duration-200">
-                    🪄 抓取並產生提示詞
+                    🪄 抓取並產生完整提示詞
                 </button>
                 
                 <div class="relative">
-                    <textarea id="ai-prompt-result" class="w-full h-64 p-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-mono text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" readonly placeholder="產生的提示詞會顯示在這裡..."></textarea>
+                    <textarea id="ai-prompt-result" class="w-full h-96 p-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-mono text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" readonly placeholder="產生的完整提示詞會顯示在這裡..."></textarea>
                     
                     <button id="btn-copy-ai" class="hidden absolute top-4 right-4 bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-4 rounded shadow transition duration-200">
-                        複製內容
+                        複製全部內容
                     </button>
                 </div>
             </div>
@@ -88,14 +88,13 @@
     </div>
 
     <script>
-        // 把所有的程式碼包裝在 DOMContentLoaded 裡面，確保網頁 100% 準備好才執行
         document.addEventListener('DOMContentLoaded', () => {
             // 1. 初始化 Supabase
             const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
             const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
             const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-            // 2. 左側選單切換畫面的功能
+            // 2. 左側選單切換邏輯
             const tabTitles = {
                 'overview': '首頁總覽',
                 'ai': 'AI 提示詞產生',
@@ -108,21 +107,13 @@
             const contentTabs = document.querySelectorAll('.content-tab');
             const headerTitle = document.getElementById('header-title');
 
-            // 綁定每一個左側按鈕的點擊動作
             navBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    // 取得被點擊的是哪一個畫面
                     const targetTab = btn.getAttribute('data-tab');
-
-                    // 隱藏所有右側畫面
                     contentTabs.forEach(tab => tab.classList.add('hidden'));
-                    // 顯示被點擊的那個畫面
                     document.getElementById('tab-' + targetTab).classList.remove('hidden');
-
-                    // 更改上方標題列
                     headerTitle.innerText = tabTitles[targetTab];
 
-                    // 讓左側按鈕變色（標示目前在哪一頁）
                     navBtns.forEach(b => {
                         b.classList.remove('bg-gray-700', 'text-white', 'font-medium');
                         b.classList.add('text-gray-300', 'hover:text-white');
@@ -132,30 +123,62 @@
                 });
             });
 
-            // 3. AI 提示詞產生器的核心邏輯
+            // 3. AI 提示詞產生器 (完全體邏輯)
             const btnFetchAi = document.getElementById('btn-fetch-ai');
             const textAreaResult = document.getElementById('ai-prompt-result');
             const btnCopyAi = document.getElementById('btn-copy-ai');
 
             btnFetchAi.addEventListener('click', async () => {
-                btnFetchAi.innerText = '⏳ 抓取中...';
-                textAreaResult.value = '正在向資料庫請求資料，請稍候...';
+                btnFetchAi.innerText = '⏳ 抓取資料庫與網頁原始碼中...';
+                textAreaResult.value = '正在搜集所有必要的資訊，請稍候...\n這可能需要幾秒鐘的時間。';
                 btnCopyAi.classList.add('hidden');
 
-                try {
-                    // 呼叫我們剛剛在 Supabase 建立的打包小幫手
-                    const { data, error } = await supabase.rpc('get_db_schema_for_ai');
-                    
-                    if (error) throw error;
+                let finalPrompt = '';
 
-                    // 顯示結果並把複製按鈕叫出來
-                    textAreaResult.value = data;
+                try {
+                    // 第一步：抓取資料庫結構與示範資料
+                    const { data: dbData, error: dbError } = await supabase.rpc('get_db_schema_for_ai');
+                    if (dbError) throw new Error('資料庫抓取失敗：' + dbError.message);
+                    
+                    finalPrompt += dbData + '\n\n';
+                    finalPrompt += '========================================\n';
+                    finalPrompt += '以下是我目前網站的相關原始碼，請以此為基礎進行修改或新增功能：\n\n';
+
+                    // 第二步：去檔案室抓取首頁 (index.html) 的原始碼
+                    try {
+                        const indexResponse = await fetch('/index.html');
+                        if (indexResponse.ok) {
+                            const indexHtml = await indexResponse.text();
+                            finalPrompt += '【首頁原始碼：/index.html】\n```html\n' + indexHtml + '\n```\n\n';
+                        } else {
+                            finalPrompt += '【首頁原始碼：/index.html】\n(無法讀取首頁檔案)\n\n';
+                        }
+                    } catch (err) {
+                        finalPrompt += '【首頁原始碼：/index.html】\n(讀取發生錯誤)\n\n';
+                    }
+
+                    // 第三步：去檔案室抓取後台 (admin.html) 的原始碼
+                    try {
+                        const adminResponse = await fetch('/admindashboard/admin.html');
+                        if (adminResponse.ok) {
+                            const adminHtml = await adminResponse.text();
+                            finalPrompt += '【後台原始碼：/admindashboard/admin.html】\n```html\n' + adminHtml + '\n```\n';
+                        } else {
+                            finalPrompt += '【後台原始碼：/admindashboard/admin.html】\n(無法讀取後台檔案)\n';
+                        }
+                    } catch (err) {
+                        finalPrompt += '【後台原始碼：/admindashboard/admin.html】\n(讀取發生錯誤)\n';
+                    }
+
+                    // 將組裝好的終極提示詞顯示在畫面上
+                    textAreaResult.value = finalPrompt;
                     btnCopyAi.classList.remove('hidden');
+
                 } catch (err) {
                     console.error(err);
-                    textAreaResult.value = '抓取失敗！請確認資料庫指令是否有正確執行。錯誤訊息：' + err.message;
+                    textAreaResult.value = err.message;
                 } finally {
-                    btnFetchAi.innerText = '🪄 抓取並產生提示詞';
+                    btnFetchAi.innerText = '🪄 抓取並產生完整提示詞';
                 }
             });
 
@@ -164,9 +187,8 @@
                 textAreaResult.select();
                 document.execCommand('copy');
                 
-                // 讓按鈕閃一下顯示複製成功
                 const originalText = btnCopyAi.innerText;
-                btnCopyAi.innerText = '✅ 已複製！';
+                btnCopyAi.innerText = '✅ 已全部複製！';
                 btnCopyAi.classList.replace('bg-green-500', 'bg-teal-600');
                 
                 setTimeout(() => {
