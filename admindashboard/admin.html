@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<head>
+<head><script>window.__sb_state = {};</script><script src="/.webcontainer@runtime.8669d46c.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>大寶 - 專屬管理後台</title>
@@ -81,7 +81,25 @@
 
             <div id="tab-password" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">🔒 變更密碼</h2>
-                <p class="text-gray-600">這個功能正在建置中，敬請期待...</p>
+                <p class="text-gray-600 mb-6">為確保安全，變更密碼前需驗證目前的舊密碼。</p>
+                
+                <div class="max-w-md bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="old-password">目前舊密碼</label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" id="old-password" type="password" placeholder="請輸入舊密碼">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="new-password">新密碼</label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" id="new-password" type="password" placeholder="請輸入新密碼">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="confirm-password">再次確認新密碼</label>
+                        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" id="confirm-password" type="password" placeholder="請再次輸入新密碼">
+                    </div>
+                    <button id="btn-change-password" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-200">
+                        儲存新密碼
+                    </button>
+                </div>
             </div>
 
         </main>
@@ -129,7 +147,6 @@
             const btnCopyAi = document.getElementById('btn-copy-ai');
 
             // 【重要：網站檔案抓取清單】
-            // AI 防呆機制會強制 AI 在新增網頁時，自動來這裡更新陣列
             const filesToFetch = [
                 '/index.html',
                 '/chart.html',
@@ -151,7 +168,6 @@
                 finalPrompt += '========================================\n\n';
 
                 try {
-                    // 第一步：抓取資料庫結構與示範資料
                     const { data: dbData, error: dbError } = await supabase.rpc('get_db_schema_for_ai');
                     if (dbError) throw new Error('資料庫抓取失敗：' + dbError.message);
                     
@@ -159,7 +175,6 @@
                     finalPrompt += '========================================\n';
                     finalPrompt += '以下是我目前網站所有頁面的完整原始碼，請以此為基礎進行修改或新增功能：\n\n';
 
-                    // 第二步：動態迴圈抓取清單上的所有檔案
                     for (const file of filesToFetch) {
                         try {
                             const response = await fetch(file);
@@ -174,7 +189,6 @@
                         }
                     }
 
-                    // 將組裝好的終極提示詞顯示在畫面上
                     textAreaResult.value = finalPrompt;
                     btnCopyAi.classList.remove('hidden');
 
@@ -186,7 +200,6 @@
                 }
             });
 
-            // 4. 一鍵複製按鈕邏輯
             btnCopyAi.addEventListener('click', () => {
                 textAreaResult.select();
                 document.execCommand('copy');
@@ -199,6 +212,56 @@
                     btnCopyAi.innerText = originalText;
                     btnCopyAi.classList.replace('bg-teal-600', 'bg-green-500');
                 }, 2000);
+            });
+
+            // 4. 變更密碼邏輯
+            const btnChangePassword = document.getElementById('btn-change-password');
+            const oldPasswordInput = document.getElementById('old-password');
+            const newPasswordInput = document.getElementById('new-password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+
+            btnChangePassword.addEventListener('click', async () => {
+                const oldPass = oldPasswordInput.value.trim();
+                const newPass = newPasswordInput.value.trim();
+                const confirmPass = confirmPasswordInput.value.trim();
+
+                if (!oldPass || !newPass || !confirmPass) {
+                    return alert('⚠️ 請將三個密碼欄位都填寫完整！');
+                }
+                if (newPass !== confirmPass) {
+                    return alert('⚠️ 兩次輸入的新密碼不一致，請重新確認！');
+                }
+                if (oldPass === newPass) {
+                    return alert('⚠️ 新密碼不能跟舊密碼一樣！');
+                }
+
+                btnChangePassword.innerText = '更新中...';
+                btnChangePassword.disabled = true;
+
+                try {
+                    // 呼叫資料庫負責變更密碼的專屬保鑣 (change_admin_password)
+                    const { data, error } = await supabase.rpc('change_admin_password', {
+                        input_old_pass: oldPass,
+                        input_new_pass: newPass
+                    });
+
+                    if (error) throw error;
+
+                    if (data === true) {
+                        alert('✅ 密碼變更成功！請妥善保管您的新密碼。');
+                        oldPasswordInput.value = '';
+                        newPasswordInput.value = '';
+                        confirmPasswordInput.value = '';
+                    } else {
+                        alert('❌ 舊密碼輸入錯誤，變更失敗！');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('⚠️ 發生錯誤：' + err.message);
+                } finally {
+                    btnChangePassword.innerText = '儲存新密碼';
+                    btnChangePassword.disabled = false;
+                }
             });
 
             // 5. 登出功能
