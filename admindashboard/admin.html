@@ -53,15 +53,15 @@
             </div>
 
             <div id="tab-ai" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">🤖 AI 提示詞產生器 (完全體)</h2>
-                <p class="text-gray-600 mb-6">點擊下方按鈕，系統會自動抓取「資料庫結構」與「最新網頁原始碼」，組合成最完整的 AI 提示詞。一鍵複製後即可直接貼給 AI 進行開發討論。</p>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">🤖 AI 提示詞產生器 (完美防呆版)</h2>
+                <p class="text-gray-600 mb-6">點擊下方按鈕，系統會自動抓取「資料庫結構」與「所有網頁原始碼」，並附上嚴格的防呆指令。一鍵複製後即可直接貼給 AI，確保 AI 會自動幫你維護未來的檔案清單。</p>
                 
                 <button id="btn-fetch-ai" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg mb-6 transition duration-200">
-                    🪄 抓取並產生完整提示詞
+                    🪄 抓取並產生終極提示詞
                 </button>
                 
                 <div class="relative">
-                    <textarea id="ai-prompt-result" class="w-full h-96 p-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-mono text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" readonly placeholder="產生的完整提示詞會顯示在這裡..."></textarea>
+                    <textarea id="ai-prompt-result" class="w-full h-96 p-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-mono text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" readonly placeholder="產生的終極提示詞會顯示在這裡..."></textarea>
                     
                     <button id="btn-copy-ai" class="hidden absolute top-4 right-4 bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-4 rounded shadow transition duration-200">
                         複製全部內容
@@ -123,51 +123,55 @@
                 });
             });
 
-            // 3. AI 提示詞產生器 (完全體邏輯)
+            // 3. AI 提示詞產生器 (完美防呆版邏輯)
             const btnFetchAi = document.getElementById('btn-fetch-ai');
             const textAreaResult = document.getElementById('ai-prompt-result');
             const btnCopyAi = document.getElementById('btn-copy-ai');
 
+            // 【重要：網站檔案抓取清單】
+            // AI 防呆機制會強制 AI 在新增網頁時，自動來這裡更新陣列
+            const filesToFetch = [
+                '/index.html',
+                '/chart.html',
+                '/booking.html',
+                '/course.html',
+                '/articles.html',
+                '/admindashboard/admin.html'
+            ];
+
             btnFetchAi.addEventListener('click', async () => {
-                btnFetchAi.innerText = '⏳ 抓取資料庫與網頁原始碼中...';
-                textAreaResult.value = '正在搜集所有必要的資訊，請稍候...\n這可能需要幾秒鐘的時間。';
+                btnFetchAi.innerText = '⏳ 抓取所有資料中...';
+                textAreaResult.value = '正在搜集資料庫與所有網頁檔案，請稍候...\n檔案越多會需要幾秒鐘的時間。';
                 btnCopyAi.classList.add('hidden');
 
-                let finalPrompt = '';
+                let finalPrompt = '【⚠️ 給 AI 的嚴格開發規範（非常重要）】\n';
+                finalPrompt += '1. 每次你提供修改後的 `/admindashboard/admin.html` 原始碼時，必須確保 `filesToFetch` 這個陣列包含網站「所有的」網頁檔案。\n';
+                finalPrompt += '2. 如果你在對話中幫我「新增」了任何新的網頁檔案，你【必須主動】在修改 `/admindashboard/admin.html` 時，將新檔案的路徑加入到 `filesToFetch` 陣列中。\n';
+                finalPrompt += '3. 絕對不可以叫我手動去新增陣列！這非常容易出錯，請你全權負責陣列清單的維護。\n\n';
+                finalPrompt += '========================================\n\n';
 
                 try {
                     // 第一步：抓取資料庫結構與示範資料
                     const { data: dbData, error: dbError } = await supabase.rpc('get_db_schema_for_ai');
                     if (dbError) throw new Error('資料庫抓取失敗：' + dbError.message);
                     
-                    finalPrompt += dbData + '\n\n';
+                    finalPrompt += dbData + '\n';
                     finalPrompt += '========================================\n';
-                    finalPrompt += '以下是我目前網站的相關原始碼，請以此為基礎進行修改或新增功能：\n\n';
+                    finalPrompt += '以下是我目前網站所有頁面的完整原始碼，請以此為基礎進行修改或新增功能：\n\n';
 
-                    // 第二步：去檔案室抓取首頁 (index.html) 的原始碼
-                    try {
-                        const indexResponse = await fetch('/index.html');
-                        if (indexResponse.ok) {
-                            const indexHtml = await indexResponse.text();
-                            finalPrompt += '【首頁原始碼：/index.html】\n```html\n' + indexHtml + '\n```\n\n';
-                        } else {
-                            finalPrompt += '【首頁原始碼：/index.html】\n(無法讀取首頁檔案)\n\n';
+                    // 第二步：動態迴圈抓取清單上的所有檔案
+                    for (const file of filesToFetch) {
+                        try {
+                            const response = await fetch(file);
+                            if (response.ok) {
+                                const code = await response.text();
+                                finalPrompt += `【檔案路徑：${file}】\n\`\`\`html\n${code}\n\`\`\`\n\n`;
+                            } else {
+                                finalPrompt += `【檔案路徑：${file}】\n(目前尚未建立此檔案或無法讀取)\n\n`;
+                            }
+                        } catch (err) {
+                            finalPrompt += `【檔案路徑：${file}】\n(讀取發生錯誤)\n\n`;
                         }
-                    } catch (err) {
-                        finalPrompt += '【首頁原始碼：/index.html】\n(讀取發生錯誤)\n\n';
-                    }
-
-                    // 第三步：去檔案室抓取後台 (admin.html) 的原始碼
-                    try {
-                        const adminResponse = await fetch('/admindashboard/admin.html');
-                        if (adminResponse.ok) {
-                            const adminHtml = await adminResponse.text();
-                            finalPrompt += '【後台原始碼：/admindashboard/admin.html】\n```html\n' + adminHtml + '\n```\n';
-                        } else {
-                            finalPrompt += '【後台原始碼：/admindashboard/admin.html】\n(無法讀取後台檔案)\n';
-                        }
-                    } catch (err) {
-                        finalPrompt += '【後台原始碼：/admindashboard/admin.html】\n(讀取發生錯誤)\n';
                     }
 
                     // 將組裝好的終極提示詞顯示在畫面上
@@ -178,7 +182,7 @@
                     console.error(err);
                     textAreaResult.value = err.message;
                 } finally {
-                    btnFetchAi.innerText = '🪄 抓取並產生完整提示詞';
+                    btnFetchAi.innerText = '🪄 抓取並產生終極提示詞';
                 }
             });
 
