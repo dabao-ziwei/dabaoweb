@@ -23,15 +23,15 @@
         </div>
         
         <nav class="flex-1 p-4 space-y-2" id="sidebar-nav">
-            <a href="#" id="nav-overview" onclick="switchTab('overview')" class="nav-btn block py-3 px-4 rounded transition duration-200 bg-gray-700 text-white font-medium">首頁總覽</a>
-            <a href="#" id="nav-ai" onclick="switchTab('ai')" class="nav-btn block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">AI 提示詞產生</a>
-            <a href="#" id="nav-announcement" onclick="switchTab('announcement')" class="nav-btn block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">公告管理</a>
-            <a href="#" id="nav-article" onclick="switchTab('article')" class="nav-btn block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">文章管理</a>
-            <a href="#" id="nav-password" onclick="switchTab('password')" class="nav-btn block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">變更密碼</a>
+            <button data-tab="overview" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 bg-gray-700 text-white font-medium">首頁總覽</button>
+            <button data-tab="ai" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">AI 提示詞產生</button>
+            <button data-tab="announcement" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">公告管理</button>
+            <button data-tab="article" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">文章管理</button>
+            <button data-tab="password" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">變更密碼</button>
         </nav>
         
         <div class="p-4 border-t border-gray-700">
-            <button onclick="logout()" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded transition duration-200">
+            <button id="btn-logout" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded transition duration-200">
                 登出系統
             </button>
         </div>
@@ -88,88 +88,101 @@
     </div>
 
     <script>
-        // 1. 初始化 Supabase
-        const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
-        const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // 把所有的程式碼包裝在 DOMContentLoaded 裡面，確保網頁 100% 準備好才執行
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. 初始化 Supabase
+            const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
+            const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        // 2. 左側選單切換畫面的功能
-        const tabTitles = {
-            'overview': '首頁總覽',
-            'ai': 'AI 提示詞產生',
-            'announcement': '公告管理',
-            'article': '文章管理',
-            'password': '變更密碼'
-        };
+            // 2. 左側選單切換畫面的功能
+            const tabTitles = {
+                'overview': '首頁總覽',
+                'ai': 'AI 提示詞產生',
+                'announcement': '公告管理',
+                'article': '文章管理',
+                'password': '變更密碼'
+            };
 
-        function switchTab(tabId) {
-            // 隱藏所有右側畫面
-            document.querySelectorAll('.content-tab').forEach(tab => tab.classList.add('hidden'));
-            // 顯示被點擊的那個畫面
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const contentTabs = document.querySelectorAll('.content-tab');
+            const headerTitle = document.getElementById('header-title');
 
-            // 更改上方標題列
-            document.getElementById('header-title').innerText = tabTitles[tabId];
+            // 綁定每一個左側按鈕的點擊動作
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // 取得被點擊的是哪一個畫面
+                    const targetTab = btn.getAttribute('data-tab');
 
-            // 讓左側按鈕變色（標示目前在哪一頁）
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-gray-700', 'text-white', 'font-medium');
-                btn.classList.add('text-gray-300', 'hover:text-white');
+                    // 隱藏所有右側畫面
+                    contentTabs.forEach(tab => tab.classList.add('hidden'));
+                    // 顯示被點擊的那個畫面
+                    document.getElementById('tab-' + targetTab).classList.remove('hidden');
+
+                    // 更改上方標題列
+                    headerTitle.innerText = tabTitles[targetTab];
+
+                    // 讓左側按鈕變色（標示目前在哪一頁）
+                    navBtns.forEach(b => {
+                        b.classList.remove('bg-gray-700', 'text-white', 'font-medium');
+                        b.classList.add('text-gray-300', 'hover:text-white');
+                    });
+                    btn.classList.remove('text-gray-300', 'hover:text-white');
+                    btn.classList.add('bg-gray-700', 'text-white', 'font-medium');
+                });
             });
-            const activeNav = document.getElementById('nav-' + tabId);
-            activeNav.classList.remove('text-gray-300', 'hover:text-white');
-            activeNav.classList.add('bg-gray-700', 'text-white', 'font-medium');
-        }
 
-        // 3. AI 提示詞產生器的核心邏輯
-        const btnFetchAi = document.getElementById('btn-fetch-ai');
-        const textAreaResult = document.getElementById('ai-prompt-result');
-        const btnCopyAi = document.getElementById('btn-copy-ai');
+            // 3. AI 提示詞產生器的核心邏輯
+            const btnFetchAi = document.getElementById('btn-fetch-ai');
+            const textAreaResult = document.getElementById('ai-prompt-result');
+            const btnCopyAi = document.getElementById('btn-copy-ai');
 
-        btnFetchAi.addEventListener('click', async () => {
-            btnFetchAi.innerText = '⏳ 抓取中...';
-            textAreaResult.value = '正在向資料庫請求資料，請稍候...';
-            btnCopyAi.classList.add('hidden');
+            btnFetchAi.addEventListener('click', async () => {
+                btnFetchAi.innerText = '⏳ 抓取中...';
+                textAreaResult.value = '正在向資料庫請求資料，請稍候...';
+                btnCopyAi.classList.add('hidden');
 
-            try {
-                // 呼叫我們剛剛在 Supabase 建立的打包小幫手
-                const { data, error } = await supabase.rpc('get_db_schema_for_ai');
+                try {
+                    // 呼叫我們剛剛在 Supabase 建立的打包小幫手
+                    const { data, error } = await supabase.rpc('get_db_schema_for_ai');
+                    
+                    if (error) throw error;
+
+                    // 顯示結果並把複製按鈕叫出來
+                    textAreaResult.value = data;
+                    btnCopyAi.classList.remove('hidden');
+                } catch (err) {
+                    console.error(err);
+                    textAreaResult.value = '抓取失敗！請確認資料庫指令是否有正確執行。錯誤訊息：' + err.message;
+                } finally {
+                    btnFetchAi.innerText = '🪄 抓取並產生提示詞';
+                }
+            });
+
+            // 4. 一鍵複製按鈕邏輯
+            btnCopyAi.addEventListener('click', () => {
+                textAreaResult.select();
+                document.execCommand('copy');
                 
-                if (error) throw error;
+                // 讓按鈕閃一下顯示複製成功
+                const originalText = btnCopyAi.innerText;
+                btnCopyAi.innerText = '✅ 已複製！';
+                btnCopyAi.classList.replace('bg-green-500', 'bg-teal-600');
+                
+                setTimeout(() => {
+                    btnCopyAi.innerText = originalText;
+                    btnCopyAi.classList.replace('bg-teal-600', 'bg-green-500');
+                }, 2000);
+            });
 
-                // 顯示結果並把複製按鈕叫出來
-                textAreaResult.value = data;
-                btnCopyAi.classList.remove('hidden');
-            } catch (err) {
-                console.error(err);
-                textAreaResult.value = '抓取失敗！請確認資料庫指令是否有正確執行。錯誤訊息：' + err.message;
-            } finally {
-                btnFetchAi.innerText = '🪄 抓取並產生提示詞';
-            }
+            // 5. 登出功能
+            const btnLogout = document.getElementById('btn-logout');
+            btnLogout.addEventListener('click', () => {
+                sessionStorage.removeItem('isAdminLoggedIn');
+                alert('已成功登出系統。');
+                window.location.href = '/'; 
+            });
         });
-
-        // 4. 一鍵複製按鈕邏輯
-        btnCopyAi.addEventListener('click', () => {
-            textAreaResult.select();
-            document.execCommand('copy');
-            
-            // 讓按鈕閃一下顯示複製成功
-            const originalText = btnCopyAi.innerText;
-            btnCopyAi.innerText = '✅ 已複製！';
-            btnCopyAi.classList.replace('bg-green-500', 'bg-teal-600');
-            
-            setTimeout(() => {
-                btnCopyAi.innerText = originalText;
-                btnCopyAi.classList.replace('bg-teal-600', 'bg-green-500');
-            }, 2000);
-        });
-
-        // 5. 登出功能
-        function logout() {
-            sessionStorage.removeItem('isAdminLoggedIn');
-            alert('已成功登出系統。');
-            window.location.href = '/'; 
-        }
     </script>
 </body>
 </html>
