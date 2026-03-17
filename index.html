@@ -330,30 +330,15 @@
 
     <div class="admin-modal" id="admin-modal">
         <div class="admin-modal-content">
-            <h3>⚙️ 大寶老師專屬後台</h3>
+            <h3 style="margin-bottom: 20px;">🔒 登入後台管理系統</h3>
             
-            <div class="admin-section">
-                <h4>📝 1. 更新首頁公告</h4>
-                <textarea id="admin-content" class="admin-input" placeholder="請輸入新的公告內容..."></textarea>
-                <div class="admin-actions">
-                    <button class="admin-btn btn-save" id="btn-save-ann">儲存發布公告</button>
-                </div>
-            </div>
-
-            <div class="admin-section" style="border-bottom: none;">
-                <h4>🖼️ 2. 新增客戶回饋圖片</h4>
-                <input type="file" id="admin-file" class="admin-input" accept="image/*">
-                <div class="admin-actions">
-                    <button class="admin-btn btn-save" id="btn-save-img">上傳並發布圖片</button>
-                </div>
-            </div>
-
-            <div style="margin-top: 10px;">
-                <input type="password" id="admin-pass" class="admin-input" placeholder="請輸入站長密碼 (發布必填)" style="border-color:var(--accent-color);">
+            <div style="margin-bottom: 20px;">
+                <input type="password" id="admin-pass" class="admin-input" placeholder="請輸入站長密碼" style="border-color:var(--accent-color);">
             </div>
             
-            <div class="admin-actions" style="justify-content: center; margin-top:20px;">
-                <button class="admin-btn btn-cancel" id="admin-cancel">關閉後台</button>
+            <div class="admin-actions" style="justify-content: center; gap: 10px;">
+                <button class="admin-btn btn-save" id="btn-login">登入後台</button>
+                <button class="admin-btn btn-cancel" id="admin-cancel">取消</button>
             </div>
         </div>
     </div>
@@ -369,7 +354,7 @@
             const annBanner = document.getElementById('announcement-banner');
             const masonryGrid = document.getElementById('masonry-grid');
             
-            // 1. 自動抓取最新公告
+            // 1. 自動抓取最新公告 (保留原有顯示功能)
             const fetchAnnouncement = async () => {
                 const { data, error } = await supabase.from('announcements').select('content').eq('id', 1).single();
                 if (data && data.content) {
@@ -380,7 +365,7 @@
             };
             fetchAnnouncement();
 
-            // 2. 自動抓取由後台上傳的「新」客戶回饋圖，並插在最前面
+            // 2. 自動抓取由後台上傳的「新」客戶回饋圖 (保留原有顯示功能)
             const fetchNewImages = async () => {
                 const { data, error } = await supabase.from('feedbacks').select('image_url').order('created_at', { ascending: true });
                 if (data && data.length > 0) {
@@ -398,9 +383,8 @@
             let clickCount = 0;
             let clickTimer;
             const modal = document.getElementById('admin-modal');
-            const contentInput = document.getElementById('admin-content');
-            const fileInput = document.getElementById('admin-file');
             const passInput = document.getElementById('admin-pass');
+            const btnLogin = document.getElementById('btn-login');
             
             annBanner.addEventListener('click', () => {
                 clickCount++;
@@ -410,10 +394,10 @@
                 if (clickCount === 3) {
                     clearTimeout(clickTimer);
                     clickCount = 0;
-                    contentInput.value = annText.innerText;
                     passInput.value = '';
-                    fileInput.value = '';
                     modal.style.display = 'flex';
+                    // 開啟視窗時自動將游標聚焦在密碼輸入框
+                    setTimeout(() => passInput.focus(), 100);
                 }
             });
 
@@ -421,70 +405,33 @@
                 modal.style.display = 'none';
             });
 
-            // 4. 執行寫入公告
-            const btnSaveAnn = document.getElementById('btn-save-ann');
-            btnSaveAnn.addEventListener('click', async () => {
-                const newContent = contentInput.value.trim();
-                const passcode = passInput.value.trim();
-                if(!newContent || !passcode) return alert('⚠️ 密碼與公告內容不能為空！');
+            // 加入 Enter 鍵的監聽事件：在密碼框按下 Enter 就等同點擊登入按鈕
+            passInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    btnLogin.click();
+                }
+            });
 
-                btnSaveAnn.innerText = '儲存中...';
-                const { data } = await supabase.rpc('update_announcement', {
-                    new_content: newContent, admin_passcode: passcode
+            // 4. 全新的正規登入邏輯
+            btnLogin.addEventListener('click', async () => {
+                const passcode = passInput.value.trim();
+                if(!passcode) return alert('⚠️ 請輸入密碼！');
+
+                btnLogin.innerText = '驗證中...';
+                
+                // 呼叫資料庫的專屬保鑣驗證密碼
+                const { data, error } = await supabase.rpc('verify_admin_password', {
+                    input_passcode: passcode
                 });
 
                 if (data === true) {
-                    annText.innerText = newContent;
-                    alert('🎉 公告更新成功！');
+                    // 驗證成功，發放通行證並使用相對路徑跳轉到全新的獨立後台
+                    sessionStorage.setItem('isAdminLoggedIn', 'true');
+                    window.location.href = './admindashboard/admin.html';
                 } else {
-                    alert('❌ 密碼錯誤！');
+                    alert('❌ 密碼錯誤！請重新輸入。');
                 }
-                btnSaveAnn.innerText = '儲存發布公告';
-            });
-
-            // 5. 執行上傳並發布新圖片
-            const btnSaveImg = document.getElementById('btn-save-img');
-            btnSaveImg.addEventListener('click', async () => {
-                const file = fileInput.files[0];
-                const passcode = passInput.value.trim();
-                if(!file || !passcode) return alert('⚠️ 請選擇圖片並輸入密碼！');
-
-                btnSaveImg.innerText = '上傳中...請稍候';
-                try {
-                    // 隨機命名防止檔名重複
-                    const fileExt = file.name.split('.').pop();
-                    const fileName = `${Date.now()}.${fileExt}`;
-                    
-                    // 上傳到 Storage
-                    const { error: uploadError } = await supabase.storage.from('feedbacks').upload(fileName, file);
-                    if (uploadError) throw uploadError;
-
-                    // 取得圖片網址
-                    const { data: publicUrlData } = supabase.storage.from('feedbacks').getPublicUrl(fileName);
-                    const publicUrl = publicUrlData.publicUrl;
-
-                    // 寫入資料庫
-                    const { data } = await supabase.rpc('add_feedback_image', {
-                        new_image_url: publicUrl, admin_passcode: passcode
-                    });
-
-                    if (data === true) {
-                        alert('🎉 圖片上傳成功！已加入首頁回饋牆。');
-                        // 即時在畫面上新增這張圖
-                        const div = document.createElement('div');
-                        div.className = 'masonry-item';
-                        div.innerHTML = `<img src="${publicUrl}" alt="客戶回饋" loading="lazy">`;
-                        masonryGrid.prepend(div);
-                        fileInput.value = '';
-                    } else {
-                        alert('❌ 密碼錯誤！圖片發布失敗。');
-                    }
-                } catch (err) {
-                    console.error(err);
-                    alert('上傳失敗，請檢查網路或稍後再試。');
-                } finally {
-                    btnSaveImg.innerText = '上傳並發布圖片';
-                }
+                btnLogin.innerText = '登入後台';
             });
         });
     </script>
