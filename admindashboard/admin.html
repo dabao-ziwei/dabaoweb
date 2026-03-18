@@ -6,6 +6,18 @@
     <title>大寶 - 專屬管理後台</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script>
+    
+    <style>
+        /* Editor.js 基礎美化 */
+        .ce-block__content, .ce-toolbar__content { max-width: 800px; margin: 0 auto; }
+        .codex-editor__redactor { padding-bottom: 100px !important; }
+    </style>
 </head>
 <body class="bg-gray-100 h-screen flex overflow-hidden">
 
@@ -17,12 +29,12 @@
         }
     </script>
 
-    <aside class="w-64 bg-gray-800 text-white flex flex-col">
+    <aside class="w-64 bg-gray-800 text-white flex flex-col z-20">
         <div class="p-6 text-2xl font-bold border-b border-gray-700 tracking-wider">
             管理後台
         </div>
         
-        <nav class="flex-1 p-4 space-y-2" id="sidebar-nav">
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto" id="sidebar-nav">
             <button data-tab="overview" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 bg-gray-700 text-white font-medium">首頁總覽</button>
             <button data-tab="ai" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">AI 提示詞產生</button>
             <button data-tab="announcement" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">公告管理</button>
@@ -45,12 +57,12 @@
         </div>
     </aside>
 
-    <div class="flex-1 flex flex-col">
-        <header class="bg-white shadow p-4 flex items-center justify-between">
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="bg-white shadow p-4 flex items-center justify-between z-10">
             <h1 class="text-xl font-semibold text-gray-800" id="header-title">首頁總覽</h1>
         </header>
 
-        <main class="flex-1 p-6 overflow-y-auto relative">
+        <main class="flex-1 p-6 overflow-y-auto relative bg-gray-50">
             
             <div id="tab-overview" class="content-tab bg-white p-8 rounded-lg shadow-sm border border-gray-100">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">系統狀態：正常</h2>
@@ -113,9 +125,49 @@
                 </div>
             </div>
 
-            <div id="tab-article" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">📝 文章管理</h2>
-                <p class="text-gray-600">這個功能正在建置中，敬請期待...</p>
+            <div id="tab-article" class="content-tab hidden w-full">
+                
+                <div id="article-list-view" class="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800">📝 文章管理</h2>
+                        <button id="btn-create-article" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition duration-200">
+                            + 撰寫新文章
+                        </button>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-white border border-gray-200 rounded-lg hidden" id="article-table">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-600">文章標題</th>
+                                    <th class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-600 w-48">建立時間</th>
+                                    <th class="py-3 px-4 border-b text-center text-sm font-semibold text-gray-600 w-32">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="article-list-body">
+                                </tbody>
+                        </table>
+                        <div id="article-empty-state" class="text-center py-10 text-gray-500">
+                            目前還沒有文章，點擊右上角按鈕開始撰寫吧！
+                        </div>
+                    </div>
+                </div>
+
+                <div id="article-edit-view" class="hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100 max-w-5xl mx-auto">
+                    <div class="flex justify-between items-center mb-6 border-b pb-4">
+                        <h2 class="text-2xl font-bold text-gray-800" id="edit-view-title">撰寫新文章</h2>
+                        <div class="flex gap-3">
+                            <button id="btn-cancel-article" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded transition duration-200">返回列表</button>
+                            <button id="btn-save-article" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow transition duration-200">儲存發布</button>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" id="current-article-id" value="0">
+                    <input type="text" id="article-title-input" placeholder="請輸入文章標題..." class="w-full text-3xl font-bold p-2 mb-6 border-b-2 border-transparent hover:border-gray-200 focus:border-blue-500 focus:outline-none transition-colors" autocomplete="off">
+                    
+                    <div id="editorjs" class="border rounded-lg bg-white p-4 min-h-[500px] shadow-inner text-gray-800 text-lg"></div>
+                </div>
+
             </div>
 
             <div id="tab-password" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
@@ -151,6 +203,41 @@
             const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
             const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
+            // 共用核心：圖片自動壓縮函式 (回饋管理與文章編輯器共用)
+            async function compressImage(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = event => {
+                        const img = new Image();
+                        img.src = event.target.result;
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+                            
+                            // 設定最大寬度為 800px，高度等比例縮放
+                            if (width > 800) {
+                                height = Math.round(height * 800 / width);
+                                width = 800;
+                            }
+                            
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            // 壓縮成 80% 品質的 JPEG
+                            canvas.toBlob(blob => {
+                                resolve(blob);
+                            }, 'image/jpeg', 0.8);
+                        };
+                        img.onerror = error => reject(error);
+                    };
+                    reader.onerror = error => reject(error);
+                });
+            }
+
             // 2. 左側選單切換邏輯
             const tabTitles = {
                 'overview': '首頁總覽',
@@ -179,9 +266,11 @@
                     btn.classList.remove('text-gray-300', 'hover:text-white');
                     btn.classList.add('bg-gray-700', 'text-white', 'font-medium');
                     
-                    // 如果點擊的是回饋管理，自動載入清單
                     if(targetTab === 'feedback'){
                         loadFeedbacks();
+                    } else if (targetTab === 'article') {
+                        loadArticles();
+                        showArticleListView(); // 確保每次點進來都是看到列表
                     }
                 });
             });
@@ -286,11 +375,9 @@
                 btnSaveAnnouncement.disabled = true;
 
                 try {
-                    const { data, error } = await supabase.rpc('update_announcement', {
-                        new_content: newContent
-                    });
+                    const { data, error } = await supabase.rpc('update_announcement', { new_content: newContent });
                     if (error) throw error;
-                    alert('✅ 公告已成功更新！您可以回首頁查看最新變化。');
+                    alert('✅ 公告已成功更新！');
                 } catch (err) {
                     console.error(err);
                     alert('⚠️ 發生錯誤：' + err.message);
@@ -300,47 +387,11 @@
                 }
             });
 
-            // 5. 客戶回饋管理邏輯 (包含自動壓縮與上傳)
+            // 5. 客戶回饋管理邏輯
             const fileInput = document.getElementById('feedback-file-input');
             const btnUploadFeedback = document.getElementById('btn-upload-feedback');
             const feedbackList = document.getElementById('feedback-list');
 
-            // 核心功能：圖片自動壓縮
-            async function compressImage(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = event => {
-                        const img = new Image();
-                        img.src = event.target.result;
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            let width = img.width;
-                            let height = img.height;
-                            
-                            // 設定最大寬度為 800px，高度等比例縮放
-                            if (width > 800) {
-                                height = Math.round(height * 800 / width);
-                                width = 800;
-                            }
-                            
-                            canvas.width = width;
-                            canvas.height = height;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, width, height);
-                            
-                            // 壓縮成 80% 品質的 JPEG
-                            canvas.toBlob(blob => {
-                                resolve(blob);
-                            }, 'image/jpeg', 0.8);
-                        };
-                        img.onerror = error => reject(error);
-                    };
-                    reader.onerror = error => reject(error);
-                });
-            }
-
-            // 載入圖片清單
             async function loadFeedbacks() {
                 try {
                     const { data, error } = await supabase.from('feedbacks').select('*').order('created_at', { ascending: false });
@@ -369,7 +420,6 @@
                 }
             }
 
-            // 上傳圖片
             btnUploadFeedback.addEventListener('click', async () => {
                 const file = fileInput.files[0];
                 if (!file) return alert('⚠️ 請先選擇一張圖片！');
@@ -378,36 +428,24 @@
                 btnUploadFeedback.disabled = true;
 
                 try {
-                    // 1. 自動壓縮圖片
                     const compressedBlob = await compressImage(file);
-                    
-                    // 2. 產生唯一檔名
                     const fileName = `feedback_${Date.now()}.jpg`;
 
-                    // 3. 上傳到 Storage
-                    const { data: uploadData, error: uploadError } = await supabase.storage
+                    const { error: uploadError } = await supabase.storage
                         .from('feedback_images')
                         .upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
                     
                     if (uploadError) throw uploadError;
 
-                    // 4. 取得公開網址
-                    const { data: publicUrlData } = supabase.storage
-                        .from('feedback_images')
-                        .getPublicUrl(fileName);
-                    
+                    const { data: publicUrlData } = supabase.storage.from('feedback_images').getPublicUrl(fileName);
                     const imageUrl = publicUrlData.publicUrl;
 
-                    // 5. 呼叫保鑣將網址存入資料庫
-                    const { data: rpcData, error: rpcError } = await supabase.rpc('add_feedback', {
-                        img_url: imageUrl
-                    });
-
+                    const { data: rpcData, error: rpcError } = await supabase.rpc('add_feedback', { img_url: imageUrl });
                     if (rpcError || !rpcData) throw new Error('寫入資料庫失敗');
 
                     alert('✅ 圖片上傳成功！');
-                    fileInput.value = ''; // 清空選擇
-                    loadFeedbacks(); // 重新載入列表
+                    fileInput.value = ''; 
+                    loadFeedbacks(); 
 
                 } catch (err) {
                     console.error(err);
@@ -418,29 +456,208 @@
                 }
             });
 
-            // 刪除圖片功能 (掛載到 window 供 onclick 呼叫)
             window.deleteFeedback = async (id, imageUrl) => {
-                if(!confirm('確定要刪除這張回饋圖嗎？這會同時從首頁移除哦！')) return;
-                
+                if(!confirm('確定要刪除這張回饋圖嗎？')) return;
                 try {
-                    // 1. 從網址萃取出檔名
                     const fileName = imageUrl.split('/').pop();
-                    
-                    // 2. 從 Storage 刪除實體檔案
                     await supabase.storage.from('feedback_images').remove([fileName]);
-                    
-                    // 3. 呼叫保鑣從資料庫刪除紀錄
                     const { error } = await supabase.rpc('delete_feedback', { target_id: id });
                     if (error) throw error;
-                    
-                    loadFeedbacks(); // 重新載入列表
+                    loadFeedbacks(); 
                 } catch (err) {
                     console.error(err);
                     alert('⚠️ 刪除發生錯誤：' + err.message);
                 }
             };
 
-            // 6. 變更密碼邏輯
+            // 6. 文章管理邏輯與 Editor.js 初始化
+            let editorInstance = null;
+            const articleListView = document.getElementById('article-list-view');
+            const articleEditView = document.getElementById('article-edit-view');
+            const articleTable = document.getElementById('article-table');
+            const articleListBody = document.getElementById('article-list-body');
+            const articleEmptyState = document.getElementById('article-empty-state');
+            
+            const btnCreateArticle = document.getElementById('btn-create-article');
+            const btnCancelArticle = document.getElementById('btn-cancel-article');
+            const btnSaveArticle = document.getElementById('btn-save-article');
+            const articleTitleInput = document.getElementById('article-title-input');
+            const currentArticleIdInput = document.getElementById('current-article-id');
+            const editViewTitle = document.getElementById('edit-view-title');
+
+            function showArticleListView() {
+                articleEditView.classList.add('hidden');
+                articleListView.classList.remove('hidden');
+            }
+
+            function showArticleEditView(titleText = '撰寫新文章') {
+                articleListView.classList.add('hidden');
+                articleEditView.classList.remove('hidden');
+                editViewTitle.innerText = titleText;
+                
+                // 初始化 Editor.js (只會執行一次)
+                if (!editorInstance) {
+                    editorInstance = new EditorJS({
+                        holder: 'editorjs',
+                        placeholder: '按下 Enter 開始撰寫，反白文字或輸入 / 呼叫選單...',
+                        tools: {
+                            header: { class: Header, config: { placeholder: '輸入標題', levels: [2, 3], defaultLevel: 2 } },
+                            list: { class: List, inlineToolbar: true },
+                            quote: { class: Quote, inlineToolbar: true },
+                            image: {
+                                class: ImageTool,
+                                config: {
+                                    // 攔截圖片上傳，進行壓縮與儲存
+                                    uploader: {
+                                        uploadByFile(file) {
+                                            return compressImage(file).then(compressedBlob => {
+                                                const fileName = `article_img_${Date.now()}.jpg`;
+                                                return supabase.storage.from('article_images').upload(fileName, compressedBlob, { contentType: 'image/jpeg' })
+                                                .then(({error}) => {
+                                                    if (error) throw error;
+                                                    const { data: publicUrlData } = supabase.storage.from('article_images').getPublicUrl(fileName);
+                                                    return {
+                                                        success: 1,
+                                                        file: { url: publicUrlData.publicUrl }
+                                                    };
+                                                });
+                                            }).catch(err => {
+                                                console.error(err);
+                                                return { success: 0 };
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            async function loadArticles() {
+                try {
+                    const { data, error } = await supabase.from('articles').select('id, title, created_at').order('created_at', { ascending: false });
+                    if (error) throw error;
+                    
+                    articleListBody.innerHTML = '';
+                    if(data.length === 0){
+                        articleTable.classList.add('hidden');
+                        articleEmptyState.classList.remove('hidden');
+                        return;
+                    }
+
+                    articleTable.classList.remove('hidden');
+                    articleEmptyState.classList.add('hidden');
+
+                    data.forEach(item => {
+                        const dateStr = new Date(item.created_at).toLocaleDateString('zh-TW');
+                        const tr = document.createElement('tr');
+                        tr.className = 'border-b hover:bg-gray-50';
+                        tr.innerHTML = `
+                            <td class="py-3 px-4 text-gray-800 font-medium">${item.title}</td>
+                            <td class="py-3 px-4 text-gray-500">${dateStr}</td>
+                            <td class="py-3 px-4 text-center">
+                                <button onclick="editArticle(${item.id})" class="text-blue-600 hover:text-blue-800 font-medium mr-3">編輯</button>
+                                <button onclick="deleteArticle(${item.id})" class="text-red-500 hover:text-red-700 font-medium">刪除</button>
+                            </td>
+                        `;
+                        articleListBody.appendChild(tr);
+                    });
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            // 新增文章按鈕
+            btnCreateArticle.addEventListener('click', () => {
+                currentArticleIdInput.value = '0';
+                articleTitleInput.value = '';
+                if(editorInstance && editorInstance.isReady) {
+                    editorInstance.clear();
+                }
+                showArticleEditView('撰寫新文章');
+            });
+
+            // 取消編輯按鈕
+            btnCancelArticle.addEventListener('click', () => {
+                if(confirm('尚未儲存的內容將會遺失，確定要返回嗎？')){
+                    showArticleListView();
+                }
+            });
+
+            // 儲存發布文章按鈕
+            btnSaveArticle.addEventListener('click', async () => {
+                const title = articleTitleInput.value.trim();
+                const id = parseInt(currentArticleIdInput.value, 10);
+                
+                if (!title) return alert('⚠️ 文章標題不能為空白！');
+                
+                btnSaveArticle.innerText = '儲存中...';
+                btnSaveArticle.disabled = true;
+
+                try {
+                    // 呼叫 Editor.js 提取積木資料 (JSON)
+                    const outputData = await editorInstance.save();
+                    
+                    if(outputData.blocks.length === 0) {
+                        throw new Error('文章內容不能為空！');
+                    }
+
+                    // 呼叫保鑣儲存進資料庫
+                    const { data, error } = await supabase.rpc('save_article', {
+                        p_id: id,
+                        p_title: title,
+                        p_content: outputData
+                    });
+
+                    if (error) throw error;
+                    
+                    alert('✅ 文章已成功儲存發布！');
+                    loadArticles();
+                    showArticleListView();
+                } catch (err) {
+                    console.error(err);
+                    alert('⚠️ 儲存發生錯誤：' + err.message);
+                } finally {
+                    btnSaveArticle.innerText = '儲存發布';
+                    btnSaveArticle.disabled = false;
+                }
+            });
+
+            // 編輯文章 (全域函式)
+            window.editArticle = async (id) => {
+                try {
+                    const { data, error } = await supabase.from('articles').select('*').eq('id', id).single();
+                    if (error) throw error;
+                    
+                    currentArticleIdInput.value = data.id;
+                    articleTitleInput.value = data.title;
+                    
+                    showArticleEditView('編輯文章');
+                    
+                    // 等待 Editor.js 準備好再載入資料
+                    await editorInstance.isReady;
+                    await editorInstance.render(data.content);
+                } catch (err) {
+                    console.error(err);
+                    alert('⚠️ 無法載入文章資料');
+                }
+            };
+
+            // 刪除文章 (全域函式)
+            window.deleteArticle = async (id) => {
+                if(!confirm('確定要永久刪除這篇文章嗎？此動作無法復原！')) return;
+                try {
+                    const { error } = await supabase.rpc('delete_article', { p_id: id });
+                    if (error) throw error;
+                    loadArticles();
+                } catch (err) {
+                    console.error(err);
+                    alert('⚠️ 刪除發生錯誤：' + err.message);
+                }
+            };
+
+            // 7. 變更密碼邏輯
             const btnChangePassword = document.getElementById('btn-change-password');
             const oldPasswordInput = document.getElementById('old-password');
             const newPasswordInput = document.getElementById('new-password');
@@ -489,7 +706,7 @@
                 }
             });
 
-            // 7. 登出功能
+            // 8. 登出功能
             const btnLogout = document.getElementById('btn-logout');
             btnLogout.addEventListener('click', () => {
                 sessionStorage.removeItem('isAdminLoggedIn');
