@@ -26,6 +26,7 @@
             <button data-tab="overview" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 bg-gray-700 text-white font-medium">首頁總覽</button>
             <button data-tab="ai" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">AI 提示詞產生</button>
             <button data-tab="announcement" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">公告管理</button>
+            <button data-tab="feedback" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">客戶回饋管理</button>
             <button data-tab="article" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">文章管理</button>
             <button data-tab="password" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">變更密碼</button>
             
@@ -55,7 +56,8 @@
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">系統狀態：正常</h2>
                 <p class="text-gray-600 leading-relaxed text-lg">
                     歡迎進入專屬管理後台。<br><br>
-                    請點擊左側選單來切換您需要使用的管理功能。
+                    請點擊左側選單來切換您需要使用的管理功能。<br><br>
+                    <span class="text-sm text-gray-400">※ 備註：此區塊未來將建置為文章閱覽統計看板。</span>
                 </p>
             </div>
 
@@ -89,6 +91,25 @@
                     <button id="btn-save-announcement" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline transition duration-200">
                         發布更新
                     </button>
+                </div>
+            </div>
+
+            <div id="tab-feedback" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">💬 客戶回饋管理</h2>
+                <p class="text-gray-600 mb-6">請選擇要上傳的回饋截圖，系統會在背景自動為您壓縮圖片，並顯示在首頁的最前方。</p>
+                
+                <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
+                    <div class="flex items-center gap-4">
+                        <input type="file" id="feedback-file-input" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                        <button id="btn-upload-feedback" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline transition duration-200 whitespace-nowrap">
+                            上傳圖片
+                        </button>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">已上傳的圖片清單</h3>
+                <div id="feedback-list" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <p class="text-gray-500 col-span-full">載入中...</p>
                 </div>
             </div>
 
@@ -135,6 +156,7 @@
                 'overview': '首頁總覽',
                 'ai': 'AI 提示詞產生',
                 'announcement': '公告管理',
+                'feedback': '客戶回饋管理',
                 'article': '文章管理',
                 'password': '變更密碼'
             };
@@ -156,6 +178,11 @@
                     });
                     btn.classList.remove('text-gray-300', 'hover:text-white');
                     btn.classList.add('bg-gray-700', 'text-white', 'font-medium');
+                    
+                    // 如果點擊的是回饋管理，自動載入清單
+                    if(targetTab === 'feedback'){
+                        loadFeedbacks();
+                    }
                 });
             });
 
@@ -237,7 +264,6 @@
             const btnSaveAnnouncement = document.getElementById('btn-save-announcement');
             const tabAnnouncementBtn = document.querySelector('[data-tab="announcement"]');
 
-            // 點擊公告標籤時，自動從資料庫抓取最新公告顯示在輸入框
             tabAnnouncementBtn.addEventListener('click', async () => {
                 announcementInput.value = '正在讀取最新公告...';
                 try {
@@ -252,7 +278,6 @@
                 }
             });
 
-            // 點擊儲存公告按鈕
             btnSaveAnnouncement.addEventListener('click', async () => {
                 const newContent = announcementInput.value.trim();
                 if (!newContent) return alert('⚠️ 公告內容不能為空白！');
@@ -264,9 +289,7 @@
                     const { data, error } = await supabase.rpc('update_announcement', {
                         new_content: newContent
                     });
-
                     if (error) throw error;
-
                     alert('✅ 公告已成功更新！您可以回首頁查看最新變化。');
                 } catch (err) {
                     console.error(err);
@@ -277,7 +300,147 @@
                 }
             });
 
-            // 5. 變更密碼邏輯
+            // 5. 客戶回饋管理邏輯 (包含自動壓縮與上傳)
+            const fileInput = document.getElementById('feedback-file-input');
+            const btnUploadFeedback = document.getElementById('btn-upload-feedback');
+            const feedbackList = document.getElementById('feedback-list');
+
+            // 核心功能：圖片自動壓縮
+            async function compressImage(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = event => {
+                        const img = new Image();
+                        img.src = event.target.result;
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+                            
+                            // 設定最大寬度為 800px，高度等比例縮放
+                            if (width > 800) {
+                                height = Math.round(height * 800 / width);
+                                width = 800;
+                            }
+                            
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            // 壓縮成 80% 品質的 JPEG
+                            canvas.toBlob(blob => {
+                                resolve(blob);
+                            }, 'image/jpeg', 0.8);
+                        };
+                        img.onerror = error => reject(error);
+                    };
+                    reader.onerror = error => reject(error);
+                });
+            }
+
+            // 載入圖片清單
+            async function loadFeedbacks() {
+                try {
+                    const { data, error } = await supabase.from('feedbacks').select('*').order('created_at', { ascending: false });
+                    if (error) throw error;
+                    
+                    feedbackList.innerHTML = '';
+                    if(data.length === 0){
+                        feedbackList.innerHTML = '<p class="text-gray-500 col-span-full">目前還沒有上傳任何回饋圖片。</p>';
+                        return;
+                    }
+
+                    data.forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'relative group border rounded overflow-hidden bg-white shadow-sm';
+                        div.innerHTML = `
+                            <img src="${item.image_url}" class="w-full h-32 object-cover">
+                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
+                                <button onclick="deleteFeedback(${item.id}, '${item.image_url}')" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1 px-3 rounded">刪除</button>
+                            </div>
+                        `;
+                        feedbackList.appendChild(div);
+                    });
+                } catch (err) {
+                    console.error(err);
+                    feedbackList.innerHTML = '<p class="text-red-500 col-span-full">載入失敗，請確認資料庫權限是否已開啟。</p>';
+                }
+            }
+
+            // 上傳圖片
+            btnUploadFeedback.addEventListener('click', async () => {
+                const file = fileInput.files[0];
+                if (!file) return alert('⚠️ 請先選擇一張圖片！');
+
+                btnUploadFeedback.innerText = '壓縮與上傳中...';
+                btnUploadFeedback.disabled = true;
+
+                try {
+                    // 1. 自動壓縮圖片
+                    const compressedBlob = await compressImage(file);
+                    
+                    // 2. 產生唯一檔名
+                    const fileName = `feedback_${Date.now()}.jpg`;
+
+                    // 3. 上傳到 Storage
+                    const { data: uploadData, error: uploadError } = await supabase.storage
+                        .from('feedback_images')
+                        .upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
+                    
+                    if (uploadError) throw uploadError;
+
+                    // 4. 取得公開網址
+                    const { data: publicUrlData } = supabase.storage
+                        .from('feedback_images')
+                        .getPublicUrl(fileName);
+                    
+                    const imageUrl = publicUrlData.publicUrl;
+
+                    // 5. 呼叫保鑣將網址存入資料庫
+                    const { data: rpcData, error: rpcError } = await supabase.rpc('add_feedback', {
+                        img_url: imageUrl
+                    });
+
+                    if (rpcError || !rpcData) throw new Error('寫入資料庫失敗');
+
+                    alert('✅ 圖片上傳成功！');
+                    fileInput.value = ''; // 清空選擇
+                    loadFeedbacks(); // 重新載入列表
+
+                } catch (err) {
+                    console.error(err);
+                    alert('⚠️ 上傳發生錯誤：' + err.message);
+                } finally {
+                    btnUploadFeedback.innerText = '上傳圖片';
+                    btnUploadFeedback.disabled = false;
+                }
+            });
+
+            // 刪除圖片功能 (掛載到 window 供 onclick 呼叫)
+            window.deleteFeedback = async (id, imageUrl) => {
+                if(!confirm('確定要刪除這張回饋圖嗎？這會同時從首頁移除哦！')) return;
+                
+                try {
+                    // 1. 從網址萃取出檔名
+                    const fileName = imageUrl.split('/').pop();
+                    
+                    // 2. 從 Storage 刪除實體檔案
+                    await supabase.storage.from('feedback_images').remove([fileName]);
+                    
+                    // 3. 呼叫保鑣從資料庫刪除紀錄
+                    const { error } = await supabase.rpc('delete_feedback', { target_id: id });
+                    if (error) throw error;
+                    
+                    loadFeedbacks(); // 重新載入列表
+                } catch (err) {
+                    console.error(err);
+                    alert('⚠️ 刪除發生錯誤：' + err.message);
+                }
+            };
+
+            // 6. 變更密碼邏輯
             const btnChangePassword = document.getElementById('btn-change-password');
             const oldPasswordInput = document.getElementById('old-password');
             const newPasswordInput = document.getElementById('new-password');
@@ -326,7 +489,7 @@
                 }
             });
 
-            // 6. 登出功能
+            // 7. 登出功能
             const btnLogout = document.getElementById('btn-logout');
             btnLogout.addEventListener('click', () => {
                 sessionStorage.removeItem('isAdminLoggedIn');
