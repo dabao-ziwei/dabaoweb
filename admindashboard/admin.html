@@ -7,11 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.29.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@2.8.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@1.9.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@2.6.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/image@2.9.0"></script>
     
     <style>
         /* Editor.js 基礎美化 */
@@ -499,7 +499,7 @@
                 if (!editorInstance) {
                     editorInstance = new EditorJS({
                         holder: 'editorjs',
-                        placeholder: '按下 Enter 開始撰寫，反白文字或輸入 / 呼叫選單...',
+                        placeholder: '按下 Enter 開始撰寫，反白文字或點擊左側 + 號呼叫選單...',
                         tools: {
                             header: { class: Header, config: { placeholder: '輸入標題', levels: [2, 3], defaultLevel: 2 } },
                             list: { class: List, inlineToolbar: true },
