@@ -71,7 +71,18 @@
 
             <div id="tab-announcement" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">📢 公告管理</h2>
-                <p class="text-gray-600">這個功能正在建置中，敬請期待...</p>
+                <p class="text-gray-600 mb-6">請在下方修改網站頂部的最新公告內容。為了保持手機版與電腦版的最佳視覺效果，建議以單行重點文字為主，避免過長。</p>
+                
+                <div class="max-w-3xl bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2" for="announcement-input">目前公告內容</label>
+                        <textarea class="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 h-24" id="announcement-input" placeholder="正在讀取資料庫中的公告..."></textarea>
+                    </div>
+                    
+                    <button id="btn-save-announcement" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline transition duration-200">
+                        發布更新
+                    </button>
+                </div>
             </div>
 
             <div id="tab-article" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
@@ -214,7 +225,53 @@
                 }, 2000);
             });
 
-            // 4. 變更密碼邏輯
+            // 4. 公告管理邏輯
+            const announcementInput = document.getElementById('announcement-input');
+            const btnSaveAnnouncement = document.getElementById('btn-save-announcement');
+            const tabAnnouncementBtn = document.querySelector('[data-tab="announcement"]');
+
+            // 點擊公告標籤時，自動從資料庫抓取最新公告顯示在輸入框
+            tabAnnouncementBtn.addEventListener('click', async () => {
+                announcementInput.value = '正在讀取最新公告...';
+                try {
+                    const { data, error } = await supabase.from('announcements').select('content').eq('id', 1).single();
+                    if (error) throw error;
+                    if (data) {
+                        announcementInput.value = data.content;
+                    }
+                } catch (err) {
+                    console.error('讀取公告失敗：', err);
+                    announcementInput.value = '讀取失敗，請確認資料庫連線或重新整理頁面。';
+                }
+            });
+
+            // 點擊儲存公告按鈕
+            btnSaveAnnouncement.addEventListener('click', async () => {
+                const newContent = announcementInput.value.trim();
+                if (!newContent) return alert('⚠️ 公告內容不能為空白！');
+
+                btnSaveAnnouncement.innerText = '發布中...';
+                btnSaveAnnouncement.disabled = true;
+
+                try {
+                    // 呼叫我們剛剛在資料庫建立的專屬保鑣 (update_announcement)
+                    const { data, error } = await supabase.rpc('update_announcement', {
+                        new_content: newContent
+                    });
+
+                    if (error) throw error;
+
+                    alert('✅ 公告已成功更新！您可以回首頁查看最新變化。');
+                } catch (err) {
+                    console.error(err);
+                    alert('⚠️ 發生錯誤：' + err.message);
+                } finally {
+                    btnSaveAnnouncement.innerText = '發布更新';
+                    btnSaveAnnouncement.disabled = false;
+                }
+            });
+
+            // 5. 變更密碼邏輯
             const btnChangePassword = document.getElementById('btn-change-password');
             const oldPasswordInput = document.getElementById('old-password');
             const newPasswordInput = document.getElementById('new-password');
@@ -239,7 +296,6 @@
                 btnChangePassword.disabled = true;
 
                 try {
-                    // 呼叫資料庫負責變更密碼的專屬保鑣 (change_admin_password)
                     const { data, error } = await supabase.rpc('change_admin_password', {
                         input_old_pass: oldPass,
                         input_new_pass: newPass
@@ -264,7 +320,7 @@
                 }
             });
 
-            // 5. 登出功能
+            // 6. 登出功能
             const btnLogout = document.getElementById('btn-logout');
             btnLogout.addEventListener('click', () => {
                 sessionStorage.removeItem('isAdminLoggedIn');
