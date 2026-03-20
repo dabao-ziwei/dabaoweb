@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教學文章 - 大寶的紫微斗數</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <header class="bg-white shadow-sm p-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">大寶的命理空間 (新版預覽)</h1>
+            <a href="/" class="text-blue-600 hover:underline">回首頁</a>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 mt-8">
+        <h2 class="text-3xl font-bold mb-8 text-center">教學文章</h2>
+        
+        <div id="article-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <p class="text-gray-500 text-center col-span-full py-10">正在載入文章...</p>
+        </div>
+    </main>
+
+    <script>
+        const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
+        const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
+        // 修正：更改變數名稱避免與官方套件的全域變數衝突
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function loadPublishedArticles() {
+            const grid = document.getElementById('article-grid');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('articles')
+                    .select('id, title, meta_description, created_at, read_time, view_count')
+                    .eq('status', 'published')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    grid.innerHTML = '<div class="col-span-full text-center py-20 bg-white rounded-lg shadow-sm border border-gray-100"><p class="text-xl text-gray-600 font-bold mb-2">目前尚未發布任何文章</p><p class="text-gray-500">大寶老師正在努力撰寫中，敬請期待！</p></div>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                data.forEach(article => {
+                    const dateStr = new Date(article.created_at).toLocaleDateString('zh-TW');
+                    const desc = article.meta_description || '點擊閱讀完整內容...';
+                    
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300';
+                    card.innerHTML = `
+                        <div class="p-6 flex flex-col h-full">
+                            <h3 class="text-xl font-bold mb-3 hover:text-blue-600">
+                                <a href="/article_view.html?id=${article.id}">${article.title}</a>
+                            </h3>
+                            <p class="text-gray-600 mb-4 flex-grow line-clamp-3">${desc}</p>
+                            <div class="text-sm text-gray-500 flex justify-between items-center border-t pt-4 mt-auto">
+                                <span>📅 ${dateStr}</span>
+                                <span class="flex gap-3">
+                                    <span>⏱️ ${article.read_time || 1} 分鐘</span>
+                                    <span>👁️ ${article.view_count || 0}</span>
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                console.error('載入失敗:', err);
+                grid.innerHTML = '<p class="text-red-500 text-center col-span-full py-10">資料載入失敗，請檢查資料庫連線或稍後再試。</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPublishedArticles);
+    </script>
+</body>
+</html>
