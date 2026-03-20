@@ -11,46 +11,29 @@
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     
     <style>
-        /* ✨ 編輯器 UX 大升級：鎖定高度、內部捲軸、工具列吸頂 ✨ */
-        #quill-editor-wrapper {
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            background-color: #ffffff;
-            height: 65vh; /* 鎖定為螢幕高度的 65% */
-            min-height: 400px;
-            max-height: 800px;
-            overflow: hidden; /* 防止外層跟著被撐大 */
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        /* ✨ 終極結界模式：編輯器暗黑系完美覆蓋 ✨ */
+        #zen-editor-view .ql-toolbar.ql-snow { 
+            border: none; 
+            border-bottom: 1px solid #333; 
+            position: sticky; 
+            top: 0; 
+            z-index: 20; 
+            background-color: #191919; 
+            padding: 15px 0;
+            margin-bottom: 20px;
         }
+        #zen-editor-view .ql-container.ql-snow { border: none; font-size: 1.125rem; font-family: inherit; }
+        #zen-editor-view .ql-editor { padding: 0; color: #d1d5db; min-height: 50vh; line-height: 1.8; letter-spacing: 0.05em; }
+        #zen-editor-view .ql-editor.ql-blank::before { color: #6b7280; font-style: normal; }
         
-        .ql-toolbar.ql-snow { 
-            border: none !important; 
-            border-bottom: 1px solid #e5e7eb !important; 
-            background-color: #f9fafb; 
-            padding: 12px; 
-            position: sticky; /* 工具列吸頂 */
-            top: 0;
-            z-index: 10;
-        }
-        
-        .ql-container.ql-snow { 
-            border: none !important; 
-            flex-grow: 1; /* 讓內容區塊填滿剩餘高度 */
-            overflow-y: auto; /* 超過高度時產生內部捲軸 */
-            height: auto !important;
-        }
-        
-        .ql-editor { 
-            min-height: 100%; 
-            font-size: 1.125rem; 
-            line-height: 1.8; 
-            color: #1f2937; 
-            padding: 24px; 
-        }
-        
-        .ql-editor img { max-width: 100%; height: auto; display: block; margin: 20px auto; border-radius: 8px; }
+        /* 工具列圖示改為暗色系相容 */
+        #zen-editor-view .ql-stroke { stroke: #9ca3af; }
+        #zen-editor-view .ql-fill { fill: #9ca3af; }
+        #zen-editor-view .ql-picker { color: #9ca3af; }
+        #zen-editor-view .ql-picker-options { background-color: #222; border: 1px solid #444; color: #fff; }
+        #zen-editor-view button:hover .ql-stroke, #zen-editor-view .ql-active .ql-stroke { stroke: #fff; }
+        #zen-editor-view button:hover .ql-fill, #zen-editor-view .ql-active .ql-fill { fill: #fff; }
+        #zen-editor-view .ql-editor img { max-width: 100%; border-radius: 8px; margin: 2em auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body class="bg-gray-100 h-screen flex overflow-hidden">
@@ -164,7 +147,6 @@
                     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                         <div class="flex items-center gap-4">
                             <h2 class="text-2xl font-bold text-gray-800">📝 文章管理</h2>
-                            
                             <div class="flex items-center bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 shadow-sm">
                                 <label class="inline-flex items-center cursor-pointer mr-3">
                                     <input type="checkbox" id="toggle-new-list" class="sr-only peer">
@@ -173,7 +155,6 @@
                                 </label>
                                 <button id="btn-preview-new-list" class="text-sm text-blue-600 hover:text-blue-800 font-medium border-l pl-3 border-gray-300">👀 預覽新版</button>
                             </div>
-
                         </div>
                         <button id="btn-create-article" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition duration-200 whitespace-nowrap">+ 撰寫新文章</button>
                     </div>
@@ -192,58 +173,6 @@
                         </table>
                         <div id="article-empty-state" class="text-center py-10 text-gray-500">
                             目前還沒有文章，點擊右上角按鈕開始撰寫吧！
-                        </div>
-                    </div>
-                </div>
-
-                <div id="article-edit-view" class="hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100 max-w-5xl mx-auto">
-                    <div class="flex justify-between items-center mb-6 border-b pb-4">
-                        <h2 class="text-2xl font-bold text-gray-800" id="edit-view-title">撰寫新文章</h2>
-                        <div class="flex gap-3">
-                            <button id="btn-cancel-article" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded transition duration-200">返回</button>
-                            <button id="btn-save-draft" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded shadow transition duration-200">存為草稿</button>
-                            <button id="btn-publish-article" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow transition duration-200">正式發布</button>
-                        </div>
-                    </div>
-                    
-                    <input type="hidden" id="current-article-id" value="0">
-                    <input type="text" id="article-title-input" placeholder="請輸入文章標題..." class="w-full text-3xl font-bold p-2 mb-4 border-b-2 border-transparent hover:border-gray-200 focus:border-blue-500 focus:outline-none transition-colors" autocomplete="off">
-                    
-                    <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">🏷️ 文章分類標籤 (可多選)</label>
-                        <div id="tags-container" class="flex flex-wrap gap-2 mb-2 min-h-[28px]"></div>
-                        <input type="text" id="tag-input" placeholder="輸入標籤後按下 Enter 鍵加入 (例如：十四主星)" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
-
-                    <div id="quill-editor-wrapper" class="mb-2">
-                        <div id="quill-editor"></div>
-                    </div>
-                    
-                    <div class="flex justify-between text-gray-500 text-sm mb-8 px-2 font-medium">
-                        <span>總字元數：<span id="word-count-display" class="text-blue-600">0</span> 字</span>
-                        <span>預估閱讀時間：約 <span id="read-time-display" class="text-blue-600">0</span> 分鐘</span>
-                    </div>
-
-                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6">
-                        <div class="flex justify-between items-center mb-4 border-b border-gray-200 pb-2">
-                            <h3 class="text-lg font-bold text-gray-800">🔍 SEO 與專屬網址設定</h3>
-                            <button id="btn-ai-seo" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm shadow transition duration-200 flex items-center gap-1">
-                                ✨ 讓 AI 幫我產生
-                            </button>
-                        </div>
-                        <div class="grid grid-cols-1 gap-4">
-                            <div>
-                                <label class="block text-gray-700 text-sm font-bold mb-1">自訂網址 (Slug) <span class="text-xs font-normal text-gray-500">- 建議使用小寫英文與橫槓</span></label>
-                                <input type="text" id="article-slug" placeholder="例如：ziwei-dou-shu-basic" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 text-sm font-bold mb-1">SEO 標題 (Meta Title)</label>
-                                <input type="text" id="article-meta-title" placeholder="顯示在搜尋引擎上的吸睛標題" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500">
-                            </div>
-                            <div>
-                                <label class="block text-gray-700 text-sm font-bold mb-1">SEO 描述摘要 (Meta Description)</label>
-                                <textarea id="article-meta-desc" placeholder="約 100 字的文章精華摘要，吸引讀者點擊" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 h-20"></textarea>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -267,8 +196,75 @@
                     <button id="btn-change-password" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-200">儲存新密碼</button>
                 </div>
             </div>
-
         </main>
+    </div>
+
+    <div id="zen-editor-view" class="hidden fixed inset-0 z-50 bg-[#191919] text-gray-200 flex flex-col">
+        <div class="h-16 flex items-center justify-between px-6 bg-[#151515] border-b border-[#333] shrink-0 shadow-sm">
+            <div class="flex items-center gap-6">
+                <button id="btn-zen-back" class="text-gray-400 hover:text-white font-medium flex items-center gap-2 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    返回列表
+                </button>
+                <span id="zen-save-status" class="text-sm font-medium text-gray-500 transition-colors duration-300">🟢 已自動儲存</span>
+            </div>
+            <button id="btn-zen-prepare-publish" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded shadow-lg transition duration-200">準備發布</button>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto relative" id="zen-scroll-container">
+            <div class="max-w-4xl mx-auto pt-10 pb-32 px-6">
+                <input type="hidden" id="current-article-id" value="0">
+                <input type="text" id="article-title-input" placeholder="請輸入文章名稱" class="w-full bg-transparent text-4xl font-bold text-white border-none focus:ring-0 placeholder-gray-600 mb-8 px-0 outline-none" autocomplete="off">
+                
+                <div id="quill-editor-wrapper">
+                    <div id="quill-editor"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed bottom-6 right-8 text-right text-gray-500 text-sm font-medium bg-[#111] bg-opacity-80 px-4 py-2 rounded-lg border border-[#333] shadow-lg backdrop-blur-sm">
+            <p><span id="word-count-display" class="text-gray-300">0</span> 個字</p>
+            <p>閱讀 <span id="read-time-display" class="text-gray-300">0</span> 分鐘</p>
+        </div>
+    </div>
+
+    <div id="publish-modal" class="hidden fixed inset-0 z-[60] bg-black bg-opacity-80 flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-[#1a1a1a] text-gray-200 w-full max-w-2xl rounded-2xl p-8 shadow-2xl border border-gray-700 m-4">
+            <h2 class="text-3xl font-bold mb-6 text-white border-b border-gray-800 pb-4">文章發布設定</h2>
+            
+            <div class="mb-6">
+                <label class="block text-gray-400 text-sm font-bold mb-3">🏷️ 文章分類標籤 (可多選)</label>
+                <div id="tags-container" class="flex flex-wrap gap-2 mb-3 min-h-[28px]"></div>
+                <input type="text" id="tag-input" placeholder="輸入標籤後按下 Enter 鍵加入 (例如：十四主星)" class="w-full bg-[#111] border border-gray-700 rounded-lg py-3 px-4 text-gray-200 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors">
+            </div>
+            
+            <div class="bg-[#222] p-6 rounded-xl border border-gray-700 mb-8">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-bold text-white">🔍 SEO 與專屬網址設定</h3>
+                    <button id="btn-ai-seo" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-4 rounded-lg text-sm shadow transition duration-200">✨ 讓 AI 幫我產生</button>
+                </div>
+                <div class="grid grid-cols-1 gap-4">
+                    <div>
+                        <label class="block text-gray-400 text-sm font-bold mb-1">自訂網址 (Slug)</label>
+                        <input type="text" id="article-slug" class="w-full bg-[#111] border border-gray-700 rounded-lg py-2.5 px-3 text-gray-200 focus:outline-none focus:border-purple-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-sm font-bold mb-1">SEO 標題 (Meta Title)</label>
+                        <input type="text" id="article-meta-title" class="w-full bg-[#111] border border-gray-700 rounded-lg py-2.5 px-3 text-gray-200 focus:outline-none focus:border-purple-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-sm font-bold mb-1">SEO 描述摘要 (Meta Description)</label>
+                        <textarea id="article-meta-desc" class="w-full bg-[#111] border border-gray-700 rounded-lg py-2.5 px-3 text-gray-200 focus:outline-none focus:border-purple-500 transition-colors h-24 resize-none"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-end gap-4 pt-4">
+                <button id="btn-cancel-publish" class="px-6 py-2.5 rounded-lg font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition-colors">返回寫作</button>
+                <button id="btn-save-draft" class="px-6 py-2.5 rounded-lg font-bold bg-gray-700 hover:bg-gray-600 text-white transition-colors shadow-sm">存為草稿</button>
+                <button id="btn-publish-article" class="px-8 py-2.5 rounded-lg font-bold bg-red-500 hover:bg-red-600 text-white shadow-lg transition-colors">正式發布</button>
+            </div>
+        </div>
     </div>
 
     <script src="./js/admin-main.js"></script>

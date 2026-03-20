@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const quill = new Quill('#quill-editor', {
         theme: 'snow',
-        placeholder: '開始撰寫您的精采內容...',
+        placeholder: '開始創作你的精彩內容......',
         modules: { toolbar: toolbarOptions }
     });
 
@@ -47,7 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let autoSaveTimeout;
     
     const articleListView = document.getElementById('article-list-view');
-    const articleEditView = document.getElementById('article-edit-view');
+    const zenEditorView = document.getElementById('zen-editor-view');
+    const publishModal = document.getElementById('publish-modal');
+    const zenSaveStatus = document.getElementById('zen-save-status');
+
     const articleTitleInput = document.getElementById('article-title-input');
     const currentArticleIdInput = document.getElementById('current-article-id');
     
@@ -60,11 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const metaTitleInput = document.getElementById('article-meta-title');
     const metaDescInput = document.getElementById('article-meta-desc');
 
-    // --- 新增：功能開關與預覽 DOM ---
+    // --- 功能開關與預覽邏輯 ---
     const toggleNewList = document.getElementById('toggle-new-list');
     const btnPreviewNewList = document.getElementById('btn-preview-new-list');
 
-    // --- 功能開關與預覽邏輯 ---
     async function initFeatureToggle() {
         if (!toggleNewList) return;
         try {
@@ -105,8 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
         tagsContainer.innerHTML = '';
         selectedTags.forEach(tag => {
             const span = document.createElement('span');
-            span.className = 'bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full flex items-center gap-2 shadow-sm border border-blue-200';
-            span.innerHTML = `#${tag} <button type="button" class="hover:text-red-500 font-bold" onclick="removeTag('${tag}')">×</button>`;
+            span.className = 'bg-[#333] text-gray-200 text-sm font-medium px-3 py-1.5 rounded flex items-center gap-2 border border-gray-600';
+            span.innerHTML = `#${tag} <button type="button" class="hover:text-red-500 font-bold ml-1" onclick="removeTag('${tag}')">×</button>`;
             tagsContainer.appendChild(span);
         });
     }
@@ -132,6 +134,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 字數統計與自動存檔 ---
     function triggerAutoSave() {
+        zenSaveStatus.innerText = '⏳ 儲存中...';
+        zenSaveStatus.classList.replace('text-gray-500', 'text-yellow-500');
+
         clearTimeout(autoSaveTimeout);
         autoSaveTimeout = setTimeout(() => {
             const title = articleTitleInput.value;
@@ -140,7 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const saveData = { title, htmlContent, tags: selectedTags, slug: slugInput.value, metaTitle: metaTitleInput.value, metaDesc: metaDescInput.value };
                 localStorage.setItem('dabao_article_autosave', JSON.stringify(saveData));
             }
-        }, 2000); 
+            zenSaveStatus.innerText = '🟢 已自動儲存';
+            zenSaveStatus.classList.replace('text-yellow-500', 'text-gray-500');
+        }, 1500); 
     }
 
     function calculateStats() {
@@ -158,19 +165,38 @@ document.addEventListener('DOMContentLoaded', () => {
     articleTitleInput.addEventListener('input', triggerAutoSave);
     [slugInput, metaTitleInput, metaDescInput].forEach(el => el.addEventListener('input', triggerAutoSave));
 
-    // --- 視圖切換與資料載入 ---
+    // --- 視圖切換 ---
     window.showArticleListView = () => {
-        articleEditView.classList.add('hidden');
-        articleListView.classList.remove('hidden');
+        zenEditorView.classList.add('hidden');
+        publishModal.classList.add('hidden');
     };
 
-    window.showArticleEditView = (titleText = '撰寫新文章') => {
-        articleListView.classList.add('hidden');
-        articleEditView.classList.remove('hidden');
-        document.getElementById('edit-view-title').innerText = titleText;
+    window.showArticleEditView = () => {
+        zenEditorView.classList.remove('hidden');
         calculateStats();
     };
 
+    document.getElementById('btn-zen-back').addEventListener('click', () => {
+        if(confirm('尚未正式發布的內容已保存為草稿狀態，確定要返回列表嗎？')) {
+            window.showArticleListView();
+        }
+    });
+
+    document.getElementById('btn-zen-prepare-publish').addEventListener('click', () => {
+        const title = articleTitleInput.value.trim();
+        if (!title) return alert('⚠️ 請先為您的文章輸入一個霸氣的標題！');
+        const htmlContent = quill.root.innerHTML;
+        if(quill.getText().trim().length === 0 && !htmlContent.includes('<img')) {
+            return alert('⚠️ 文章內容不能為空，多寫幾句吧！');
+        }
+        publishModal.classList.remove('hidden');
+    });
+
+    document.getElementById('btn-cancel-publish').addEventListener('click', () => {
+        publishModal.classList.add('hidden');
+    });
+
+    // --- 資料載入 ---
     window.loadArticles = async () => {
         try {
             const { data, error } = await supabase.rpc('get_admin_articles');
@@ -203,11 +229,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     : '<span class="bg-orange-100 text-orange-800 text-xs font-bold px-2 py-1 rounded">草稿</span>';
                 
                 const tr = document.createElement('tr');
-                // 加入 cursor-pointer 與 hover 背景色變化，並綁定 onclick 事件到整列
                 tr.className = 'border-b hover:bg-blue-50 cursor-pointer transition-colors';
                 tr.onclick = () => editArticle(item.id);
                 
-                // 按鈕加上 event.stopPropagation() 防止點擊按鈕時觸發整列的事件
                 tr.innerHTML = `
                     <td class="py-3 px-4 text-gray-800 font-medium">${item.title}</td>
                     <td class="py-3 px-4">${statusHtml}</td>
@@ -249,22 +273,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.removeItem('dabao_article_autosave');
             }
         }
-        window.showArticleEditView('撰寫新文章');
-    });
-
-    document.getElementById('btn-cancel-article').addEventListener('click', () => {
-        if(confirm('尚未正式儲存的內容將會遺失，確定要返回嗎？')) window.showArticleListView();
+        window.showArticleEditView();
     });
 
     async function executeSave(statusStr, btnElement, originalBtnText) {
         const title = articleTitleInput.value.trim();
         const id = parseInt(currentArticleIdInput.value, 10);
-        
-        if (!title) return alert('⚠️ 文章標題不能為空白！');
         const htmlContent = quill.root.innerHTML;
-        if(quill.getText().trim().length === 0 && !htmlContent.includes('<img')) {
-            return alert('⚠️ 文章內容不能為空！');
-        }
 
         btnElement.innerText = '處理中...';
         btnElement.disabled = true;
@@ -323,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedTags = tagData.map(t => t.tags.name);
             renderTags();
             
-            window.showArticleEditView('編輯文章');
+            window.showArticleEditView();
         } catch (err) {
             alert('⚠️ 無法載入文章資料');
         }
