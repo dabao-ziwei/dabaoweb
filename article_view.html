@@ -8,10 +8,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <style>
-        /* 修正 Quill 產生的內容在前台的預設樣式 */
         .ql-editor { padding: 0; overflow-y: visible; }
         .ql-editor h1 { font-size: 2em; font-weight: bold; margin-bottom: 0.5em; }
-        .ql-editor h2 { font-size: 1.5em; font-weight: bold; margin-bottom: 0.5em; mt-4; }
+        .ql-editor h2 { font-size: 1.5em; font-weight: bold; margin-bottom: 0.5em; margin-top: 1em; }
         .ql-editor p { margin-bottom: 1em; line-height: 1.8; }
         .ql-editor img { max-width: 100%; border-radius: 8px; margin: 1em 0; }
     </style>
@@ -45,7 +44,7 @@
     <script>
         const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
         const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         async function loadArticle() {
             const params = new URLSearchParams(window.location.search);
@@ -57,8 +56,7 @@
             }
 
             try {
-                // 抓取文章與標籤
-                const { data: article, error } = await supabase
+                const { data: article, error } = await supabaseClient
                     .from('articles')
                     .select('*, article_tags(tags(name))')
                     .eq('id', articleId)
@@ -70,13 +68,11 @@
                     return;
                 }
 
-                // 填入資料
                 document.getElementById('view-title').innerText = article.title;
                 document.getElementById('view-date').innerText = `📅 ${new Date(article.created_at).toLocaleDateString('zh-TW')}`;
                 document.getElementById('view-read-time').innerText = `⏱️ ${article.read_time || 1} 分鐘閱讀`;
                 document.getElementById('view-views').innerText = `👁️ ${article.view_count || 0} 次觀看`;
                 
-                // 設定網頁的 Title 與 SEO Description
                 document.title = `${article.title} - 大寶的紫微斗數`;
                 if(article.meta_description) {
                     let meta = document.createElement('meta');
@@ -85,7 +81,6 @@
                     document.head.appendChild(meta);
                 }
 
-                // 填入標籤
                 const tagsContainer = document.getElementById('view-tags');
                 if (article.article_tags && article.article_tags.length > 0) {
                     article.article_tags.forEach(t => {
@@ -98,10 +93,8 @@
                     });
                 }
 
-                // 填入 HTML 內容
                 document.getElementById('view-content').innerHTML = article.content.html || '';
 
-                // 顯示畫面
                 document.getElementById('loading').classList.add('hidden');
                 document.getElementById('article-container').classList.remove('hidden');
 

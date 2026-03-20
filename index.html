@@ -441,6 +441,21 @@
                 }
                 btnLogin.innerText = '登入後台';
             });
+
+            // 5. 動態檢查文章列表版本開關 (無縫接軌新功能) - 終極模糊比對版
+            const fetchArticleToggle = async () => {
+                try {
+                    const { data, error } = await supabase.from('site_settings').select('setting_value').eq('setting_key', 'new_article_list_enabled').single();
+                    if (data && data.setting_value === true) {
+                        // 使用 *= 進行模糊比對，無視瀏覽器自動補齊的網址
+                        const articleLinks = document.querySelectorAll('a[href*="articles.html"]');
+                        articleLinks.forEach(link => link.href = 'new_articles.html');
+                    }
+                } catch (err) {
+                    console.error('開關讀取失敗:', err);
+                }
+            };
+            fetchArticleToggle();
         });
     </script>
 </body>

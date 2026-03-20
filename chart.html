@@ -18,6 +18,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="styles.css">
         
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-0XPZVQ42QP"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
@@ -82,5 +84,23 @@
     </section>
 
     <footer class="footer"><div class="container"><p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p></div></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
+            const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
+            const sbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+            try {
+                const { data, error } = await sbClient.from('site_settings').select('setting_value').eq('setting_key', 'new_article_list_enabled').single();
+                if (data && data.setting_value === true) {
+                    // 改用模糊比對 *=
+                    document.querySelectorAll('a[href*="articles.html"]').forEach(link => link.href = 'new_articles.html');
+                }
+            } catch (err) {
+                console.error('Failed to load article toggle:', err);
+            }
+        });
+    </script>
 </body>
 </html>
