@@ -4,42 +4,122 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文章內容 - 大寶的紫微斗數</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    
     <style>
-        .ql-editor { padding: 0; overflow-y: visible; }
-        .ql-editor h1 { font-size: 2em; font-weight: bold; margin-bottom: 0.5em; }
-        .ql-editor h2 { font-size: 1.5em; font-weight: bold; margin-bottom: 0.5em; margin-top: 1em; }
-        .ql-editor p { margin-bottom: 1em; line-height: 1.8; }
-        .ql-editor img { max-width: 100%; border-radius: 8px; margin: 1em 0; }
+        /* ✨ 魔法陣：強制覆蓋所有來自 Quill 的白底黑字設定 ✨ */
+        .ql-editor { 
+            padding: 0; 
+            overflow-y: visible; 
+            color: #e5e7eb !important; /* 柔和的亮灰色，保護眼睛 */
+        }
+        
+        /* 剝奪所有行內樣式對顏色的控制權 */
+        .ql-editor * { 
+            color: inherit !important; 
+            background-color: transparent !important; 
+        }
+        
+        /* 標題與重點強調自動套用網站主色(金色/橘色) */
+        .ql-editor h1, .ql-editor h2, .ql-editor h3 { 
+            color: var(--accent-color, #d4af37) !important; 
+            font-weight: bold; 
+            margin-top: 1.5em; 
+            margin-bottom: 0.8em;
+            line-height: 1.4;
+        }
+        
+        .ql-editor h2 { border-bottom: 1px solid #333; padding-bottom: 10px; }
+        
+        .ql-editor p { margin-bottom: 1.2em; line-height: 1.8; letter-spacing: 0.05em; }
+        
+        /* 連結改為金色並帶底線 */
+        .ql-editor a { color: var(--accent-color, #d4af37) !important; text-decoration: underline; text-underline-offset: 4px; }
+        
+        /* 圖片暗黑系柔和處理 */
+        .ql-editor img { 
+            max-width: 100%; 
+            border-radius: 8px; 
+            margin: 2em auto; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            opacity: 0.95;
+        }
+        
+        /* 引用區塊設計 */
+        .ql-editor blockquote { 
+            border-left: 4px solid var(--accent-color, #d4af37) !important; 
+            color: #9ca3af !important; 
+            background: #111 !important; 
+            padding: 15px 20px; 
+            margin: 1.5em 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .ql-editor ul, .ql-editor ol { margin-bottom: 1.5em; padding-left: 1.5em; }
+        .ql-editor li { margin-bottom: 0.5em; line-height: 1.8; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-    <header class="bg-white shadow-sm p-4 mb-8">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold">大寶的命理空間</h1>
-            <button onclick="window.history.back()" class="text-blue-600 hover:underline">返回列表</button>
+<body>
+    
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="images/Dabao logo.jpeg" alt="Dabao Logo" class="nav-logo-icon">
+                <span class="logo-text">大寶 | 紫微斗數</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">首頁</a></li>
+                <li><a href="chart.html">線上排盤</a></li>
+                <li><a href="booking.html">線上預約</a></li>
+                <li><a href="course.html">【實戰紫微斗數】課程</a></li>
+                <li><a href="articles.html" style="color:var(--accent-color);">教學文章</a></li>
+            </ul>
         </div>
-    </header>
+    </nav>
 
-    <main class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-sm min-h-screen">
-        <div id="loading" class="text-center text-gray-500 py-20">正在載入文章內容...</div>
+    <div class="inner-page-header" id="header-container" style="display:none; padding-bottom: 20px;">
+        <h1 id="view-title" style="margin-bottom: 20px; line-height: 1.4;"></h1>
+        <p style="color:#888; font-size:1rem; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+            <span id="view-date">📅 --</span>
+            <span id="view-read-time">⏱️ -- 分鐘</span>
+            <span id="view-views">👁️ -- 次觀看</span>
+        </p>
+        <div id="view-tags" class="flex flex-wrap justify-center gap-3 mt-6"></div>
+    </div>
+
+    <div class="inner-content" style="max-width: 800px;">
+        <div class="mb-8 border-b border-[#333] pb-4 flex justify-between items-center">
+            <button onclick="window.history.back()" class="text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                返回文章列表
+            </button>
+        </div>
+
+        <div id="loading" class="text-center text-gray-500 py-20">正在解析星盤與文章內容...</div>
         
         <article id="article-container" class="hidden">
-            <header class="mb-8 border-b pb-6">
-                <h1 id="view-title" class="text-3xl md:text-4xl font-bold mb-4"></h1>
-                <div class="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
-                    <span id="view-date">📅 --</span>
-                    <span id="view-read-time">⏱️ -- 分鐘閱讀</span>
-                    <span id="view-views">👁️ -- 次觀看</span>
-                </div>
-                <div id="view-tags" class="flex flex-wrap gap-2"></div>
-            </header>
-            
             <div id="view-content" class="ql-editor text-lg"></div>
         </article>
-    </main>
+        
+        <div style="text-align:center; margin-top:80px; padding-top:40px; border-top: 1px solid #333;">
+            <p style="font-size:1.2rem; color:var(--primary-color); margin-bottom: 20px;">想進一步了解自己的專屬命盤嗎？</p>
+            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入【官方Line】立刻預約諮詢</a>
+        </div>
+    </div>
+
+    <footer class="footer" style="margin-top:100px;">
+        <div class="container">
+            <p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p>
+        </div>
+    </footer>
 
     <script>
         const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
@@ -68,12 +148,14 @@
                     return;
                 }
 
+                // 填入資料
                 document.getElementById('view-title').innerText = article.title;
                 document.getElementById('view-date').innerText = `📅 ${new Date(article.created_at).toLocaleDateString('zh-TW')}`;
                 document.getElementById('view-read-time').innerText = `⏱️ ${article.read_time || 1} 分鐘閱讀`;
                 document.getElementById('view-views').innerText = `👁️ ${article.view_count || 0} 次觀看`;
                 
-                document.title = `${article.title} - 大寶的紫微斗數`;
+                // SEO 設定
+                document.title = `${article.title} - 大寶 | 紫微斗數`;
                 if(article.meta_description) {
                     let meta = document.createElement('meta');
                     meta.name = "description";
@@ -81,26 +163,30 @@
                     document.head.appendChild(meta);
                 }
 
+                // 標籤樣式改為暗黑系點綴
                 const tagsContainer = document.getElementById('view-tags');
                 if (article.article_tags && article.article_tags.length > 0) {
                     article.article_tags.forEach(t => {
                         if(t.tags) {
                             const span = document.createElement('span');
-                            span.className = 'bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-medium';
+                            span.className = 'px-4 py-1.5 rounded-full text-sm font-medium border border-[#d4af37] text-[#d4af37] bg-[#1a1a1a]';
                             span.innerText = `#${t.tags.name}`;
                             tagsContainer.appendChild(span);
                         }
                     });
                 }
 
+                // 填入內容
                 document.getElementById('view-content').innerHTML = article.content.html || '';
 
+                // 顯示畫面
                 document.getElementById('loading').classList.add('hidden');
+                document.getElementById('header-container').style.display = 'block';
                 document.getElementById('article-container').classList.remove('hidden');
 
             } catch (err) {
                 console.error(err);
-                document.getElementById('loading').innerText = '載入文章發生錯誤，請稍後再試。';
+                document.getElementById('loading').innerHTML = '<p class="text-red-500">載入文章發生錯誤，請稍後再試。</p>';
             }
         }
 
