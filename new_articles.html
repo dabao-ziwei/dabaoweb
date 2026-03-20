@@ -36,11 +36,11 @@
         <p style="color:var(--accent-color); font-size:1.2rem; margin-top: 15px;">掌握命理邏輯，自己的命盤自己解</p>
     </div>
 
-    <div class="inner-content">
+    <div class="inner-content" style="max-width: 900px; margin: 0 auto;">
         <hr class="section-divider" style="margin-bottom: 40px;">
         
-        <div id="article-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <p class="text-gray-400 text-center col-span-full py-10">正在載入文章...</p>
+        <div id="article-list" class="flex flex-col gap-8">
+            <p class="text-gray-400 text-center py-10">正在載入文章...</p>
         </div>
     </div>
 
@@ -56,19 +56,20 @@
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         async function loadPublishedArticles() {
-            const grid = document.getElementById('article-grid');
+            const listContainer = document.getElementById('article-list');
             try {
+                // 新增抓取 content (為了縮圖) 與 article_tags (為了標籤)
                 const { data, error } = await supabaseClient
                     .from('articles')
-                    .select('id, title, meta_description, created_at, read_time, view_count')
+                    .select('id, title, content, meta_description, created_at, read_time, view_count, article_tags(tags(name))')
                     .eq('status', 'published')
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    grid.innerHTML = `
-                        <div class="col-span-full text-center py-20" style="background:#111; border:1px solid #333; border-radius:8px;">
+                    listContainer.innerHTML = `
+                        <div class="text-center py-20" style="background:#111; border:1px solid #333; border-radius:8px;">
                             <p class="text-xl font-bold mb-2" style="color:var(--accent-color);">目前尚未發布任何文章</p>
                             <p class="text-gray-400">大寶老師正在努力撰寫中，敬請期待！</p>
                         </div>
@@ -76,34 +77,76 @@
                     return;
                 }
 
-                grid.innerHTML = '';
+                listContainer.innerHTML = '';
                 data.forEach(article => {
                     const dateStr = new Date(article.created_at).toLocaleDateString('zh-TW');
                     const desc = article.meta_description || '點擊閱讀完整內容...';
                     
-                    const card = document.createElement('div');
-                    // 融入暗黑系風格的 Tailwind 設定
-                    card.className = 'bg-[#111] border border-[#333] rounded-lg overflow-hidden hover:border-[#d4af37] transition-colors duration-300 flex flex-col shadow-lg';
-                    card.innerHTML = `
-                        <div class="p-6 flex flex-col h-full">
-                            <h3 class="text-xl font-bold mb-3 leading-snug">
-                                <a href="/article_view.html?id=${article.id}" class="text-white hover:text-[#d4af37] transition-colors">${article.title}</a>
-                            </h3>
-                            <p class="text-gray-400 mb-6 flex-grow line-clamp-3 leading-relaxed">${desc}</p>
-                            <div class="text-sm text-gray-500 flex justify-between items-center border-t border-[#333] pt-4 mt-auto">
-                                <span>📅 ${dateStr}</span>
-                                <span class="flex gap-3">
-                                    <span>⏱️ ${article.read_time || 1} 分</span>
-                                    <span>👁️ ${article.view_count || 0}</span>
-                                </span>
+                    // 1. 萃取第一張圖片做為縮圖
+                    let thumbUrl = null;
+                    if (article.content && article.content.html) {
+                        const imgMatch = article.content.html.match(/<img[^>]+src="([^">]+)"/);
+                        if (imgMatch) thumbUrl = imgMatch[1];
+                    }
+
+                    // 2. 組合標籤 HTML
+                    let tagsHtml = '';
+                    if (article.article_tags && article.article_tags.length > 0) {
+                        tagsHtml = article.article_tags.map(t => {
+                            if(t.tags) return `<span class="bg-[#222] text-gray-300 px-3 py-1 rounded-md text-xs font-medium"># ${t.tags.name}</span>`;
+                            return '';
+                        }).join('');
+                    }
+
+                    // 3. 組合縮圖區塊 HTML
+                    let thumbnailHtml = '';
+                    if (thumbUrl) {
+                        thumbnailHtml = `
+                            <div class="w-full md:w-48 lg:w-56 shrink-0 mt-4 md:mt-0">
+                                <a href="/article_view.html?id=${article.id}">
+                                    <img src="${thumbUrl}" class="w-full h-36 md:h-32 object-cover rounded-lg border border-[#333] opacity-90 hover:opacity-100 transition-opacity">
+                                </a>
                             </div>
+                        `;
+                    }
+
+                    const card = document.createElement('div');
+                    // 融入暗黑風格的高質感圖文橫排設計
+                    card.className = 'bg-transparent border-b border-[#333] pb-8 pt-2 hover:bg-[#111] transition-colors duration-300 -mx-4 px-4 rounded-xl';
+                    card.innerHTML = `
+                        <div class="flex flex-col md:flex-row gap-6">
+                            <div class="flex-1 flex flex-col">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <img src="images/hero.jpeg" alt="大寶老師" class="w-8 h-8 rounded-full object-cover border border-[#444]">
+                                    <span class="text-white font-medium text-sm">大寶 | 紫微斗數</span>
+                                    <span class="text-gray-500 text-sm">${dateStr}</span>
+                                </div>
+                                
+                                <h3 class="text-2xl font-bold mb-2 leading-snug">
+                                    <a href="/article_view.html?id=${article.id}" class="text-white hover:text-[#d4af37] transition-colors">${article.title}</a>
+                                </h3>
+                                
+                                <p class="text-gray-400 mb-4 line-clamp-2 leading-relaxed text-sm md:text-base">${desc}</p>
+                                
+                                <div class="flex items-center justify-between mt-auto pt-2">
+                                    <div class="flex flex-wrap gap-2">
+                                        ${tagsHtml}
+                                    </div>
+                                    <div class="flex gap-4 text-sm text-gray-500 font-medium">
+                                        <span class="flex items-center gap-1">⏱️ ${article.read_time || 1} 分</span>
+                                        <span class="flex items-center gap-1">👁️ ${article.view_count || 0}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            ${thumbnailHtml}
                         </div>
                     `;
-                    grid.appendChild(card);
+                    listContainer.appendChild(card);
                 });
             } catch (err) {
                 console.error('載入失敗:', err);
-                grid.innerHTML = '<p class="text-red-500 text-center col-span-full py-10">資料載入失敗，請檢查資料庫連線或稍後再試。</p>';
+                listContainer.innerHTML = '<p class="text-red-500 text-center py-10">資料載入失敗，請檢查資料庫連線或稍後再試。</p>';
             }
         }
 
