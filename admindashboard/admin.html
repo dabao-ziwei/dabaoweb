@@ -11,35 +11,10 @@
     <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     
     <style>
-        /* Quill 編輯器客製化美化，讓它看起來更像方格子 */
-        .ql-toolbar.ql-snow {
-            border: 1px solid #e5e7eb;
-            border-top-left-radius: 0.5rem;
-            border-top-right-radius: 0.5rem;
-            background-color: #f9fafb;
-            padding: 12px;
-        }
-        .ql-container.ql-snow {
-            border: 1px solid #e5e7eb;
-            border-bottom-left-radius: 0.5rem;
-            border-bottom-right-radius: 0.5rem;
-            background-color: #ffffff;
-        }
-        .ql-editor {
-            min-height: 500px;
-            font-size: 1.125rem; /* 字體放大，閱讀更舒適 */
-            line-height: 1.8;
-            color: #1f2937;
-            padding: 24px;
-        }
-        /* 讓圖片在編輯器內自動置中縮放 */
-        .ql-editor img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 20px auto;
-            border-radius: 8px;
-        }
+        .ql-toolbar.ql-snow { border: 1px solid #e5e7eb; border-top-left-radius: 0.5rem; border-top-right-radius: 0.5rem; background-color: #f9fafb; padding: 12px; }
+        .ql-container.ql-snow { border: 1px solid #e5e7eb; border-bottom-left-radius: 0.5rem; border-bottom-right-radius: 0.5rem; background-color: #ffffff; }
+        .ql-editor { min-height: 500px; font-size: 1.125rem; line-height: 1.8; color: #1f2937; padding: 24px; }
+        .ql-editor img { max-width: 100%; height: auto; display: block; margin: 20px auto; border-radius: 8px; }
     </style>
 </head>
 <body class="bg-gray-100 h-screen flex overflow-hidden">
@@ -50,13 +25,25 @@
             alert('未經授權的訪問，請先透過正確入口驗證！');
             window.location.href = '/'; 
         }
+        
+        // 【重要：網站檔案抓取清單】供 AI 提示詞產生器使用
+        window.filesToFetch = [
+            '/index.html',
+            '/chart.html',
+            '/booking.html',
+            '/course.html',
+            '/articles.html',
+            '/new_articles.html',
+            '/article_view.html',
+            '/admindashboard/admin.html',
+            '/admindashboard/js/admin-main.js',
+            '/admindashboard/js/admin-feedback.js',
+            '/admindashboard/js/admin-article.js'
+        ];
     </script>
 
     <aside class="w-64 bg-gray-800 text-white flex flex-col z-20">
-        <div class="p-6 text-2xl font-bold border-b border-gray-700 tracking-wider">
-            管理後台
-        </div>
-        
+        <div class="p-6 text-2xl font-bold border-b border-gray-700 tracking-wider">管理後台</div>
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto" id="sidebar-nav">
             <button data-tab="overview" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 bg-gray-700 text-white font-medium">首頁總覽</button>
             <button data-tab="ai" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">AI 提示詞產生</button>
@@ -64,7 +51,6 @@
             <button data-tab="feedback" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">客戶回饋管理</button>
             <button data-tab="article" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">文章管理</button>
             <button data-tab="password" class="nav-btn w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-gray-300 hover:text-white">變更密碼</button>
-            
             <div class="pt-2 mt-2 border-t border-gray-700">
                 <a href="/" target="_blank" class="w-full text-left block py-3 px-4 rounded transition duration-200 hover:bg-gray-700 text-teal-400 hover:text-teal-300 font-medium flex items-center justify-between">
                     <span>開啟網站</span>
@@ -72,11 +58,8 @@
                 </a>
             </div>
         </nav>
-        
         <div class="p-4 border-t border-gray-700">
-            <button id="btn-logout" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded transition duration-200">
-                登出系統
-            </button>
+            <button id="btn-logout" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded transition duration-200">登出系統</button>
         </div>
     </aside>
 
@@ -88,60 +71,52 @@
         <main class="flex-1 p-6 overflow-y-auto relative bg-gray-50">
             
             <div id="tab-overview" class="content-tab bg-white p-8 rounded-lg shadow-sm border border-gray-100">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">系統狀態：正常</h2>
-                <p class="text-gray-600 leading-relaxed text-lg">
-                    歡迎進入專屬管理後台。<br><br>
-                    請點擊左側選單來切換您需要使用的管理功能。<br><br>
-                    <span class="text-sm text-gray-400">※ 備註：此區塊未來將建置為文章閱覽統計看板。</span>
-                </p>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">總覽看板</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-100">
+                        <h3 class="text-blue-800 text-lg font-bold mb-2">已發布文章</h3>
+                        <p class="text-4xl font-black text-blue-600" id="stat-published">0</p>
+                    </div>
+                    <div class="bg-purple-50 p-6 rounded-lg border border-purple-100">
+                        <h3 class="text-purple-800 text-lg font-bold mb-2">文章總瀏覽量</h3>
+                        <p class="text-4xl font-black text-purple-600" id="stat-views">0</p>
+                    </div>
+                    <div class="bg-orange-50 p-6 rounded-lg border border-orange-100">
+                        <h3 class="text-orange-800 text-lg font-bold mb-2">草稿數量</h3>
+                        <p class="text-4xl font-black text-orange-600" id="stat-drafts">0</p>
+                    </div>
+                </div>
             </div>
 
             <div id="tab-ai" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">🤖 AI 提示詞產生器 (完美防呆版)</h2>
                 <p class="text-gray-600 mb-6">點擊下方按鈕，系統會自動抓取「資料庫結構」與「所有網頁原始碼」，並附上嚴格的防呆指令。一鍵複製後即可直接貼給 AI，確保 AI 會自動幫你維護未來的檔案清單。</p>
-                
-                <button id="btn-fetch-ai" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg mb-6 transition duration-200">
-                    🪄 抓取並產生終極提示詞
-                </button>
-                
+                <button id="btn-fetch-ai" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg mb-6 transition duration-200">🪄 抓取並產生終極提示詞</button>
                 <div class="relative">
                     <textarea id="ai-prompt-result" class="w-full h-96 p-4 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 font-mono text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500" readonly placeholder="產生的終極提示詞會顯示在這裡..."></textarea>
-                    
-                    <button id="btn-copy-ai" class="hidden absolute top-4 right-4 bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-4 rounded shadow transition duration-200">
-                        複製全部內容
-                    </button>
+                    <button id="btn-copy-ai" class="hidden absolute top-4 right-4 bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-4 rounded shadow transition duration-200">複製全部內容</button>
                 </div>
             </div>
 
             <div id="tab-announcement" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">📢 公告管理</h2>
-                <p class="text-gray-600 mb-6">請在下方修改網站頂部的最新公告內容。為了保持手機版與電腦版的最佳視覺效果，建議以單行重點文字為主，避免過長。</p>
-                
                 <div class="max-w-3xl bg-gray-50 p-6 rounded-lg border border-gray-200">
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="announcement-input">目前公告內容</label>
                         <textarea class="shadow appearance-none border rounded w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 h-24" id="announcement-input" placeholder="正在讀取資料庫中的公告..."></textarea>
                     </div>
-                    
-                    <button id="btn-save-announcement" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline transition duration-200">
-                        發布更新
-                    </button>
+                    <button id="btn-save-announcement" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline transition duration-200">發布更新</button>
                 </div>
             </div>
 
             <div id="tab-feedback" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">💬 客戶回饋管理</h2>
-                <p class="text-gray-600 mb-6">請選擇要上傳的回饋截圖，系統會在背景自動為您壓縮圖片，並顯示在首頁的最前方。</p>
-                
                 <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-8">
                     <div class="flex items-center gap-4">
                         <input type="file" id="feedback-file-input" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-                        <button id="btn-upload-feedback" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline transition duration-200 whitespace-nowrap">
-                            上傳圖片
-                        </button>
+                        <button id="btn-upload-feedback" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none focus:shadow-outline transition duration-200 whitespace-nowrap">上傳圖片</button>
                     </div>
                 </div>
-
                 <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">已上傳的圖片清單</h3>
                 <div id="feedback-list" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     <p class="text-gray-500 col-span-full">載入中...</p>
@@ -149,26 +124,35 @@
             </div>
 
             <div id="tab-article" class="content-tab hidden w-full">
-                
                 <div id="article-list-view" class="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold text-gray-800">📝 文章管理</h2>
-                        <button id="btn-create-article" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition duration-200">
-                            + 撰寫新文章
-                        </button>
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                        <div class="flex items-center gap-4">
+                            <h2 class="text-2xl font-bold text-gray-800">📝 文章管理</h2>
+                            
+                            <div class="flex items-center bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 shadow-sm">
+                                <label class="inline-flex items-center cursor-pointer mr-3">
+                                    <input type="checkbox" id="toggle-new-list" class="sr-only peer">
+                                    <div class="relative w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    <span class="ml-3 text-sm font-medium text-gray-700">啟用新版前台</span>
+                                </label>
+                                <button id="btn-preview-new-list" class="text-sm text-blue-600 hover:text-blue-800 font-medium border-l pl-3 border-gray-300">👀 預覽新版</button>
+                            </div>
+
+                        </div>
+                        <button id="btn-create-article" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded shadow transition duration-200 whitespace-nowrap">+ 撰寫新文章</button>
                     </div>
-                    
                     <div class="overflow-x-auto">
                         <table class="min-w-full bg-white border border-gray-200 rounded-lg hidden" id="article-table">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-600">文章標題</th>
-                                    <th class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-600 w-48">建立時間</th>
+                                    <th class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-600 w-32">狀態</th>
+                                    <th class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-600 w-24">瀏覽</th>
+                                    <th class="py-3 px-4 border-b text-left text-sm font-semibold text-gray-600 w-40">建立時間</th>
                                     <th class="py-3 px-4 border-b text-center text-sm font-semibold text-gray-600 w-32">操作</th>
                                 </tr>
                             </thead>
-                            <tbody id="article-list-body">
-                                </tbody>
+                            <tbody id="article-list-body"></tbody>
                         </table>
                         <div id="article-empty-state" class="text-center py-10 text-gray-500">
                             目前還沒有文章，點擊右上角按鈕開始撰寫吧！
@@ -180,25 +164,57 @@
                     <div class="flex justify-between items-center mb-6 border-b pb-4">
                         <h2 class="text-2xl font-bold text-gray-800" id="edit-view-title">撰寫新文章</h2>
                         <div class="flex gap-3">
-                            <button id="btn-cancel-article" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-6 rounded transition duration-200">返回列表</button>
-                            <button id="btn-save-article" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow transition duration-200">儲存發布</button>
+                            <button id="btn-cancel-article" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded transition duration-200">返回</button>
+                            <button id="btn-save-draft" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded shadow transition duration-200">存為草稿</button>
+                            <button id="btn-publish-article" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow transition duration-200">正式發布</button>
                         </div>
                     </div>
                     
                     <input type="hidden" id="current-article-id" value="0">
-                    <input type="text" id="article-title-input" placeholder="請輸入文章標題..." class="w-full text-3xl font-bold p-2 mb-6 border-b-2 border-transparent hover:border-gray-200 focus:border-blue-500 focus:outline-none transition-colors" autocomplete="off">
+                    <input type="text" id="article-title-input" placeholder="請輸入文章標題..." class="w-full text-3xl font-bold p-2 mb-4 border-b-2 border-transparent hover:border-gray-200 focus:border-blue-500 focus:outline-none transition-colors" autocomplete="off">
                     
-                    <div id="quill-editor-wrapper" class="mb-4">
+                    <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">🏷️ 文章分類標籤 (可多選)</label>
+                        <div id="tags-container" class="flex flex-wrap gap-2 mb-2 min-h-[28px]"></div>
+                        <input type="text" id="tag-input" placeholder="輸入標籤後按下 Enter 鍵加入 (例如：十四主星)" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div id="quill-editor-wrapper" class="mb-2">
                         <div id="quill-editor"></div>
                     </div>
-                </div>
+                    
+                    <div class="flex justify-between text-gray-500 text-sm mb-8 px-2 font-medium">
+                        <span>總字元數：<span id="word-count-display" class="text-blue-600">0</span> 字</span>
+                        <span>預估閱讀時間：約 <span id="read-time-display" class="text-blue-600">0</span> 分鐘</span>
+                    </div>
 
+                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6">
+                        <div class="flex justify-between items-center mb-4 border-b border-gray-200 pb-2">
+                            <h3 class="text-lg font-bold text-gray-800">🔍 SEO 與專屬網址設定</h3>
+                            <button id="btn-ai-seo" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-4 rounded text-sm shadow transition duration-200 flex items-center gap-1">
+                                ✨ 讓 AI 幫我產生
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 gap-4">
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-1">自訂網址 (Slug) <span class="text-xs font-normal text-gray-500">- 建議使用小寫英文與橫槓</span></label>
+                                <input type="text" id="article-slug" placeholder="例如：ziwei-dou-shu-basic" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-1">SEO 標題 (Meta Title)</label>
+                                <input type="text" id="article-meta-title" placeholder="顯示在搜尋引擎上的吸睛標題" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 text-sm font-bold mb-1">SEO 描述摘要 (Meta Description)</label>
+                                <textarea id="article-meta-desc" placeholder="約 100 字的文章精華摘要，吸引讀者點擊" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-purple-500 h-20"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="tab-password" class="content-tab hidden bg-white p-8 rounded-lg shadow-sm border border-gray-100">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4">🔒 變更密碼</h2>
-                <p class="text-gray-600 mb-6">為確保安全，變更密碼前需驗證目前的舊密碼。</p>
-                
                 <div class="max-w-md bg-gray-50 p-6 rounded-lg border border-gray-200">
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="old-password">目前舊密碼</label>
@@ -212,556 +228,15 @@
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="confirm-password">再次確認新密碼</label>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" id="confirm-password" type="password" placeholder="請再次輸入新密碼">
                     </div>
-                    <button id="btn-change-password" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-200">
-                        儲存新密碼
-                    </button>
+                    <button id="btn-change-password" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-200">儲存新密碼</button>
                 </div>
             </div>
 
         </main>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // 1. 初始化 Supabase
-            const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
-            const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
-            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-            // 共用核心：圖片自動壓縮函式 (回饋管理與文章編輯器共用)
-            async function compressImage(file) {
-                return new Promise((resolve, reject) => {
-                    const reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = event => {
-                        const img = new Image();
-                        img.src = event.target.result;
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            let width = img.width;
-                            let height = img.height;
-                            
-                            // 設定最大寬度為 800px，高度等比例縮放
-                            if (width > 800) {
-                                height = Math.round(height * 800 / width);
-                                width = 800;
-                            }
-                            
-                            canvas.width = width;
-                            canvas.height = height;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, width, height);
-                            
-                            // 壓縮成 80% 品質的 JPEG
-                            canvas.toBlob(blob => {
-                                resolve(blob);
-                            }, 'image/jpeg', 0.8);
-                        };
-                        img.onerror = error => reject(error);
-                    };
-                    reader.onerror = error => reject(error);
-                });
-            }
-
-            // ==========================================
-            // 初始化 Quill.js 編輯器與客製化圖片上傳
-            // ==========================================
-            const toolbarOptions = [
-                [{ 'header': [1, 2, 3, false] }], // 標題選擇器 (H1, H2, H3, 內文)
-                ['bold', 'italic', 'underline', 'strike'], // 粗體、斜體等
-                ['blockquote'], // 引言
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }], // 列表
-                ['image'], // 圖片
-                ['clean'] // 清除格式
-            ];
-
-            const quill = new Quill('#quill-editor', {
-                theme: 'snow',
-                placeholder: '開始撰寫您的精采內容...',
-                modules: {
-                    toolbar: toolbarOptions
-                }
-            });
-
-            // 攔截 Quill 的圖片按鈕，改為我們的自訂上傳邏輯
-            quill.getModule('toolbar').addHandler('image', function() {
-                const input = document.createElement('input');
-                input.setAttribute('type', 'file');
-                input.setAttribute('accept', 'image/*');
-                input.click();
-
-                input.onchange = async () => {
-                    const file = input.files[0];
-                    if (/^image\//.test(file.type)) {
-                        // 儲存目前的游標位置
-                        const range = quill.getSelection(true);
-                        
-                        try {
-                            // 1. 自動壓縮
-                            const compressedBlob = await compressImage(file);
-                            const fileName = `article_img_${Date.now()}.jpg`;
-
-                            // 2. 上傳到 Supabase
-                            const { error: uploadError } = await supabase.storage
-                                .from('article_images')
-                                .upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
-                            
-                            if (uploadError) throw uploadError;
-
-                            // 3. 取得公開網址
-                            const { data: publicUrlData } = supabase.storage.from('article_images').getPublicUrl(fileName);
-                            const publicUrl = publicUrlData.publicUrl;
-
-                            // 4. 將圖片網址安插回編輯器中
-                            quill.insertEmbed(range.index, 'image', publicUrl);
-                            quill.setSelection(range.index + 1); // 將游標移到圖片後方
-
-                        } catch (err) {
-                            console.error(err);
-                            alert('⚠️ 圖片上傳失敗：' + err.message);
-                        }
-                    } else {
-                        alert('⚠️ 只能上傳圖片檔案喔！');
-                    }
-                };
-            });
-            // ==========================================
-
-            // 2. 左側選單切換邏輯
-            const tabTitles = {
-                'overview': '首頁總覽',
-                'ai': 'AI 提示詞產生',
-                'announcement': '公告管理',
-                'feedback': '客戶回饋管理',
-                'article': '文章管理',
-                'password': '變更密碼'
-            };
-
-            const navBtns = document.querySelectorAll('.nav-btn');
-            const contentTabs = document.querySelectorAll('.content-tab');
-            const headerTitle = document.getElementById('header-title');
-
-            navBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const targetTab = btn.getAttribute('data-tab');
-                    contentTabs.forEach(tab => tab.classList.add('hidden'));
-                    document.getElementById('tab-' + targetTab).classList.remove('hidden');
-                    headerTitle.innerText = tabTitles[targetTab];
-
-                    navBtns.forEach(b => {
-                        b.classList.remove('bg-gray-700', 'text-white', 'font-medium');
-                        b.classList.add('text-gray-300', 'hover:text-white');
-                    });
-                    btn.classList.remove('text-gray-300', 'hover:text-white');
-                    btn.classList.add('bg-gray-700', 'text-white', 'font-medium');
-                    
-                    if(targetTab === 'feedback'){
-                        loadFeedbacks();
-                    } else if (targetTab === 'article') {
-                        loadArticles();
-                        showArticleListView(); 
-                    }
-                });
-            });
-
-            // 3. AI 提示詞產生器 (完美防呆版邏輯)
-            const btnFetchAi = document.getElementById('btn-fetch-ai');
-            const textAreaResult = document.getElementById('ai-prompt-result');
-            const btnCopyAi = document.getElementById('btn-copy-ai');
-
-            // 【重要：網站檔案抓取清單】
-            const filesToFetch = [
-                '/index.html',
-                '/chart.html',
-                '/booking.html',
-                '/course.html',
-                '/articles.html',
-                '/admindashboard/admin.html'
-            ];
-
-            btnFetchAi.addEventListener('click', async () => {
-                btnFetchAi.innerText = '⏳ 抓取所有資料中...';
-                textAreaResult.value = '正在搜集資料庫與所有網頁檔案，請稍候...\n檔案越多會需要幾秒鐘的時間。';
-                btnCopyAi.classList.add('hidden');
-
-                let finalPrompt = '【⚠️ 給 AI 的嚴格開發規範（非常重要）】\n';
-                finalPrompt += '1. 每次你提供修改後的 `/admindashboard/admin.html` 原始碼時，必須確保 `filesToFetch` 這個陣列包含網站「所有的」網頁檔案。\n';
-                finalPrompt += '2. 如果你在對話中幫我「新增」了任何新的網頁檔案，你【必須主動】在修改 `/admindashboard/admin.html` 時，將新檔案的路徑加入到 `filesToFetch` 陣列中。\n';
-                finalPrompt += '3. 絕對不可以叫我手動去新增陣列！這非常容易出錯，請你全權負責陣列清單的維護。\n\n';
-                finalPrompt += '========================================\n\n';
-
-                try {
-                    const { data: dbData, error: dbError } = await supabase.rpc('get_db_schema_for_ai');
-                    if (dbError) throw new Error('資料庫抓取失敗：' + dbError.message);
-                    
-                    finalPrompt += dbData + '\n';
-                    finalPrompt += '========================================\n';
-                    finalPrompt += '以下是我目前網站所有頁面的完整原始碼，請以此為基礎進行修改或新增功能：\n\n';
-
-                    for (const file of filesToFetch) {
-                        try {
-                            const response = await fetch(file);
-                            if (response.ok) {
-                                const code = await response.text();
-                                finalPrompt += `【檔案路徑：${file}】\n\`\`\`html\n${code}\n\`\`\`\n\n`;
-                            } else {
-                                finalPrompt += `【檔案路徑：${file}】\n(目前尚未建立此檔案或無法讀取)\n\n`;
-                            }
-                        } catch (err) {
-                            finalPrompt += `【檔案路徑：${file}】\n(讀取發生錯誤)\n\n`;
-                        }
-                    }
-
-                    textAreaResult.value = finalPrompt;
-                    btnCopyAi.classList.remove('hidden');
-
-                } catch (err) {
-                    console.error(err);
-                    textAreaResult.value = err.message;
-                } finally {
-                    btnFetchAi.innerText = '🪄 抓取並產生終極提示詞';
-                }
-            });
-
-            btnCopyAi.addEventListener('click', () => {
-                textAreaResult.select();
-                document.execCommand('copy');
-                
-                const originalText = btnCopyAi.innerText;
-                btnCopyAi.innerText = '✅ 已全部複製！';
-                btnCopyAi.classList.replace('bg-green-500', 'bg-teal-600');
-                
-                setTimeout(() => {
-                    btnCopyAi.innerText = originalText;
-                    btnCopyAi.classList.replace('bg-teal-600', 'bg-green-500');
-                }, 2000);
-            });
-
-            // 4. 公告管理邏輯
-            const announcementInput = document.getElementById('announcement-input');
-            const btnSaveAnnouncement = document.getElementById('btn-save-announcement');
-            const tabAnnouncementBtn = document.querySelector('[data-tab="announcement"]');
-
-            tabAnnouncementBtn.addEventListener('click', async () => {
-                announcementInput.value = '正在讀取最新公告...';
-                try {
-                    const { data, error } = await supabase.from('announcements').select('content').eq('id', 1).single();
-                    if (error) throw error;
-                    if (data) {
-                        announcementInput.value = data.content;
-                    }
-                } catch (err) {
-                    console.error('讀取公告失敗：', err);
-                    announcementInput.value = '讀取失敗，請確認資料庫連線或重新整理頁面。';
-                }
-            });
-
-            btnSaveAnnouncement.addEventListener('click', async () => {
-                const newContent = announcementInput.value.trim();
-                if (!newContent) return alert('⚠️ 公告內容不能為空白！');
-
-                btnSaveAnnouncement.innerText = '發布中...';
-                btnSaveAnnouncement.disabled = true;
-
-                try {
-                    const { data, error } = await supabase.rpc('update_announcement', { new_content: newContent });
-                    if (error) throw error;
-                    alert('✅ 公告已成功更新！');
-                } catch (err) {
-                    console.error(err);
-                    alert('⚠️ 發生錯誤：' + err.message);
-                } finally {
-                    btnSaveAnnouncement.innerText = '發布更新';
-                    btnSaveAnnouncement.disabled = false;
-                }
-            });
-
-            // 5. 客戶回饋管理邏輯
-            const fileInput = document.getElementById('feedback-file-input');
-            const btnUploadFeedback = document.getElementById('btn-upload-feedback');
-            const feedbackList = document.getElementById('feedback-list');
-
-            async function loadFeedbacks() {
-                try {
-                    const { data, error } = await supabase.from('feedbacks').select('*').order('created_at', { ascending: false });
-                    if (error) throw error;
-                    
-                    feedbackList.innerHTML = '';
-                    if(data.length === 0){
-                        feedbackList.innerHTML = '<p class="text-gray-500 col-span-full">目前還沒有上傳任何回饋圖片。</p>';
-                        return;
-                    }
-
-                    data.forEach(item => {
-                        const div = document.createElement('div');
-                        div.className = 'relative group border rounded overflow-hidden bg-white shadow-sm';
-                        div.innerHTML = `
-                            <img src="${item.image_url}" class="w-full h-32 object-cover">
-                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
-                                <button onclick="deleteFeedback(${item.id}, '${item.image_url}')" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1 px-3 rounded">刪除</button>
-                            </div>
-                        `;
-                        feedbackList.appendChild(div);
-                    });
-                } catch (err) {
-                    console.error(err);
-                    feedbackList.innerHTML = '<p class="text-red-500 col-span-full">載入失敗，請確認資料庫權限是否已開啟。</p>';
-                }
-            }
-
-            btnUploadFeedback.addEventListener('click', async () => {
-                const file = fileInput.files[0];
-                if (!file) return alert('⚠️ 請先選擇一張圖片！');
-
-                btnUploadFeedback.innerText = '壓縮與上傳中...';
-                btnUploadFeedback.disabled = true;
-
-                try {
-                    const compressedBlob = await compressImage(file);
-                    const fileName = `feedback_${Date.now()}.jpg`;
-
-                    const { error: uploadError } = await supabase.storage
-                        .from('feedback_images')
-                        .upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
-                    
-                    if (uploadError) throw uploadError;
-
-                    const { data: publicUrlData } = supabase.storage.from('feedback_images').getPublicUrl(fileName);
-                    const imageUrl = publicUrlData.publicUrl;
-
-                    const { data: rpcData, error: rpcError } = await supabase.rpc('add_feedback', { img_url: imageUrl });
-                    if (rpcError || !rpcData) throw new Error('寫入資料庫失敗');
-
-                    alert('✅ 圖片上傳成功！');
-                    fileInput.value = ''; 
-                    loadFeedbacks(); 
-
-                } catch (err) {
-                    console.error(err);
-                    alert('⚠️ 上傳發生錯誤：' + err.message);
-                } finally {
-                    btnUploadFeedback.innerText = '上傳圖片';
-                    btnUploadFeedback.disabled = false;
-                }
-            });
-
-            window.deleteFeedback = async (id, imageUrl) => {
-                if(!confirm('確定要刪除這張回饋圖嗎？')) return;
-                try {
-                    const fileName = imageUrl.split('/').pop();
-                    await supabase.storage.from('feedback_images').remove([fileName]);
-                    const { error } = await supabase.rpc('delete_feedback', { target_id: id });
-                    if (error) throw error;
-                    loadFeedbacks(); 
-                } catch (err) {
-                    console.error(err);
-                    alert('⚠️ 刪除發生錯誤：' + err.message);
-                }
-            };
-
-            // 6. 文章管理邏輯
-            const articleListView = document.getElementById('article-list-view');
-            const articleEditView = document.getElementById('article-edit-view');
-            const articleTable = document.getElementById('article-table');
-            const articleListBody = document.getElementById('article-list-body');
-            const articleEmptyState = document.getElementById('article-empty-state');
-            
-            const btnCreateArticle = document.getElementById('btn-create-article');
-            const btnCancelArticle = document.getElementById('btn-cancel-article');
-            const btnSaveArticle = document.getElementById('btn-save-article');
-            const articleTitleInput = document.getElementById('article-title-input');
-            const currentArticleIdInput = document.getElementById('current-article-id');
-            const editViewTitle = document.getElementById('edit-view-title');
-
-            function showArticleListView() {
-                articleEditView.classList.add('hidden');
-                articleListView.classList.remove('hidden');
-            }
-
-            function showArticleEditView(titleText = '撰寫新文章') {
-                articleListView.classList.add('hidden');
-                articleEditView.classList.remove('hidden');
-                editViewTitle.innerText = titleText;
-            }
-
-            async function loadArticles() {
-                try {
-                    const { data, error } = await supabase.from('articles').select('id, title, created_at').order('created_at', { ascending: false });
-                    if (error) throw error;
-                    
-                    articleListBody.innerHTML = '';
-                    if(data.length === 0){
-                        articleTable.classList.add('hidden');
-                        articleEmptyState.classList.remove('hidden');
-                        return;
-                    }
-
-                    articleTable.classList.remove('hidden');
-                    articleEmptyState.classList.add('hidden');
-
-                    data.forEach(item => {
-                        const dateStr = new Date(item.created_at).toLocaleDateString('zh-TW');
-                        const tr = document.createElement('tr');
-                        tr.className = 'border-b hover:bg-gray-50';
-                        tr.innerHTML = `
-                            <td class="py-3 px-4 text-gray-800 font-medium">${item.title}</td>
-                            <td class="py-3 px-4 text-gray-500">${dateStr}</td>
-                            <td class="py-3 px-4 text-center">
-                                <button onclick="editArticle(${item.id})" class="text-blue-600 hover:text-blue-800 font-medium mr-3">編輯</button>
-                                <button onclick="deleteArticle(${item.id})" class="text-red-500 hover:text-red-700 font-medium">刪除</button>
-                            </td>
-                        `;
-                        articleListBody.appendChild(tr);
-                    });
-                } catch (err) {
-                    console.error(err);
-                }
-            }
-
-            // 新增文章按鈕
-            btnCreateArticle.addEventListener('click', () => {
-                currentArticleIdInput.value = '0';
-                articleTitleInput.value = '';
-                quill.root.innerHTML = ''; // 清空編輯器
-                showArticleEditView('撰寫新文章');
-            });
-
-            // 取消編輯按鈕
-            btnCancelArticle.addEventListener('click', () => {
-                if(confirm('尚未儲存的內容將會遺失，確定要返回嗎？')){
-                    showArticleListView();
-                }
-            });
-
-            // 儲存發布文章按鈕
-            btnSaveArticle.addEventListener('click', async () => {
-                const title = articleTitleInput.value.trim();
-                const id = parseInt(currentArticleIdInput.value, 10);
-                
-                if (!title) return alert('⚠️ 文章標題不能為空白！');
-                
-                // 取得 Quill 編輯器內的 HTML 內容
-                const htmlContent = quill.root.innerHTML;
-                if(quill.getText().trim().length === 0 && !htmlContent.includes('<img')) {
-                    return alert('⚠️ 文章內容不能為空！');
-                }
-                
-                // 包裝成 JSON 格式以符合原本資料庫的 jsonb 欄位
-                const contentData = { html: htmlContent };
-
-                btnSaveArticle.innerText = '儲存中...';
-                btnSaveArticle.disabled = true;
-
-                try {
-                    const { data, error } = await supabase.rpc('save_article', {
-                        p_id: id,
-                        p_title: title,
-                        p_content: contentData
-                    });
-
-                    if (error) throw error;
-                    
-                    alert('✅ 文章已成功儲存發布！');
-                    loadArticles();
-                    showArticleListView();
-                } catch (err) {
-                    console.error(err);
-                    alert('⚠️ 儲存發生錯誤：' + err.message);
-                } finally {
-                    btnSaveArticle.innerText = '儲存發布';
-                    btnSaveArticle.disabled = false;
-                }
-            });
-
-            // 編輯文章 (全域函式)
-            window.editArticle = async (id) => {
-                try {
-                    const { data, error } = await supabase.from('articles').select('*').eq('id', id).single();
-                    if (error) throw error;
-                    
-                    currentArticleIdInput.value = data.id;
-                    articleTitleInput.value = data.title;
-                    
-                    // 將資料庫內的 HTML 塞回編輯器
-                    quill.root.innerHTML = data.content.html || '';
-                    
-                    showArticleEditView('編輯文章');
-                } catch (err) {
-                    console.error(err);
-                    alert('⚠️ 無法載入文章資料');
-                }
-            };
-
-            // 刪除文章 (全域函式)
-            window.deleteArticle = async (id) => {
-                if(!confirm('確定要永久刪除這篇文章嗎？此動作無法復原！')) return;
-                try {
-                    const { error } = await supabase.rpc('delete_article', { p_id: id });
-                    if (error) throw error;
-                    loadArticles();
-                } catch (err) {
-                    console.error(err);
-                    alert('⚠️ 刪除發生錯誤：' + err.message);
-                }
-            };
-
-            // 7. 變更密碼邏輯
-            const btnChangePassword = document.getElementById('btn-change-password');
-            const oldPasswordInput = document.getElementById('old-password');
-            const newPasswordInput = document.getElementById('new-password');
-            const confirmPasswordInput = document.getElementById('confirm-password');
-
-            btnChangePassword.addEventListener('click', async () => {
-                const oldPass = oldPasswordInput.value.trim();
-                const newPass = newPasswordInput.value.trim();
-                const confirmPass = confirmPasswordInput.value.trim();
-
-                if (!oldPass || !newPass || !confirmPass) {
-                    return alert('⚠️ 請將三個密碼欄位都填寫完整！');
-                }
-                if (newPass !== confirmPass) {
-                    return alert('⚠️ 兩次輸入的新密碼不一致，請重新確認！');
-                }
-                if (oldPass === newPass) {
-                    return alert('⚠️ 新密碼不能跟舊密碼一樣！');
-                }
-
-                btnChangePassword.innerText = '更新中...';
-                btnChangePassword.disabled = true;
-
-                try {
-                    const { data, error } = await supabase.rpc('change_admin_password', {
-                        input_old_pass: oldPass,
-                        input_new_pass: newPass
-                    });
-
-                    if (error) throw error;
-
-                    if (data === true) {
-                        alert('✅ 密碼變更成功！請妥善保管您的新密碼。');
-                        oldPasswordInput.value = '';
-                        newPasswordInput.value = '';
-                        confirmPasswordInput.value = '';
-                    } else {
-                        alert('❌ 舊密碼輸入錯誤，變更失敗！');
-                    }
-                } catch (err) {
-                    console.error(err);
-                    alert('⚠️ 發生錯誤：' + err.message);
-                } finally {
-                    btnChangePassword.innerText = '儲存新密碼';
-                    btnChangePassword.disabled = false;
-                }
-            });
-
-            // 8. 登出功能
-            const btnLogout = document.getElementById('btn-logout');
-            btnLogout.addEventListener('click', () => {
-                sessionStorage.removeItem('isAdminLoggedIn');
-                alert('已成功登出系統。');
-                window.location.href = '/'; 
-            });
-        });
-    </script>
+    <script src="./js/admin-main.js"></script>
+    <script src="./js/admin-feedback.js"></script>
+    <script src="./js/admin-article.js"></script>
 </body>
 </html>
