@@ -1,15 +1,56 @@
 document.addEventListener('DOMContentLoaded', () => {
     const supabase = window.supabaseDB;
     
-    // --- Quill 編輯器初始化 ---
-    const toolbarOptions = [
-        [{ 'header': [1, 2, 3, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        ['blockquote'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        ['image'],
-        ['clean']
-    ];
+    // --- Quill 客製化模組 (分隔線與特殊引言) ---
+    const BlockEmbed = Quill.import('blots/block/embed');
+    class DividerBlot extends BlockEmbed {}
+    DividerBlot.blotName = 'divider';
+    DividerBlot.tagName = 'hr';
+    Quill.register(DividerBlot);
+
+    const Block = Quill.import('blots/block');
+    class PullquoteBlot extends Block {}
+    PullquoteBlot.blotName = 'pullquote';
+    PullquoteBlot.tagName = 'blockquote';
+    PullquoteBlot.className = 'pullquote';
+    Quill.register(PullquoteBlot);
+
+    // --- Quill 編輯器初始化與單鍵切換邏輯 ---
+    const toolbarOptions = {
+        container: [
+            ['header-cycle'], // 自訂 H 標題循環
+            ['bold', 'italic', 'underline'], // 精簡文字格式
+            ['quote-cycle'], // 自訂雙模式引言
+            ['link', 'image', 'divider'], // 新增超連結與分隔線
+            ['clean'] // 清除格式保留
+        ],
+        handlers: {
+            'header-cycle': function() {
+                const format = this.quill.getFormat();
+                let nextHeader = false;
+                if (!format.header) nextHeader = 1;
+                else if (format.header === 1) nextHeader = 2;
+                this.quill.format('header', nextHeader);
+            },
+            'quote-cycle': function() {
+                const format = this.quill.getFormat();
+                if (format.pullquote) {
+                    this.quill.format('pullquote', false);
+                } else if (format.blockquote) {
+                    this.quill.format('blockquote', false);
+                    this.quill.format('pullquote', true);
+                } else {
+                    this.quill.format('blockquote', true);
+                }
+            },
+            'divider': function() {
+                const range = this.quill.getSelection(true);
+                this.quill.insertText(range.index, '\n', Quill.sources.USER);
+                this.quill.insertEmbed(range.index + 1, 'divider', true, Quill.sources.USER);
+                this.quill.setSelection(range.index + 2, Quill.sources.SILENT);
+            }
+        }
+    };
 
     const quill = new Quill('#quill-editor', {
         theme: 'snow',
@@ -51,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const publishModal = document.getElementById('publish-modal');
     const zenSaveStatus = document.getElementById('zen-save-status');
 
+    // 已從 input 改為 textarea 的標題欄位
     const articleTitleInput = document.getElementById('article-title-input');
     const currentArticleIdInput = document.getElementById('current-article-id');
     
@@ -62,6 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const slugInput = document.getElementById('article-slug');
     const metaTitleInput = document.getElementById('article-meta-title');
     const metaDescInput = document.getElementById('article-meta-desc');
+
+    // --- 自動延展標題高度的魔法 ---
+    function autoResizeTitle() {
+        articleTitleInput.style.height = 'auto';
+        articleTitleInput.style.height = articleTitleInput.scrollHeight + 'px';
+    }
+    // 當使用者輸入時即時觸發高度計算
+    articleTitleInput.addEventListener('input', autoResizeTitle);
 
     // --- 功能開關與預覽邏輯 ---
     const toggleNewList = document.getElementById('toggle-new-list');
@@ -174,6 +224,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.showArticleEditView = () => {
         zenEditorView.classList.remove('hidden');
         calculateStats();
+        // 顯示畫面時，強制重新計算一次標題高度，避免舊文章標題太長被切斷
+        setTimeout(autoResizeTitle, 10);
     };
 
     document.getElementById('btn-zen-back').addEventListener('click', () => {

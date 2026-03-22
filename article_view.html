@@ -53,7 +53,7 @@
             opacity: 0.95;
         }
         
-        /* 引用區塊設計 */
+        /* 一般引用區塊設計 */
         .ql-editor blockquote { 
             border-left: 4px solid var(--accent-color, #d4af37) !important; 
             color: #9ca3af !important; 
@@ -62,6 +62,19 @@
             margin: 1.5em 0;
             border-radius: 0 8px 8px 0;
         }
+
+        /* ✨ 特殊大引號引言設計 (Pullquote) ✨ */
+        .ql-editor .pullquote {
+            text-align: center; font-size: 1.3em; color: var(--accent-color, #d4af37) !important;
+            border: none !important; background: transparent !important; padding: 2.5em 1em !important; position: relative;
+        }
+        .ql-editor .pullquote::before {
+            content: "“"; font-size: 4em; position: absolute; left: 50%; top: -0.2em;
+            transform: translateX(-50%); color: rgba(212, 175, 55, 0.15) !important; font-family: serif;
+        }
+
+        /* ✨ 灰白高質感分隔線 ✨ */
+        .ql-editor hr { border: none; border-top: 1px solid #9ca3af; margin: 3em 0; opacity: 0.5; }
         
         .ql-editor ul, .ql-editor ol { margin-bottom: 1.5em; padding-left: 1.5em; }
         .ql-editor li { margin-bottom: 0.5em; line-height: 1.8; }

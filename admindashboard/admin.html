@@ -21,6 +21,8 @@
             background-color: #191919; 
             padding: 15px 0;
             margin-bottom: 20px;
+            display: flex;
+            gap: 8px;
         }
         #zen-editor-view .ql-container.ql-snow { border: none; font-size: 1.125rem; font-family: inherit; }
         #zen-editor-view .ql-editor { padding: 0; color: #d1d5db; min-height: 50vh; line-height: 1.8; letter-spacing: 0.05em; }
@@ -33,7 +35,26 @@
         #zen-editor-view .ql-picker-options { background-color: #222; border: 1px solid #444; color: #fff; }
         #zen-editor-view button:hover .ql-stroke, #zen-editor-view .ql-active .ql-stroke { stroke: #fff; }
         #zen-editor-view button:hover .ql-fill, #zen-editor-view .ql-active .ql-fill { fill: #fff; }
+        
+        /* ✨ 客製化按鈕 CSS 圖示設計 ✨ */
+        #zen-editor-view .ql-toolbar button.ql-header-cycle::after { content: "H"; font-weight: 700; font-size: 18px; color: #9ca3af; font-family: sans-serif; }
+        #zen-editor-view .ql-toolbar button.ql-quote-cycle::after { content: "”"; font-weight: 700; font-size: 26px; color: #9ca3af; line-height: 10px; position: relative; top: 4px; font-family: serif; }
+        #zen-editor-view .ql-toolbar button.ql-divider::after { content: "—"; font-weight: 700; font-size: 16px; color: #9ca3af; position: relative; top: -2px; }
+        #zen-editor-view .ql-toolbar button.ql-header-cycle:hover::after, #zen-editor-view .ql-toolbar button.ql-active.ql-header-cycle::after,
+        #zen-editor-view .ql-toolbar button.ql-quote-cycle:hover::after, #zen-editor-view .ql-toolbar button.ql-active.ql-quote-cycle::after,
+        #zen-editor-view .ql-toolbar button.ql-divider:hover::after { color: #ffffff; }
+
+        /* 編輯器內部格式呈現 */
         #zen-editor-view .ql-editor img { max-width: 100%; border-radius: 8px; margin: 2em auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #zen-editor-view .ql-editor hr { border: none; border-top: 1px solid #9ca3af; margin: 3em 0; opacity: 0.5; }
+        #zen-editor-view .ql-editor .pullquote {
+            text-align: center; font-size: 1.3em; color: var(--accent-color, #d4af37);
+            border: none; background: transparent; padding: 2.5em 1em; position: relative;
+        }
+        #zen-editor-view .ql-editor .pullquote::before {
+            content: "“"; font-size: 4em; position: absolute; left: 50%; top: -0.2em;
+            transform: translateX(-50%); color: rgba(212, 175, 55, 0.15); font-family: serif;
+        }
     </style>
 </head>
 <body class="bg-gray-100 h-screen flex overflow-hidden">
@@ -214,7 +235,7 @@
         <div class="flex-1 overflow-y-auto relative" id="zen-scroll-container">
             <div class="max-w-4xl mx-auto pt-10 pb-32 px-6">
                 <input type="hidden" id="current-article-id" value="0">
-                <input type="text" id="article-title-input" placeholder="請輸入文章名稱" class="w-full bg-transparent text-4xl font-bold text-white border-none focus:ring-0 placeholder-gray-600 mb-8 px-0 outline-none" autocomplete="off">
+                <textarea id="article-title-input" placeholder="請輸入文章名稱" class="w-full bg-transparent text-4xl font-bold text-white border-none focus:ring-0 placeholder-gray-600 mb-8 px-0 outline-none resize-none overflow-hidden" rows="1" autocomplete="off"></textarea>
                 
                 <div id="quill-editor-wrapper">
                     <div id="quill-editor"></div>
