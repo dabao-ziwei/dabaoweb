@@ -246,12 +246,31 @@
         </div>
         
         <div class="flex-1 overflow-y-auto relative" id="zen-scroll-container">
-            <div id="editor-overlay" class="hidden absolute z-[100] bg-[#222] border border-[#444] p-2 rounded-lg shadow-2xl gap-3 items-center">
-                <input type="text" id="editor-overlay-input" placeholder="輸入圖片說明 (會作為 SEO 替代文字)..." class="bg-[#111] text-sm text-white border border-[#555] rounded px-3 py-1.5 w-64 focus:outline-none focus:border-red-500 transition-colors">
-                <button id="editor-overlay-delete" class="bg-red-500 hover:bg-red-600 text-white text-sm font-bold py-1.5 px-3 rounded whitespace-nowrap transition-colors flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    刪除
-                </button>
+            
+            <div id="editor-overlay" class="hidden absolute z-[100] bg-[#222] border border-[#444] p-4 rounded-lg shadow-2xl gap-3 flex-col items-start w-80">
+                <div id="editor-overlay-image-settings" class="w-full flex flex-col gap-3">
+                    <div>
+                        <label class="block text-gray-400 text-xs font-bold mb-1">📝 圖片可見說明 (圖說)</label>
+                        <textarea id="editor-overlay-caption" placeholder="輸入顯示在圖片下方的說明文字..." class="bg-[#111] text-sm text-white border border-[#555] rounded px-3 py-2 w-full h-20 resize-none focus:outline-none focus:border-red-500 transition-colors"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-gray-400 text-xs font-bold mb-1">🤖 SEO 替代文字 (Alt)</label>
+                        <input type="text" id="editor-overlay-alt" placeholder="輸入給搜尋引擎看的關鍵字..." class="bg-[#111] text-sm text-white border border-[#555] rounded px-3 py-2 w-full focus:outline-none focus:border-red-500 transition-colors">
+                    </div>
+                    <div class="flex justify-end gap-2 mt-1">
+                        <button id="editor-overlay-save" class="bg-green-600 hover:bg-green-700 text-white text-sm font-bold py-1.5 px-4 rounded transition-colors">
+                            ✅ 更新設定
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="w-full flex justify-between items-center border-t border-[#444] pt-3 mt-1">
+                    <span class="text-xs text-gray-500 font-bold" id="editor-overlay-type-label">圖片設定</span>
+                    <button id="editor-overlay-delete" class="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1.5 px-3 rounded whitespace-nowrap transition-colors flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        刪除此區塊
+                    </button>
+                </div>
             </div>
 
             <div class="max-w-4xl mx-auto pt-10 pb-32 px-6">
