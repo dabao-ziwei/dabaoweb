@@ -23,12 +23,18 @@
             margin-bottom: 20px;
             display: flex;
             gap: 8px;
+            align-items: center;
         }
         #zen-editor-view .ql-container.ql-snow { border: none; font-size: 1.125rem; font-family: inherit; }
         #zen-editor-view .ql-editor { padding: 0; color: #d1d5db; min-height: 50vh; line-height: 1.8; letter-spacing: 0.05em; }
         #zen-editor-view .ql-editor.ql-blank::before { color: #6b7280; font-style: normal; }
         
-        /* 工具列圖示改為暗色系相容 */
+        /* 工具列圖示改為暗色系相容，並強制置中對齊解決高低不平問題 */
+        #zen-editor-view .ql-toolbar button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
         #zen-editor-view .ql-stroke { stroke: #9ca3af; }
         #zen-editor-view .ql-fill { fill: #9ca3af; }
         #zen-editor-view .ql-picker { color: #9ca3af; }
@@ -36,17 +42,24 @@
         #zen-editor-view button:hover .ql-stroke, #zen-editor-view .ql-active .ql-stroke { stroke: #fff; }
         #zen-editor-view button:hover .ql-fill, #zen-editor-view .ql-active .ql-fill { fill: #fff; }
         
-        /* ✨ 客製化按鈕 CSS 圖示設計 ✨ */
-        #zen-editor-view .ql-toolbar button.ql-header-cycle::after { content: "H"; font-weight: 700; font-size: 18px; color: #9ca3af; font-family: sans-serif; }
-        #zen-editor-view .ql-toolbar button.ql-quote-cycle::after { content: "”"; font-weight: 700; font-size: 26px; color: #9ca3af; line-height: 10px; position: relative; top: 4px; font-family: serif; }
-        #zen-editor-view .ql-toolbar button.ql-divider::after { content: "—"; font-weight: 700; font-size: 16px; color: #9ca3af; position: relative; top: -2px; }
+        /* ✨ 客製化按鈕 CSS 圖示設計 (精準水平對齊) ✨ */
+        #zen-editor-view .ql-toolbar button::after { line-height: 1; display: block; }
+        #zen-editor-view .ql-toolbar button.ql-header-cycle::after { content: "H"; font-weight: 700; font-size: 17px; color: #9ca3af; font-family: sans-serif; }
+        #zen-editor-view .ql-toolbar button.ql-quote-cycle::after { content: "”"; font-weight: 700; font-size: 28px; color: #9ca3af; font-family: serif; transform: translateY(4px); }
+        #zen-editor-view .ql-toolbar button.ql-divider::after { content: "—"; font-weight: 700; font-size: 16px; color: #9ca3af; transform: translateY(1px); }
         #zen-editor-view .ql-toolbar button.ql-header-cycle:hover::after, #zen-editor-view .ql-toolbar button.ql-active.ql-header-cycle::after,
         #zen-editor-view .ql-toolbar button.ql-quote-cycle:hover::after, #zen-editor-view .ql-toolbar button.ql-active.ql-quote-cycle::after,
         #zen-editor-view .ql-toolbar button.ql-divider:hover::after { color: #ffffff; }
 
-        /* 編輯器內部格式呈現 */
-        #zen-editor-view .ql-editor img { max-width: 100%; border-radius: 8px; margin: 2em auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        #zen-editor-view .ql-editor hr { border: none; border-top: 1px solid #9ca3af; margin: 3em 0; opacity: 0.5; }
+        /* ✨ 編輯器內部互動回饋呈現 ✨ */
+        #zen-editor-view .ql-editor figure { margin: 2.5em auto; text-align: center; }
+        #zen-editor-view .ql-editor figure img { max-width: 100%; border-radius: 8px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); cursor: pointer; transition: outline 0.2s; }
+        #zen-editor-view .ql-editor figure img:hover, #zen-editor-view .ql-editor figure img.active-embed { outline: 3px solid #d4af37; }
+        #zen-editor-view .ql-editor figure figcaption { margin-top: 12px; font-size: 0.9rem; color: #888; text-align: center; font-style: italic; }
+        
+        #zen-editor-view .ql-editor hr { border: none; border-top: 1px solid #9ca3af; margin: 3em 0; opacity: 0.5; cursor: pointer; transition: all 0.2s; padding: 10px 0; background-clip: content-box; }
+        #zen-editor-view .ql-editor hr:hover, #zen-editor-view .ql-editor hr.active-embed { border-top-color: #ef4444; opacity: 1; border-top-width: 2px; }
+        
         #zen-editor-view .ql-editor .pullquote {
             text-align: center; font-size: 1.3em; color: var(--accent-color, #d4af37);
             border: none; background: transparent; padding: 2.5em 1em; position: relative;
@@ -233,6 +246,14 @@
         </div>
         
         <div class="flex-1 overflow-y-auto relative" id="zen-scroll-container">
+            <div id="editor-overlay" class="hidden absolute z-[100] bg-[#222] border border-[#444] p-2 rounded-lg shadow-2xl gap-3 items-center">
+                <input type="text" id="editor-overlay-input" placeholder="輸入圖片說明 (會作為 SEO 替代文字)..." class="bg-[#111] text-sm text-white border border-[#555] rounded px-3 py-1.5 w-64 focus:outline-none focus:border-red-500 transition-colors">
+                <button id="editor-overlay-delete" class="bg-red-500 hover:bg-red-600 text-white text-sm font-bold py-1.5 px-3 rounded whitespace-nowrap transition-colors flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    刪除
+                </button>
+            </div>
+
             <div class="max-w-4xl mx-auto pt-10 pb-32 px-6">
                 <input type="hidden" id="current-article-id" value="0">
                 <textarea id="article-title-input" placeholder="請輸入文章名稱" class="w-full bg-transparent text-4xl font-bold text-white border-none focus:ring-0 placeholder-gray-600 mb-8 px-0 outline-none resize-none overflow-hidden" rows="1" autocomplete="off"></textarea>
@@ -243,7 +264,7 @@
             </div>
         </div>
 
-        <div class="fixed bottom-6 right-8 text-right text-gray-500 text-sm font-medium bg-[#111] bg-opacity-80 px-4 py-2 rounded-lg border border-[#333] shadow-lg backdrop-blur-sm">
+        <div class="fixed bottom-6 right-8 text-right text-gray-500 text-sm font-medium bg-[#111] bg-opacity-80 px-4 py-2 rounded-lg border border-[#333] shadow-lg backdrop-blur-sm pointer-events-none">
             <p><span id="word-count-display" class="text-gray-300">0</span> 個字</p>
             <p>閱讀 <span id="read-time-display" class="text-gray-300">0</span> 分鐘</p>
         </div>

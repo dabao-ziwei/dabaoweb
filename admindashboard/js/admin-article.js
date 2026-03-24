@@ -1,13 +1,78 @@
 document.addEventListener('DOMContentLoaded', () => {
     const supabase = window.supabaseDB;
     
-    // --- Quill 客製化模組 (分隔線與特殊引言) ---
+    // --- ✨ 舊圖自動升級魔法 ✨ ---
+    // 將純 <img> 標籤自動升級為帶有圖說的 <figure> 結構
+    function upgradeOldImages(html) {
+        if (!html) return '';
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        const images = tempDiv.querySelectorAll('img');
+        images.forEach(img => {
+            // 如果圖片已經在 figure 裡面，代表是新版的，跳過不處理
+            if (img.closest('figure')) return;
+            
+            // 建立新版的 figure 結構
+            const figure = document.createElement('figure');
+            const newImg = img.cloneNode(true);
+            const figcaption = document.createElement('figcaption');
+            figcaption.setAttribute('contenteditable', 'false'); // 禁止原生編輯，交給懸浮選單
+            figcaption.innerText = newImg.getAttribute('alt') || '';
+            
+            figure.appendChild(newImg);
+            figure.appendChild(figcaption);
+            
+            // 將舊圖片替換成新結構
+            img.parentNode.replaceChild(figure, img);
+        });
+        return tempDiv.innerHTML;
+    }
+
+    // --- Quill 客製化模組 (分隔線與帶有圖說的進階圖片) ---
     const BlockEmbed = Quill.import('blots/block/embed');
+    
+    // 客製化：分隔線
     class DividerBlot extends BlockEmbed {}
     DividerBlot.blotName = 'divider';
     DividerBlot.tagName = 'hr';
     Quill.register(DividerBlot);
 
+    // 客製化：圖片與圖說 (Figure)
+    class ImageFigureBlot extends BlockEmbed {
+        static create(value) {
+            const node = super.create();
+            const img = document.createElement('img');
+            img.setAttribute('src', typeof value === 'string' ? value : value.url);
+            img.setAttribute('alt', value.caption || '');
+            node.appendChild(img);
+
+            const figcaption = document.createElement('figcaption');
+            figcaption.innerText = value.caption || '';
+            // 禁止 Quill 核心直接編輯這個區塊，統一由我們的懸浮選單控管
+            figcaption.setAttribute('contenteditable', 'false');
+            node.appendChild(figcaption);
+            return node;
+        }
+        static value(node) {
+            const img = node.querySelector('img');
+            const figcaption = node.querySelector('figcaption');
+            return {
+                url: img ? img.getAttribute('src') : '',
+                caption: figcaption ? figcaption.innerText : ''
+            };
+        }
+        updateCaption(newCaption) {
+            const img = this.domNode.querySelector('img');
+            const figcaption = this.domNode.querySelector('figcaption');
+            if (img) img.setAttribute('alt', newCaption);
+            if (figcaption) figcaption.innerText = newCaption;
+        }
+    }
+    ImageFigureBlot.blotName = 'imageFigure';
+    ImageFigureBlot.tagName = 'figure';
+    Quill.register(ImageFigureBlot);
+
+    // 客製化：排版大引言
     const Block = Quill.import('blots/block');
     class PullquoteBlot extends Block {}
     PullquoteBlot.blotName = 'pullquote';
@@ -20,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         container: [
             ['header-cycle'], // 自訂 H 標題循環
             ['bold', 'italic', 'underline'], // 精簡文字格式
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }], // 補回列表功能
             ['quote-cycle'], // 自訂雙模式引言
             ['link', 'image', 'divider'], // 新增超連結與分隔線
             ['clean'] // 清除格式保留
@@ -58,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modules: { toolbar: toolbarOptions }
     });
 
+    // 攔截圖片上傳，改為插入帶有圖說的 ImageFigure
     quill.getModule('toolbar').addHandler('image', function() {
         const input = document.createElement('input');
         input.setAttribute('type', 'file');
@@ -74,7 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const { error: uploadError } = await supabase.storage.from('article_images').upload(fileName, compressedBlob, { contentType: 'image/jpeg' });
                     if (uploadError) throw uploadError;
                     const { data: publicUrlData } = supabase.storage.from('article_images').getPublicUrl(fileName);
-                    quill.insertEmbed(range.index, 'image', publicUrlData.publicUrl);
+                    
+                    // 插入進化版的 imageFigure
+                    quill.insertEmbed(range.index, 'imageFigure', { url: publicUrlData.publicUrl, caption: '' });
                     quill.setSelection(range.index + 1);
                 } catch (err) {
                     alert('⚠️ 圖片上傳失敗：' + err.message);
@@ -92,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const publishModal = document.getElementById('publish-modal');
     const zenSaveStatus = document.getElementById('zen-save-status');
 
-    // 已從 input 改為 textarea 的標題欄位
     const articleTitleInput = document.getElementById('article-title-input');
     const currentArticleIdInput = document.getElementById('current-article-id');
     
@@ -105,12 +173,104 @@ document.addEventListener('DOMContentLoaded', () => {
     const metaTitleInput = document.getElementById('article-meta-title');
     const metaDescInput = document.getElementById('article-meta-desc');
 
+    // --- ✨ 懸浮互動選單：點擊圖片與水平線的行為管理 ✨ ---
+    const editorOverlay = document.getElementById('editor-overlay');
+    const overlayInput = document.getElementById('editor-overlay-input');
+    const overlayDelete = document.getElementById('editor-overlay-delete');
+    let currentTargetBlot = null;
+
+    const hideOverlay = () => {
+        editorOverlay.classList.add('hidden');
+        editorOverlay.classList.remove('flex');
+        
+        // 移除高亮狀態
+        document.querySelectorAll('.active-embed').forEach(el => el.classList.remove('active-embed'));
+        currentTargetBlot = null;
+    };
+
+    quill.root.addEventListener('click', (e) => {
+        let targetNode = null;
+        let showInput = false;
+
+        // 偵測點擊的是不是水平線或圖片(及其父層figure)
+        if (e.target.tagName === 'HR') {
+            targetNode = e.target;
+        } else if (e.target.tagName === 'IMG' && e.target.closest('figure')) {
+            targetNode = e.target.closest('figure');
+            showInput = true;
+            e.target.classList.add('active-embed'); // 增加亮色邊框回饋
+        } else if (e.target.tagName === 'HR' || e.target.tagName === 'IMG') {
+            // 防呆：如果是舊版純 img 也捕捉
+            targetNode = e.target;
+        }
+
+        if (targetNode) {
+            const blot = Quill.find(targetNode);
+            if (!blot) return;
+            
+            currentTargetBlot = blot;
+            if(targetNode.tagName === 'HR') targetNode.classList.add('active-embed');
+            
+            // 取得元素與容器的座標來計算懸浮選單的位置
+            const bounds = targetNode.getBoundingClientRect();
+            const scrollContainer = document.getElementById('zen-scroll-container');
+            const containerBounds = scrollContainer.getBoundingClientRect();
+            
+            editorOverlay.classList.remove('hidden');
+            editorOverlay.classList.add('flex');
+            
+            if (showInput) {
+                overlayInput.classList.remove('hidden');
+                const val = blot.value();
+                overlayInput.value = val.caption || '';
+                // 延遲聚焦避免衝突
+                setTimeout(() => overlayInput.focus(), 50);
+            } else {
+                overlayInput.classList.add('hidden');
+            }
+
+            // 計算懸浮選單位置 (置中顯示在物件正上方)
+            const overlayRect = editorOverlay.getBoundingClientRect();
+            let top = bounds.top - containerBounds.top + scrollContainer.scrollTop - overlayRect.height - 15;
+            let left = bounds.left - containerBounds.left + (bounds.width / 2) - (overlayRect.width / 2);
+            
+            // 如果上方空間不夠，就顯示在物件下方
+            if (top < scrollContainer.scrollTop) top = bounds.bottom - containerBounds.top + scrollContainer.scrollTop + 15;
+
+            editorOverlay.style.top = `${top}px`;
+            editorOverlay.style.left = `${left}px`;
+        } else {
+            hideOverlay();
+        }
+    });
+
+    // 監聽圖說輸入，即時更新 Blot 與畫面
+    overlayInput.addEventListener('input', (e) => {
+        if (currentTargetBlot && currentTargetBlot.updateCaption) {
+            currentTargetBlot.updateCaption(e.target.value);
+            triggerAutoSave();
+        }
+    });
+
+    // 監聽刪除按鈕
+    overlayDelete.addEventListener('click', () => {
+        if (currentTargetBlot) {
+            currentTargetBlot.remove();
+            hideOverlay();
+            triggerAutoSave();
+        }
+    });
+
+    // 捲動或文字改變時，為了體驗流暢，自動隱藏懸浮選單
+    document.getElementById('zen-scroll-container').addEventListener('scroll', hideOverlay);
+    quill.on('text-change', hideOverlay);
+
+
     // --- 自動延展標題高度的魔法 ---
     function autoResizeTitle() {
         articleTitleInput.style.height = 'auto';
         articleTitleInput.style.height = articleTitleInput.scrollHeight + 'px';
     }
-    // 當使用者輸入時即時觸發高度計算
     articleTitleInput.addEventListener('input', autoResizeTitle);
 
     // --- 功能開關與預覽邏輯 ---
@@ -182,22 +342,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 字數統計與自動存檔 ---
+    // --- 字數統計與完美的獨立自動存檔系統 ---
     function triggerAutoSave() {
         zenSaveStatus.innerText = '⏳ 儲存中...';
         zenSaveStatus.classList.replace('text-gray-500', 'text-yellow-500');
 
         clearTimeout(autoSaveTimeout);
+        // 將儲存間隔縮短為 0.5 秒，確保即打即存
         autoSaveTimeout = setTimeout(() => {
             const title = articleTitleInput.value;
             const htmlContent = quill.root.innerHTML;
+            const id = currentArticleIdInput.value || '0';
+            
             if(title || quill.getText().trim().length > 0) {
-                const saveData = { title, htmlContent, tags: selectedTags, slug: slugInput.value, metaTitle: metaTitleInput.value, metaDesc: metaDescInput.value };
-                localStorage.setItem('dabao_article_autosave', JSON.stringify(saveData));
+                const saveData = { title, htmlContent, tags: selectedTags, slug: slugInput.value, metaTitle: metaTitleInput.value, metaDesc: metaDescInput.value, timestamp: Date.now() };
+                // 針對不同文章 ID 分別儲存，避免互相覆蓋
+                localStorage.setItem(`dabao_article_autosave_${id}`, JSON.stringify(saveData));
             }
+            
             zenSaveStatus.innerText = '🟢 已自動儲存';
             zenSaveStatus.classList.replace('text-yellow-500', 'text-gray-500');
-        }, 1500); 
+        }, 500); 
     }
 
     function calculateStats() {
@@ -224,12 +389,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.showArticleEditView = () => {
         zenEditorView.classList.remove('hidden');
         calculateStats();
-        // 顯示畫面時，強制重新計算一次標題高度，避免舊文章標題太長被切斷
         setTimeout(autoResizeTitle, 10);
     };
 
     document.getElementById('btn-zen-back').addEventListener('click', () => {
-        if(confirm('尚未正式發布的內容已保存為草稿狀態，確定要返回列表嗎？')) {
+        // 放棄未儲存內容時，不主動刪除 LocalStorage，當作保險備份
+        if(confirm('尚未正式發布的內容已保存為本機草稿狀態，確定要返回列表嗎？')) {
             window.showArticleListView();
         }
     });
@@ -310,19 +475,21 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedTags = [];
         renderTags();
 
-        const autoSaved = localStorage.getItem('dabao_article_autosave');
+        // 獨立檢查 ID 為 0 的新文章草稿
+        const autoSaved = localStorage.getItem('dabao_article_autosave_0');
         if (autoSaved) {
-            if (confirm('偵測到您有尚未發布的暫存草稿，是否要恢復內容？')) {
+            if (confirm('偵測到您有尚未發布的暫存內容，是否要恢復上次的寫作進度？')) {
                 const data = JSON.parse(autoSaved);
                 articleTitleInput.value = data.title || '';
-                quill.root.innerHTML = data.htmlContent || '';
+                // 載入時自動升級舊圖片結構
+                quill.root.innerHTML = upgradeOldImages(data.htmlContent || '');
                 selectedTags = data.tags || [];
                 slugInput.value = data.slug || '';
                 metaTitleInput.value = data.metaTitle || '';
                 metaDescInput.value = data.metaDesc || '';
                 renderTags();
             } else {
-                localStorage.removeItem('dabao_article_autosave');
+                localStorage.removeItem('dabao_article_autosave_0');
             }
         }
         window.showArticleEditView();
@@ -351,7 +518,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (error) throw error;
             
-            localStorage.removeItem('dabao_article_autosave');
+            // 成功儲存後，清除專屬 ID 的本地暫存
+            localStorage.removeItem(`dabao_article_autosave_${id}`);
             alert(statusStr === 'published' ? '✅ 文章已成功正式發布！' : '✅ 文章已安穩存入草稿箱！');
             
             window.loadArticles();
@@ -374,6 +542,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.editArticle = async (id) => {
         try {
+            // 優先檢查是否有此 ID 的本地草稿
+            const autoSaved = localStorage.getItem(`dabao_article_autosave_${id}`);
+            let useAutoSave = false;
+            if (autoSaved) {
+                useAutoSave = confirm('系統偵測到您上次有修改但未發布的暫存進度，是否要恢復？\n(若選擇取消，將放棄修改並讀取資料庫最新版本)');
+                if (!useAutoSave) {
+                    localStorage.removeItem(`dabao_article_autosave_${id}`);
+                }
+            }
+
             const { data: articleData, error: articleError } = await supabase.from('articles').select('*').eq('id', id).single();
             if (articleError) throw articleError;
             
@@ -381,15 +559,27 @@ document.addEventListener('DOMContentLoaded', () => {
             if (tagError) throw tagError;
 
             currentArticleIdInput.value = articleData.id;
-            articleTitleInput.value = articleData.title;
-            slugInput.value = articleData.slug || '';
-            metaTitleInput.value = articleData.meta_title || '';
-            metaDescInput.value = articleData.meta_description || '';
-            quill.root.innerHTML = articleData.content.html || '';
             
-            selectedTags = tagData.map(t => t.tags.name);
+            if (useAutoSave) {
+                const data = JSON.parse(autoSaved);
+                articleTitleInput.value = data.title || '';
+                // 載入草稿時自動升級舊圖片結構
+                quill.root.innerHTML = upgradeOldImages(data.htmlContent || '');
+                selectedTags = data.tags || [];
+                slugInput.value = data.slug || '';
+                metaTitleInput.value = data.metaTitle || '';
+                metaDescInput.value = data.metaDesc || '';
+            } else {
+                articleTitleInput.value = articleData.title;
+                slugInput.value = articleData.slug || '';
+                metaTitleInput.value = articleData.meta_title || '';
+                metaDescInput.value = articleData.meta_description || '';
+                // 載入資料庫舊資料時自動升級舊圖片結構
+                quill.root.innerHTML = upgradeOldImages(articleData.content.html || '');
+                selectedTags = tagData.map(t => t.tags.name);
+            }
+            
             renderTags();
-            
             window.showArticleEditView();
         } catch (err) {
             alert('⚠️ 無法載入文章資料');
@@ -401,6 +591,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const { error } = await supabase.from('articles').delete().eq('id', id);
             if (error) throw error;
+            // 刪除文章時，順便把殘留的草稿清掉
+            localStorage.removeItem(`dabao_article_autosave_${id}`);
             window.loadArticles();
         } catch (err) {
             alert('⚠️ 刪除發生錯誤：' + err.message);

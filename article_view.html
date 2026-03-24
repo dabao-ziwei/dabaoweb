@@ -44,13 +44,22 @@
         /* 連結改為金色並帶底線 */
         .ql-editor a { color: var(--accent-color, #d4af37) !important; text-decoration: underline; text-underline-offset: 4px; }
         
-        /* 圖片暗黑系柔和處理 */
-        .ql-editor img { 
+        /* ✨ 新增：高質感圖片與 SEO 圖說 ✨ */
+        .ql-editor figure { margin: 2.5em auto; text-align: center; }
+        .ql-editor figure img { 
             max-width: 100%; 
             border-radius: 8px; 
-            margin: 2em auto; 
+            margin: 0 auto; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             opacity: 0.95;
+        }
+        .ql-editor figure figcaption { 
+            margin-top: 12px; 
+            font-size: 0.9rem; 
+            color: #9ca3af; 
+            text-align: center; 
+            letter-spacing: 0.05em;
+            font-style: italic;
         }
         
         /* 一般引用區塊設計 */
@@ -76,6 +85,7 @@
         /* ✨ 灰白高質感分隔線 ✨ */
         .ql-editor hr { border: none; border-top: 1px solid #9ca3af; margin: 3em 0; opacity: 0.5; }
         
+        /* 列表樣式 */
         .ql-editor ul, .ql-editor ol { margin-bottom: 1.5em; padding-left: 1.5em; }
         .ql-editor li { margin-bottom: 0.5em; line-height: 1.8; }
     </style>
