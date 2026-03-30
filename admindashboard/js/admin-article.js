@@ -2,53 +2,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const supabase = window.supabaseDB;
     
     // --- ✨ 舊圖自動升級魔法 ✨ ---
-    // 將純 <img> 標籤自動升級為帶有圖說的 <figure> 結構
     function upgradeOldImages(html) {
         if (!html) return '';
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
         const images = tempDiv.querySelectorAll('img');
         images.forEach(img => {
-            // 如果圖片已經在 figure 裡面，代表是新版的，跳過不處理
             if (img.closest('figure')) return;
             
-            // 建立新版的 figure 結構
             const figure = document.createElement('figure');
             const newImg = img.cloneNode(true);
             const figcaption = document.createElement('figcaption');
-            figcaption.setAttribute('contenteditable', 'false'); // 禁止原生編輯，交給懸浮選單
-            figcaption.innerText = newImg.getAttribute('alt') || '';
+            figcaption.setAttribute('contenteditable', 'false');
+            
+            const oldAlt = newImg.getAttribute('alt') || '';
+            figcaption.innerText = oldAlt; 
+            newImg.setAttribute('alt', oldAlt);
             
             figure.appendChild(newImg);
             figure.appendChild(figcaption);
             
-            // 將舊圖片替換成新結構
             img.parentNode.replaceChild(figure, img);
         });
         return tempDiv.innerHTML;
     }
 
-    // --- Quill 客製化模組 (分隔線與帶有圖說的進階圖片) ---
+    // --- Quill 客製化模組 ---
     const BlockEmbed = Quill.import('blots/block/embed');
     
-    // 客製化：分隔線
     class DividerBlot extends BlockEmbed {}
     DividerBlot.blotName = 'divider';
     DividerBlot.tagName = 'hr';
     Quill.register(DividerBlot);
 
-    // 客製化：圖片與圖說 (Figure)
     class ImageFigureBlot extends BlockEmbed {
         static create(value) {
             const node = super.create();
             const img = document.createElement('img');
             img.setAttribute('src', typeof value === 'string' ? value : value.url);
-            img.setAttribute('alt', value.caption || '');
+            img.setAttribute('alt', value.altText || '');
             node.appendChild(img);
 
             const figcaption = document.createElement('figcaption');
             figcaption.innerText = value.caption || '';
-            // 禁止 Quill 核心直接編輯這個區塊，統一由我們的懸浮選單控管
             figcaption.setAttribute('contenteditable', 'false');
             node.appendChild(figcaption);
             return node;
@@ -58,13 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const figcaption = node.querySelector('figcaption');
             return {
                 url: img ? img.getAttribute('src') : '',
+                altText: img ? img.getAttribute('alt') : '',
                 caption: figcaption ? figcaption.innerText : ''
             };
         }
-        updateCaption(newCaption) {
+        updateData(newCaption, newAltText) {
             const img = this.domNode.querySelector('img');
             const figcaption = this.domNode.querySelector('figcaption');
-            if (img) img.setAttribute('alt', newCaption);
+            if (img) img.setAttribute('alt', newAltText);
             if (figcaption) figcaption.innerText = newCaption;
         }
     }
@@ -72,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ImageFigureBlot.tagName = 'figure';
     Quill.register(ImageFigureBlot);
 
-    // 客製化：排版大引言
     const Block = Quill.import('blots/block');
     class PullquoteBlot extends Block {}
     PullquoteBlot.blotName = 'pullquote';
@@ -80,15 +76,15 @@ document.addEventListener('DOMContentLoaded', () => {
     PullquoteBlot.className = 'pullquote';
     Quill.register(PullquoteBlot);
 
-    // --- Quill 編輯器初始化與單鍵切換邏輯 ---
+    // --- Quill 編輯器初始化 ---
     const toolbarOptions = {
         container: [
-            ['header-cycle'], // 自訂 H 標題循環
-            ['bold', 'italic', 'underline'], // 精簡文字格式
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }], // 補回列表功能
-            ['quote-cycle'], // 自訂雙模式引言
-            ['link', 'image', 'divider'], // 新增超連結與分隔線
-            ['clean'] // 清除格式保留
+            ['header-cycle'], 
+            ['bold', 'italic', 'underline'], 
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }], 
+            ['quote-cycle'], 
+            ['link', 'image', 'divider'], 
+            ['clean'] 
         ],
         handlers: {
             'header-cycle': function() {
@@ -124,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
         modules: { toolbar: toolbarOptions }
     });
 
-    // 攔截圖片上傳，改為插入帶有圖說的 ImageFigure
     quill.getModule('toolbar').addHandler('image', function() {
         const input = document.createElement('input');
         input.setAttribute('type', 'file');
@@ -142,8 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (uploadError) throw uploadError;
                     const { data: publicUrlData } = supabase.storage.from('article_images').getPublicUrl(fileName);
                     
-                    // 插入進化版的 imageFigure
-                    quill.insertEmbed(range.index, 'imageFigure', { url: publicUrlData.publicUrl, caption: '' });
+                    quill.insertEmbed(range.index, 'imageFigure', { url: publicUrlData.publicUrl, altText: '', caption: '' });
                     quill.setSelection(range.index + 1);
                 } catch (err) {
                     alert('⚠️ 圖片上傳失敗：' + err.message);
@@ -173,107 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const metaTitleInput = document.getElementById('article-meta-title');
     const metaDescInput = document.getElementById('article-meta-desc');
 
-    // --- ✨ 懸浮互動選單：點擊圖片與水平線的行為管理 ✨ ---
-    const editorOverlay = document.getElementById('editor-overlay');
-    const overlayInput = document.getElementById('editor-overlay-input');
-    const overlayDelete = document.getElementById('editor-overlay-delete');
-    let currentTargetBlot = null;
-
-    const hideOverlay = () => {
-        editorOverlay.classList.add('hidden');
-        editorOverlay.classList.remove('flex');
-        
-        // 移除高亮狀態
-        document.querySelectorAll('.active-embed').forEach(el => el.classList.remove('active-embed'));
-        currentTargetBlot = null;
-    };
-
-    quill.root.addEventListener('click', (e) => {
-        let targetNode = null;
-        let showInput = false;
-
-        // 偵測點擊的是不是水平線或圖片(及其父層figure)
-        if (e.target.tagName === 'HR') {
-            targetNode = e.target;
-        } else if (e.target.tagName === 'IMG' && e.target.closest('figure')) {
-            targetNode = e.target.closest('figure');
-            showInput = true;
-            e.target.classList.add('active-embed'); // 增加亮色邊框回饋
-        } else if (e.target.tagName === 'HR' || e.target.tagName === 'IMG') {
-            // 防呆：如果是舊版純 img 也捕捉
-            targetNode = e.target;
-        }
-
-        if (targetNode) {
-            const blot = Quill.find(targetNode);
-            if (!blot) return;
-            
-            currentTargetBlot = blot;
-            if(targetNode.tagName === 'HR') targetNode.classList.add('active-embed');
-            
-            // 取得元素與容器的座標來計算懸浮選單的位置
-            const bounds = targetNode.getBoundingClientRect();
-            const scrollContainer = document.getElementById('zen-scroll-container');
-            const containerBounds = scrollContainer.getBoundingClientRect();
-            
-            editorOverlay.classList.remove('hidden');
-            editorOverlay.classList.add('flex');
-            
-            if (showInput) {
-                overlayInput.classList.remove('hidden');
-                const val = blot.value();
-                overlayInput.value = val.caption || '';
-                // 延遲聚焦避免衝突
-                setTimeout(() => overlayInput.focus(), 50);
-            } else {
-                overlayInput.classList.add('hidden');
-            }
-
-            // 計算懸浮選單位置 (置中顯示在物件正上方)
-            const overlayRect = editorOverlay.getBoundingClientRect();
-            let top = bounds.top - containerBounds.top + scrollContainer.scrollTop - overlayRect.height - 15;
-            let left = bounds.left - containerBounds.left + (bounds.width / 2) - (overlayRect.width / 2);
-            
-            // 如果上方空間不夠，就顯示在物件下方
-            if (top < scrollContainer.scrollTop) top = bounds.bottom - containerBounds.top + scrollContainer.scrollTop + 15;
-
-            editorOverlay.style.top = `${top}px`;
-            editorOverlay.style.left = `${left}px`;
-        } else {
-            hideOverlay();
-        }
-    });
-
-    // 監聽圖說輸入，即時更新 Blot 與畫面
-    overlayInput.addEventListener('input', (e) => {
-        if (currentTargetBlot && currentTargetBlot.updateCaption) {
-            currentTargetBlot.updateCaption(e.target.value);
-            triggerAutoSave();
-        }
-    });
-
-    // 監聽刪除按鈕
-    overlayDelete.addEventListener('click', () => {
-        if (currentTargetBlot) {
-            currentTargetBlot.remove();
-            hideOverlay();
-            triggerAutoSave();
-        }
-    });
-
-    // 捲動或文字改變時，為了體驗流暢，自動隱藏懸浮選單
-    document.getElementById('zen-scroll-container').addEventListener('scroll', hideOverlay);
-    quill.on('text-change', hideOverlay);
-
-
-    // --- 自動延展標題高度的魔法 ---
-    function autoResizeTitle() {
-        articleTitleInput.style.height = 'auto';
-        articleTitleInput.style.height = articleTitleInput.scrollHeight + 'px';
-    }
-    articleTitleInput.addEventListener('input', autoResizeTitle);
-
-    // --- 功能開關與預覽邏輯 ---
+    // --- ✨ [補回] 功能開關與預覽邏輯 ✨ ---
     const toggleNewList = document.getElementById('toggle-new-list');
     const btnPreviewNewList = document.getElementById('btn-preview-new-list');
 
@@ -312,6 +206,121 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- ✨ 懸浮互動選單 ---
+    const editorOverlay = document.getElementById('editor-overlay');
+    const overlayCaption = document.getElementById('editor-overlay-caption');
+    const overlayAlt = document.getElementById('editor-overlay-alt');
+    const overlaySave = document.getElementById('editor-overlay-save');
+    const overlayDelete = document.getElementById('editor-overlay-delete');
+    const overlayImageSettings = document.getElementById('editor-overlay-image-settings');
+    const overlayTypeLabel = document.getElementById('editor-overlay-type-label');
+    
+    let currentTargetBlot = null;
+
+    const hideOverlay = () => {
+        if (editorOverlay.contains(document.activeElement)) return;
+        
+        editorOverlay.classList.add('hidden');
+        editorOverlay.classList.remove('flex');
+        document.querySelectorAll('.active-embed').forEach(el => el.classList.remove('active-embed'));
+        currentTargetBlot = null;
+    };
+
+    editorOverlay.addEventListener('click', (e) => e.stopPropagation());
+
+    quill.root.addEventListener('click', (e) => {
+        let targetNode = null;
+        let showImageSettings = false;
+
+        if (e.target.tagName === 'HR') {
+            targetNode = e.target;
+            overlayTypeLabel.innerText = '分隔線設定';
+        } else if (e.target.tagName === 'IMG' && e.target.closest('figure')) {
+            targetNode = e.target.closest('figure');
+            showImageSettings = true;
+            e.target.classList.add('active-embed'); 
+            overlayTypeLabel.innerText = '圖片設定';
+        } else if (e.target.tagName === 'HR' || e.target.tagName === 'IMG') {
+            targetNode = e.target;
+        }
+
+        if (targetNode) {
+            const blot = Quill.find(targetNode);
+            if (!blot) return;
+            
+            currentTargetBlot = blot;
+            if(targetNode.tagName === 'HR') targetNode.classList.add('active-embed');
+            
+            const bounds = targetNode.getBoundingClientRect();
+            const scrollContainer = document.getElementById('zen-scroll-container');
+            const containerBounds = scrollContainer.getBoundingClientRect();
+            
+            editorOverlay.classList.remove('hidden');
+            editorOverlay.classList.add('flex');
+            
+            if (showImageSettings) {
+                overlayImageSettings.classList.remove('hidden');
+                overlayImageSettings.classList.add('flex');
+                const val = blot.value();
+                overlayCaption.value = val.caption || '';
+                overlayAlt.value = val.altText || '';
+            } else {
+                overlayImageSettings.classList.add('hidden');
+                overlayImageSettings.classList.remove('flex');
+            }
+
+            const overlayRect = editorOverlay.getBoundingClientRect();
+            let top = bounds.top - containerBounds.top + scrollContainer.scrollTop - overlayRect.height - 15;
+            let left = bounds.left - containerBounds.left + (bounds.width / 2) - (overlayRect.width / 2);
+            
+            if (top < scrollContainer.scrollTop) top = bounds.bottom - containerBounds.top + scrollContainer.scrollTop + 15;
+
+            editorOverlay.style.top = `${top}px`;
+            editorOverlay.style.left = `${left}px`;
+        } else {
+            hideOverlay();
+        }
+    });
+
+    overlaySave.addEventListener('click', () => {
+        if (currentTargetBlot && currentTargetBlot.updateData) {
+            currentTargetBlot.updateData(overlayCaption.value, overlayAlt.value);
+            triggerAutoSave();
+            
+            const originalText = overlaySave.innerText;
+            overlaySave.innerText = '✅ 已更新！';
+            setTimeout(() => {
+                overlaySave.innerText = originalText;
+                editorOverlay.classList.add('hidden');
+                editorOverlay.classList.remove('flex');
+                document.querySelectorAll('.active-embed').forEach(el => el.classList.remove('active-embed'));
+            }, 800);
+        }
+    });
+
+    overlayDelete.addEventListener('click', () => {
+        if (currentTargetBlot) {
+            currentTargetBlot.remove();
+            editorOverlay.classList.add('hidden');
+            editorOverlay.classList.remove('flex');
+            triggerAutoSave();
+        }
+    });
+
+    document.getElementById('zen-scroll-container').addEventListener('scroll', () => {
+        if (!editorOverlay.contains(document.activeElement)) hideOverlay();
+    });
+    quill.on('text-change', () => {
+        if (!editorOverlay.contains(document.activeElement)) hideOverlay();
+    });
+
+    // --- 自動延展標題高度 ---
+    function autoResizeTitle() {
+        articleTitleInput.style.height = 'auto';
+        articleTitleInput.style.height = articleTitleInput.scrollHeight + 'px';
+    }
+    articleTitleInput.addEventListener('input', autoResizeTitle);
+
     // --- 標籤功能邏輯 ---
     function renderTags() {
         tagsContainer.innerHTML = '';
@@ -342,13 +351,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 字數統計與完美的獨立自動存檔系統 ---
+    // --- 自動存檔 ---
     function triggerAutoSave() {
         zenSaveStatus.innerText = '⏳ 儲存中...';
         zenSaveStatus.classList.replace('text-gray-500', 'text-yellow-500');
 
         clearTimeout(autoSaveTimeout);
-        // 將儲存間隔縮短為 0.5 秒，確保即打即存
         autoSaveTimeout = setTimeout(() => {
             const title = articleTitleInput.value;
             const htmlContent = quill.root.innerHTML;
@@ -356,7 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if(title || quill.getText().trim().length > 0) {
                 const saveData = { title, htmlContent, tags: selectedTags, slug: slugInput.value, metaTitle: metaTitleInput.value, metaDesc: metaDescInput.value, timestamp: Date.now() };
-                // 針對不同文章 ID 分別儲存，避免互相覆蓋
                 localStorage.setItem(`dabao_article_autosave_${id}`, JSON.stringify(saveData));
             }
             
@@ -393,7 +400,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     document.getElementById('btn-zen-back').addEventListener('click', () => {
-        // 放棄未儲存內容時，不主動刪除 LocalStorage，當作保險備份
         if(confirm('尚未正式發布的內容已保存為本機草稿狀態，確定要返回列表嗎？')) {
             window.showArticleListView();
         }
@@ -416,7 +422,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 資料載入 ---
     window.loadArticles = async () => {
         try {
-            const { data, error } = await supabase.rpc('get_admin_articles');
+            const { data, error } = await supabase
+                .from('articles')
+                .select('*')
+                .order('created_at', { ascending: false });
+                
             if (error) throw error;
             
             const tbody = document.getElementById('article-list-body');
@@ -464,34 +474,40 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) { console.error(err); }
     };
 
-    // --- 新增 / 編輯 / 儲存 ---
+    // --- ✨ 核心防呆：新增 / 編輯 ✨ ---
     document.getElementById('btn-create-article').addEventListener('click', () => {
         currentArticleIdInput.value = '0';
         articleTitleInput.value = '';
         slugInput.value = '';
         metaTitleInput.value = '';
         metaDescInput.value = '';
-        quill.root.innerHTML = ''; 
+        
+        quill.setText('');
+        
         selectedTags = [];
         renderTags();
 
-        // 獨立檢查 ID 為 0 的新文章草稿
-        const autoSaved = localStorage.getItem('dabao_article_autosave_0');
-        if (autoSaved) {
-            if (confirm('偵測到您有尚未發布的暫存內容，是否要恢復上次的寫作進度？')) {
-                const data = JSON.parse(autoSaved);
-                articleTitleInput.value = data.title || '';
-                // 載入時自動升級舊圖片結構
-                quill.root.innerHTML = upgradeOldImages(data.htmlContent || '');
-                selectedTags = data.tags || [];
-                slugInput.value = data.slug || '';
-                metaTitleInput.value = data.metaTitle || '';
-                metaDescInput.value = data.metaDesc || '';
-                renderTags();
-            } else {
-                localStorage.removeItem('dabao_article_autosave_0');
+        try {
+            const autoSaved = localStorage.getItem('dabao_article_autosave_0');
+            if (autoSaved) {
+                if (confirm('偵測到您有尚未發布的暫存內容，是否要恢復上次的寫作進度？')) {
+                    const data = JSON.parse(autoSaved);
+                    articleTitleInput.value = data.title || '';
+                    quill.root.innerHTML = upgradeOldImages(data.htmlContent || '');
+                    selectedTags = data.tags || [];
+                    slugInput.value = data.slug || '';
+                    metaTitleInput.value = data.metaTitle || '';
+                    metaDescInput.value = data.metaDesc || '';
+                    renderTags();
+                } else {
+                    localStorage.removeItem('dabao_article_autosave_0');
+                }
             }
+        } catch (e) {
+            console.warn('草稿解析失敗，已自動清除毀損資料。', e);
+            localStorage.removeItem('dabao_article_autosave_0');
         }
+
         window.showArticleEditView();
     });
 
@@ -518,7 +534,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             if (error) throw error;
             
-            // 成功儲存後，清除專屬 ID 的本地暫存
             localStorage.removeItem(`dabao_article_autosave_${id}`);
             alert(statusStr === 'published' ? '✅ 文章已成功正式發布！' : '✅ 文章已安穩存入草稿箱！');
             
@@ -542,12 +557,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.editArticle = async (id) => {
         try {
-            // 優先檢查是否有此 ID 的本地草稿
             const autoSaved = localStorage.getItem(`dabao_article_autosave_${id}`);
             let useAutoSave = false;
+            let autoSaveData = null;
+
             if (autoSaved) {
-                useAutoSave = confirm('系統偵測到您上次有修改但未發布的暫存進度，是否要恢復？\n(若選擇取消，將放棄修改並讀取資料庫最新版本)');
-                if (!useAutoSave) {
+                try {
+                    autoSaveData = JSON.parse(autoSaved);
+                    useAutoSave = confirm('系統偵測到您上次有修改但未發布的暫存進度，是否要恢復？\n(若選擇取消，將放棄修改並讀取資料庫最新版本)');
+                    if (!useAutoSave) {
+                        localStorage.removeItem(`dabao_article_autosave_${id}`);
+                    }
+                } catch (e) {
+                    console.warn('草稿解析失敗，已自動清除毀損資料。', e);
                     localStorage.removeItem(`dabao_article_autosave_${id}`);
                 }
             }
@@ -560,21 +582,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             currentArticleIdInput.value = articleData.id;
             
-            if (useAutoSave) {
-                const data = JSON.parse(autoSaved);
-                articleTitleInput.value = data.title || '';
-                // 載入草稿時自動升級舊圖片結構
-                quill.root.innerHTML = upgradeOldImages(data.htmlContent || '');
-                selectedTags = data.tags || [];
-                slugInput.value = data.slug || '';
-                metaTitleInput.value = data.metaTitle || '';
-                metaDescInput.value = data.metaDesc || '';
+            if (useAutoSave && autoSaveData) {
+                articleTitleInput.value = autoSaveData.title || '';
+                quill.root.innerHTML = upgradeOldImages(autoSaveData.htmlContent || '');
+                selectedTags = autoSaveData.tags || [];
+                slugInput.value = autoSaveData.slug || '';
+                metaTitleInput.value = autoSaveData.metaTitle || '';
+                metaDescInput.value = autoSaveData.metaDesc || '';
             } else {
                 articleTitleInput.value = articleData.title;
                 slugInput.value = articleData.slug || '';
                 metaTitleInput.value = articleData.meta_title || '';
                 metaDescInput.value = articleData.meta_description || '';
-                // 載入資料庫舊資料時自動升級舊圖片結構
                 quill.root.innerHTML = upgradeOldImages(articleData.content.html || '');
                 selectedTags = tagData.map(t => t.tags.name);
             }
@@ -591,7 +610,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const { error } = await supabase.from('articles').delete().eq('id', id);
             if (error) throw error;
-            // 刪除文章時，順便把殘留的草稿清掉
             localStorage.removeItem(`dabao_article_autosave_${id}`);
             window.loadArticles();
         } catch (err) {
