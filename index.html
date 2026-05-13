@@ -10,7 +10,7 @@
         <meta name="author" content="大寶老師">
         
         <meta property="og:title" content="大寶 | 紫微斗數論命專家">
-        <meta property="og:description" content="感情、工作、錢——你人生裡最糾結的三件事，盤裡都有答案。十餘年實戰經驗，逾萬人諮詢，全程線上語音。">
+        <meta property="og:description" content="人生道路千百條，透過專業紫微斗數命盤分析，協助您找到最適合的那一條。全程線上語音諮詢，隱私保密。">
         <meta property="og:image" content="https://dabao.life/images/hero.jpeg">
         <meta property="og:url" content="https://dabao.life/">
         <meta property="og:type" content="website">
@@ -27,271 +27,10 @@
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
+
           gtag('config', 'G-0XPZVQ42QP');
         </script>
-
-        <style>
-        /* ── 新增區塊樣式（不影響原有 styles.css）── */
-
-        /* 決策輔助區塊 */
-        .decision-section {
-            background: var(--bg-secondary, #f9f6f1);
-            border-radius: 16px;
-            padding: 40px 36px;
-            margin: 0 auto 20px;
-        }
-        .decision-section h2 {
-            font-family: 'Noto Serif TC', serif;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary, #2d2d2d);
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        .decision-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 14px;
-        }
-        .decision-card {
-            background: #fff;
-            border: 1.5px solid var(--border-color, #e8ddd0);
-            border-radius: 12px;
-            padding: 20px 18px;
-            text-decoration: none;
-            color: inherit;
-            transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .decision-card:hover {
-            border-color: var(--accent-color, #b5924c);
-            box-shadow: 0 4px 16px rgba(181,146,76,0.12);
-            transform: translateY(-2px);
-        }
-        .decision-card .card-emoji { font-size: 1.4rem; }
-        .decision-card .card-situation {
-            font-size: 0.78rem;
-            color: var(--text-muted, #888);
-            font-weight: 400;
-        }
-        .decision-card .card-action {
-            font-size: 0.97rem;
-            font-weight: 600;
-            color: var(--accent-color, #b5924c);
-        }
-        .decision-card .card-desc {
-            font-size: 0.82rem;
-            color: var(--text-secondary, #666);
-            line-height: 1.5;
-        }
-
-        /* 課程獨立區塊 */
-        .course-highlight {
-            background: linear-gradient(135deg, #2a1f0e 0%, #3d2c12 100%);
-            border-radius: 16px;
-            padding: 44px 40px;
-            display: flex;
-            gap: 36px;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        .course-highlight-text { flex: 1; min-width: 220px; }
-        .course-highlight-text .eyebrow {
-            font-size: 0.78rem;
-            letter-spacing: 0.12em;
-            color: var(--accent-color, #b5924c);
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-        .course-highlight-text h2 {
-            font-family: 'Noto Serif TC', serif;
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #f5ead8;
-            line-height: 1.4;
-            margin-bottom: 14px;
-        }
-        .course-highlight-text p {
-            font-size: 0.9rem;
-            color: #c8b89a;
-            line-height: 1.7;
-            margin-bottom: 10px;
-        }
-        .course-pills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 24px;
-        }
-        .course-pills span {
-            background: rgba(181,146,76,0.18);
-            border: 1px solid rgba(181,146,76,0.35);
-            color: #d4a85a;
-            font-size: 0.78rem;
-            padding: 4px 12px;
-            border-radius: 20px;
-        }
-        .course-cta-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .course-cta-group .btn-primary-gold {
-            background: var(--accent-color, #b5924c);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.92rem;
-            transition: opacity 0.2s;
-        }
-        .course-cta-group .btn-primary-gold:hover { opacity: 0.88; }
-        .course-cta-group .btn-ghost-gold {
-            border: 1.5px solid rgba(181,146,76,0.5);
-            color: #d4a85a;
-            padding: 11px 22px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 0.88rem;
-            transition: border-color 0.2s, color 0.2s;
-        }
-        .course-cta-group .btn-ghost-gold:hover {
-            border-color: var(--accent-color, #b5924c);
-            color: #f0c96a;
-        }
-        .course-price-tag {
-            text-align: center;
-            min-width: 160px;
-        }
-        .course-price-tag .price-original {
-            font-size: 0.82rem;
-            color: #6e5c42;
-            text-decoration: line-through;
-            margin-bottom: 4px;
-        }
-        .course-price-tag .price-current {
-            font-family: 'Noto Serif TC', serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #f5c842;
-            line-height: 1;
-        }
-        .course-price-tag .price-unit {
-            font-size: 0.8rem;
-            color: #c8b89a;
-            margin-top: 4px;
-        }
-        .course-price-tag .price-save {
-            display: inline-block;
-            background: #f5c842;
-            color: #2a1f0e;
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-top: 8px;
-        }
-
-        /* 回饋牆：精選 + 展開 */
-        .testimonials-featured {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .testimonials-featured .masonry-item {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .testimonials-featured .masonry-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 10px;
-        }
-        .show-more-btn {
-            background: none;
-            border: 1.5px solid var(--border-color, #e8ddd0);
-            color: var(--text-secondary, #666);
-            padding: 10px 28px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.88rem;
-            margin: 0 auto 24px;
-            display: block;
-            transition: border-color 0.2s, color 0.2s;
-        }
-        .show-more-btn:hover {
-            border-color: var(--accent-color, #b5924c);
-            color: var(--accent-color, #b5924c);
-        }
-        #extra-testimonials { display: none; }
-        #extra-testimonials.visible { display: grid; }
-
-        /* 服務區塊：紫微占卜加「入門首選」badge */
-        .badge-entry {
-            display: inline-block;
-            background: var(--accent-color, #b5924c);
-            color: #fff;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 2px 9px;
-            border-radius: 20px;
-            margin-left: 8px;
-            vertical-align: middle;
-            letter-spacing: 0.03em;
-        }
-
-        /* 服務卡片底部 CTA */
-        .service-item-cta {
-            margin-top: 16px;
-            padding-top: 14px;
-            border-top: 1px solid var(--border-color, #e8ddd0);
-        }
-        .service-item-cta a {
-            font-size: 0.85rem;
-            color: var(--accent-color, #b5924c);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .service-item-cta a:hover { text-decoration: underline; }
-
-        /* 等候提示 */
-        .wait-notice {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #fff8ee;
-            border: 1px solid #f0d9a8;
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 0.82rem;
-            color: #8a6530;
-            margin-bottom: 16px;
-        }
-        .wait-notice::before { content: "⏳"; }
-
-        /* 值感框架 */
-        .value-frame {
-            font-size: 0.82rem;
-            color: var(--text-muted, #999);
-            font-style: italic;
-            margin-top: 6px;
-        }
-
-        @media (max-width: 640px) {
-            .course-highlight { padding: 28px 20px; }
-            .course-price-tag { width: 100%; }
-            .decision-section { padding: 28px 18px; }
-        }
-        </style>
-    </head>
+        </head>
 <body>
 
     <nav class="navbar">
@@ -302,9 +41,9 @@
             </a>
             <ul class="nav-links">
                 <li><a href="index.html" style="color:var(--accent-color);">首頁</a></li>
+                <li><a href="chart.html">線上排盤</a></li>
                 <li><a href="booking.html">線上預約</a></li>
                 <li><a href="course.html">【實戰紫微斗數】課程</a></li>
-                <li><a href="chart.html">線上排盤</a></li>
                 <li><a href="articles.html">教學文章</a></li>
             </ul>
         </div>
@@ -316,7 +55,6 @@
         </div>
     </div>
 
-    <!-- ── Hero：換成痛點導向文案 ── -->
     <section class="hero container">
         <div class="hero-image">
             <img src="images/hero.jpeg" alt="大寶老師">
@@ -324,89 +62,19 @@
         <div class="hero-text">
             <h1>大寶老師</h1>
             <h3 class="subtitle">紫微斗數論命專家</h3>
-            <p style="font-size:1.08rem; font-weight:500; line-height:1.7; color:var(--text-primary, #2d2d2d);">感情卡關、工作迷茫、錢怎麼賺都不夠——<br>你人生裡最糾結的那幾件事，盤裡都有答案。</p>
-            <p>十餘年實戰命理經驗，已協助逾萬人看清局勢、找到方向。每一次諮詢，不只告訴你「會發生什麼」，更幫你想清楚「接下來該怎麼做」。</p>
-            <p>全程線上語音通話，不需要出門，隱私完全保密。</p>
-            <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-                <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入官方 Line 立刻預約</a>
-                <a href="course.html" style="font-size:0.88rem; color:var(--accent-color, #b5924c); text-decoration:none; font-weight:500;">→ 想自己學？了解課程</a>
-            </div>
+            <p>擁有十餘年命理經驗的大寶老師，精通【紫微斗數】、【紫微占卜】、【風水改運】、【符咒改運】、【姓名改運】及【吉時擇日】，已成功服務逾萬人，助他們在生活中找到方向與最佳位置。</p>
+            <p>我深信每個人都有其獨特的命盤和人生課題，透過細緻的分析與建議，我將幫助您更了解自己，藉以發掘潛力，掌握機會，做出明智的選擇。</p>
+            <p>商業需要顧問，愛情需要顧問，理財需要顧問，而人生更需要專業的指導。人生道路千百條，透過我的專業紫微斗數命盤分析，我將協助您找到最適合您的那一條人生路徑</p>
+            <p>如果老天真的為您規劃了一條相對顛簸的路徑，也可以透過改善風水、變更姓名、催化符令...幫助您修改運勢，讓您逆風而上，翻轉人生</p>
+            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入【官方Line】立刻預約</a>
         </div>
     </section>
 
     <hr class="section-divider">
 
-    <!-- ── 決策輔助區塊（新增）── -->
-    <section class="container" style="padding-top: 0; padding-bottom: 0;">
-        <div class="decision-section">
-            <h2>🤔 不確定要選哪個服務？</h2>
-            <div class="decision-grid">
-                <a href="booking.html" class="decision-card">
-                    <span class="card-emoji">🗺️</span>
-                    <span class="card-situation">想通盤了解人生走向</span>
-                    <span class="card-action">紫微斗數完整論命</span>
-                    <span class="card-desc">未來數十年的運勢脈絡、重大事件，一次掌握。</span>
-                </a>
-                <a href="booking.html" class="decision-card">
-                    <span class="card-emoji">📅</span>
-                    <span class="card-situation">想知道今明兩年發生什麼</span>
-                    <span class="card-action">流年運勢分析</span>
-                    <span class="card-desc">逐月拆解，哪個月要注意、哪個月可以衝。</span>
-                </a>
-                <a href="booking.html" class="decision-card" style="border-color: var(--accent-color, #b5924c);">
-                    <span class="card-emoji">⚡</span>
-                    <span class="card-situation">只想問一件近期的事</span>
-                    <span class="card-action">紫微占卜 <span class="badge-entry">入門首選</span></span>
-                    <span class="card-desc">不需要生日，30 分鐘，最快速的入門體驗。</span>
-                </a>
-                <a href="course.html" class="decision-card">
-                    <span class="card-emoji">📖</span>
-                    <span class="card-situation">不想每次都來問別人</span>
-                    <span class="card-action">實戰紫微斗數課程</span>
-                    <span class="card-desc">從零基礎到能自己看盤，掌握自己的命。</span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <hr class="section-divider">
-
-    <!-- ── 課程獨立區塊（新增）── -->
-    <section class="container" id="course-section" style="padding-top: 0;">
-        <div class="course-highlight">
-            <div class="course-highlight-text">
-                <div class="eyebrow">實戰紫微斗數 · 現正招生</div>
-                <h2>不想每次都「等老師有空」？<br>自己的命，自己算。</h2>
-                <p>初階到職業，四個階段完整體系。不背星曜，教邏輯與推理——大寶老師帶妳從看懂自己的盤，一路到能幫別人論命。</p>
-                <div class="course-pills">
-                    <span>✅ 線上直播 · 可回放</span>
-                    <span>✅ 專屬助教群組</span>
-                    <span>✅ 結業考核制</span>
-                    <span>✅ 初階班招生中</span>
-                </div>
-                <div class="course-cta-group">
-                    <a href="https://line.me/R/ti/p/@653jrxjt?oat_content=url&ts=03241123" target="_blank" class="btn-primary-gold">索取早鳥優惠</a>
-                    <a href="course.html" class="btn-ghost-gold">查看完整課程介紹 →</a>
-                </div>
-            </div>
-            <div class="course-price-tag">
-                <div class="price-original">原價 NT$25,000</div>
-                <div class="price-current">$19,800</div>
-                <div class="price-unit">早鳥優惠價（名額有限）</div>
-                <div class="price-save">省下 $5,200</div>
-            </div>
-        </div>
-    </section>
-
-    <hr class="section-divider">
-
-    <!-- ── 客戶回饋：精選 12 張 + 展開其餘 ── -->
     <section class="testimonials container" id="testimonials">
         <h2 class="section-title">客戶回饋</h2>
-        <p style="text-align:center; color:var(--text-muted, #999); font-size:0.88rem; margin-bottom:24px; margin-top:-12px;">逾萬次諮詢的真實回饋 · 持續累積中</p>
-
-        <!-- 精選 12 張 -->
-        <div class="testimonials-featured masonry-grid" id="masonry-grid">
+        <div class="masonry-grid" id="masonry-grid">
             <div class="masonry-item"><img src="images/001.jpeg" alt="客戶回饋" loading="lazy"></div>
             <div class="masonry-item"><img src="images/002.jpeg" alt="客戶回饋" loading="lazy"></div>
             <div class="masonry-item"><img src="images/003.jpeg" alt="客戶回饋" loading="lazy"></div>
@@ -419,10 +87,6 @@
             <div class="masonry-item"><img src="images/010.jpeg" alt="客戶回饋" loading="lazy"></div>
             <div class="masonry-item"><img src="images/011.jpeg" alt="客戶回饋" loading="lazy"></div>
             <div class="masonry-item"><img src="images/012.jpeg" alt="客戶回饋" loading="lazy"></div>
-        </div>
-
-        <!-- 其餘 66 張（預設收起）-->
-        <div id="extra-testimonials" class="testimonials-featured" style="margin-top:12px;">
             <div class="masonry-item"><img src="images/013.jpeg" alt="客戶回饋" loading="lazy"></div>
             <div class="masonry-item"><img src="images/014.jpeg" alt="客戶回饋" loading="lazy"></div>
             <div class="masonry-item"><img src="images/015.jpeg" alt="客戶回饋" loading="lazy"></div>
@@ -490,24 +154,15 @@
             <div class="masonry-item"><img src="images/077.jpeg" alt="客戶回饋" loading="lazy"></div>
             <div class="masonry-item"><img src="images/078.jpeg" alt="客戶回饋" loading="lazy"></div>
         </div>
-
-        <button class="show-more-btn" id="show-more-btn" onclick="toggleTestimonials()">展開全部 78 則回饋 ▾</button>
-
         <div class="center-btn">
-            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入官方 Line 立刻預約</a>
+            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入【官方Line】立刻預約</a>
         </div>
     </section>
 
     <hr class="section-divider">
 
-    <!-- ── 服務列表（加值感框架 + 各項 CTA）── -->
     <section class="services container" id="services">
         <h2 class="section-title">大寶老師的命理諮詢服務</h2>
-
-        <div style="text-align:center; margin-bottom: 28px;">
-            <span class="wait-notice">目前預約約需等候 1～2 週，建議提早加入 Line 排候補</span>
-        </div>
-
         <div class="services-grid">
             <div class="service-item">
                 <div class="service-header">
@@ -515,13 +170,9 @@
                     <h3>紫微斗數完整論命</h3>
                 </div>
                 <div class="service-body">
-                    <p>根據您的出生生辰排出命盤，深入分析未來數十年的運勢走向與重大事件節點，幫您在人生每個岔路口做出更好的選擇。</p><br>
-                    <p>服務內容：未來人生整體運勢走向（若需某年份的逐月分析，請另預約流年運勢）</p><br>
-                    <p>服務時長：60 分鐘　｜　服務費用：NT$4,800</p>
-                    <p class="value-frame">一次諮詢，換來對未來 30 年走向的清晰度。</p>
-                </div>
-                <div class="service-item-cta">
-                    <a href="https://lin.ee/y2XVa6h" target="_blank">→ 加入 Line 預約此服務</a>
+                    <p>需要出生年、月、日、時、分(又稱生辰八字)來進行紫微斗數排盤，紫微斗數命盤中會記載一個人一生的運勢、事件，透過分析紫微斗數命盤可更細微的掌握人生軌跡，進而做出計畫、事前預防</p><br>
+                    <p>服務內容：提醒您未來人生數十年的運勢走向提醒，不包含某個年份的詳細分析(此項請預約流年運勢分析)</p><br>
+                    <p>服務時長：60min/一張盤<br>服務費用：NT$4,800/一張盤</p>
                 </div>
             </div>
 
@@ -531,29 +182,21 @@
                     <h3>流年運勢分析</h3>
                 </div>
                 <div class="service-body">
-                    <p>針對特定年份進行逐月解析，包含當年度應注意的事件（結婚、重病、生子、開刀、財運、職場……），讓您提前做好準備。</p><br>
-                    <p>服務內容：指定年份的逐月運勢分析與事件預警</p><br>
-                    <p>服務時長：40 分鐘　｜　服務費用：NT$3,600</p>
-                    <p class="value-frame">今年還有幾個月——現在看，還來得及。</p>
-                </div>
-                <div class="service-item-cta">
-                    <a href="https://lin.ee/y2XVa6h" target="_blank">→ 加入 Line 預約此服務</a>
+                    <p>需要出生年、月、日、時、分(又稱生辰八字)來進行紫微斗數排盤，紫微斗數命盤中會記載一個人一生的運勢、事件，透過分析紫微斗數命盤可更細微的掌握人生軌跡，進而做出計畫、事前預防</p><br>
+                    <p>服務內容：針對某個年份進行流年運勢分析，包含當年度應注意事項(結婚、重病、生子、開刀、車關...)</p><br>
+                    <p>服務時長：40min/一張盤<br>服務費用：NT$3,600/一張盤</p>
                 </div>
             </div>
 
-            <div class="service-item" style="border-color: var(--accent-color, #b5924c);">
+            <div class="service-item">
                 <div class="service-header">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    <h3>紫微占卜 <span class="badge-entry">入門首選</span></h3>
+                    <h3>紫微占卜</h3>
                 </div>
                 <div class="service-body">
-                    <p>透過 4 個數字引動當下運勢，<strong>完全不需要您的姓名或生日</strong>，即可針對 6 個月內的特定問題進行吉凶占測，最快速的入門體驗。</p><br>
-                    <p>服務內容：6 個月內特定事件的吉凶分析與建議方向</p><br>
-                    <p>服務時長：30 分鐘　｜　服務費用：NT$1,800</p>
-                    <p class="value-frame">最低門檻，最快知道答案。</p>
-                </div>
-                <div class="service-item-cta">
-                    <a href="https://lin.ee/y2XVa6h" target="_blank">→ 加入 Line 預約此服務</a>
+                    <p>透過4個數字去引動符合您【半年內現況運勢】的斗數盤，可針對【已決定事件】或【尚未決定但已有方向】事件進行吉凶占卜，不需要您的任何個人資訊(姓名、生日...皆不需要)</p><br>
+                    <p>服務內容：針對6個月內的運勢進行分析、問題回覆</p><br>
+                    <p>服務時長：30min<br>服務費用：NT$1,800</p>
                 </div>
             </div>
 
@@ -563,12 +206,9 @@
                     <h3>風水佈陣改運</h3>
                 </div>
                 <div class="service-body">
-                    <p>環境潛移默化影響你的決策速度、思維清晰度與財運格局。大寶老師現場堪輿居家或辦公空間，給出具體的風水佈局建議。</p><br>
-                    <p>服務內容：居家／辦公空間風水堪輿，提供改善方向與佈局建議</p><br>
-                    <p>服務時長：30 分鐘　｜　服務費用：NT$12,800（限雙北、桃園；其他地區或多物件請洽 Line）</p>
-                </div>
-                <div class="service-item-cta">
-                    <a href="https://lin.ee/y2XVa6h" target="_blank">→ 加入 Line 詢問風水服務</a>
+                    <p>風水即一個人所處環境對一個人潛移默化帶來的影響，居家或辦公的風水會影響一個人的心情、決定事情的速度、思維判斷能力...好風水將造成事半功倍的效果</p><br>
+                    <p>服務內容：居家或辦公風水堪輿，與您討論改善方向並給出風水佈局建議</p><br>
+                    <p>服務時長：30min/一個物件<br>服務費用：NT$12,800/限雙北、桃園；一個物件(雙北、桃園以外地區、超過一個以上物件請洽官方Line，有專人協助您預約)</p>
                 </div>
             </div>
 
@@ -578,11 +218,9 @@
                     <h3>符令改運</h3>
                 </div>
                 <div class="service-body">
-                    <p>師承正一道，依循請神、勅水、勅墨等完整工序，搭配口訣手印手工撰寫（非印刷符），每道符令均針對命主需求開立。可增財運、事業運、桃花運……</p><br>
-                    <p>服務費用：依需求而定，請洽官方 Line（台灣本島含運費）</p>
-                </div>
-                <div class="service-item-cta">
-                    <a href="https://lin.ee/y2XVa6h" target="_blank">→ 加入 Line 詢問符令服務</a>
+                    <p>大寶老師師承正一道，以最誠心與最正統的畫符步驟(每道符皆依循請神、勅水、勅墨、勅硯、勅紙、勅筆、取筆、下筆、用印、開符、勅符...等繁瑣工序，搭配口訣、手印進行手工撰寫，非一般常見之印刷符)所開之符令具備強大效力，能幫助命主增加財運、事業運、桃花運...讓人生闖蕩路上有如神助，大展身手</p><br>
+                    <p>服務內容：依照不同需求開立滿足需求之符咒</p><br>
+                    <p>服務費用：每張符令不同，請洽官方Line，有專人協助您(台灣地區購買皆含運費，台灣以外地區依照國家有不同收取不同之運費)</p>
                 </div>
             </div>
 
@@ -592,12 +230,9 @@
                     <h3>姓名改運</h3>
                 </div>
                 <div class="service-body">
-                    <p>搭配命盤星曜與五行，打造好聽、好寫、好記，又能加強運勢的名字。不只是音學，而是真正結合命盤的個人化命名。</p><br>
-                    <p>服務內容：提供 10 組建議名稱供挑選</p><br>
-                    <p>服務費用：NT$3,600（5 個工作天交件）</p>
-                </div>
-                <div class="service-item-cta">
-                    <a href="https://lin.ee/y2XVa6h" target="_blank">→ 加入 Line 預約命名服務</a>
+                    <p>名字是一個人的代號，是一個人把自己介紹給這個世界的獨有標記，一個好的名字除了要好聽、好記、好寫之外，因為每天使用，所以也默默地影響著個人、公司行號的運勢；大寶老師的取名服務搭配紫微斗數命盤中的星曜、五行，打造出能改善、加強運勢的有利名稱，幫助您出門在外打拼如虎添翼</p><br>
+                    <p>服務內容：依照個人或公司負責人的紫微斗數命盤去搭配出好聽、好寫、好記，更能加強運勢、改善運勢的最佳名稱，將提供10組建議供挑選</p><br>
+                    <p>服務費用：NT$3,600/次(5個工作天交件)</p>
                 </div>
             </div>
 
@@ -607,12 +242,9 @@
                     <h3>實戰紫微斗數教學</h3>
                 </div>
                 <div class="service-body">
-                    <p>初階、進階、高階、職業四階段完整課程，從看懂自己的盤到具備論命能力。不背死書，學邏輯與推理，大寶老師親自帶。</p><br>
-                    <p>課程週期：每週 1 次，每期 12 週，每次 2 小時</p><br>
-                    <p>課程費用：早鳥優惠 NT$19,800（原價 NT$25,000）</p>
-                </div>
-                <div class="service-item-cta">
-                    <a href="course.html">→ 查看完整課程介紹</a>
+                    <p>大寶老師的實戰紫微斗數分為初階、進階、高階與職業四個階段，每個階段的學習目標不同，目的是能培養出有良好命理觀念與具備準確論命能力的命理師，讓更多人能掌握紫微斗數的奧秘，自己的命自己算，更能了解自己，替自己改運，創造自己想要的美好人生</p><br>
+                    <p>課程週期：每週一次，每期12週<br>課程時長：每週上課2小時</p><br>
+                    <p>課程費用：原價NT$25,000，加入官方Line後留意不定時釋出的早鳥報名特惠(最特惠價NT$19,800)</p>
                 </div>
             </div>
 
@@ -622,15 +254,22 @@
                     <h3>異業合作</h3>
                 </div>
                 <div class="service-body">
-                    <p>有想要與命理結合的商業想法？歡迎加入官方 Line 洽談合作。</p>
+                    <p>不論您從事何種行業，若您有想要與命理結合的絕妙想法，歡迎加入官方Line洽談合作</p>
                 </div>
-                <div class="service-item-cta">
-                    <a href="https://lin.ee/y2XVa6h" target="_blank">→ 加入 Line 洽談</a>
+            </div>
+            
+            <div class="service-item">
+                <div class="service-header">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <h3>其他項目</h3>
+                </div>
+                <div class="service-body">
+                    <p>您有其他關於命理或是關於大寶老師的服務問題？請先移置網站最下方觀看【常見問題】，或是您也可以加入官方Line諮詢</p>
                 </div>
             </div>
         </div>
         <div class="center-btn">
-            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入官方 Line 立刻預約</a>
+            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入【官方Line】立刻預約</a>
         </div>
     </section>
 
@@ -641,35 +280,31 @@
         <div class="faq-list">
             <details>
                 <summary>【紫微斗數完整論命】跟【紫微占卜】差異？我該預約哪個？</summary>
-                <p>紫微斗數完整論命需要您的生辰八字進行排盤，老師針對您未來數十年的運勢狀況與重大事件做完整分析。<br><br>紫微占卜則完全不需要任何個人資訊，針對 6 個月內已決定或即將決定的事情進行吉凶占測。<br><br>想通盤了解人生 → 完整論命；只想快速問一件事 → 紫微占卜（最低門檻、最快入手）。</p>
+                <p>紫微斗數完整論命會需要您的出生年月日、出生時間(也就是生辰八字)的資訊進行排盤，老師會針對您接下來的數十年分析運勢狀況、重大事件。<br><br>紫微占卜則不需要您的任何個人資訊即可進行，針對【已經下的決策】或是【尚未下決策但已有想法】的事情(限6個月內)進行運勢的吉凶占測。<br><br>如果您想通盤了解人生，建議預約紫微斗數完整論命；若您只是想知道6個月的決定吉凶，那預約紫微占卜即可。</p>
             </details>
             <details>
                 <summary>【紫微斗數完整論命】跟【流年運勢分析】又差在哪呢？</summary>
-                <p>完整論命討論的是未來數十年的整體走向；流年運勢分析則是針對某個年份逐月拆解，告訴您哪個月份要注意什麼事件，讓您可以趨吉避凶。</p>
+                <p>紫微斗數完整論命的討論範圍是未來數十年的整體走向，而流年運勢分析則是針對某個流年進行逐月的運勢分析，提醒您當年份發生的重大事件與發生月份，讓您可以趨吉避凶、掌握未來。</p>
             </details>
             <details>
                 <summary>老師在哪裡？需要見面才能進行嗎？</summary>
-                <p>目前大寶老師的所有服務，除【風水堪輿】需現場進行外，其他諮詢服務皆採線上語音通話進行，不須碰面，省去舟車勞頓的麻煩，全台灣甚至海外都可以諮詢。</p>
-            </details>
-            <details>
-                <summary>目前大概要等多久才能預約到？</summary>
-                <p>目前預約通常需要等候 1～2 週。如果有急事，可支付 2 倍原價的急件服務費，以大寶老師當週釋出的空檔優先安排。建議提早加入官方 Line 排候補，掌握最新空檔資訊。</p>
+                <p>目前大寶老師的所有服務，除【風水堪輿】需現場進行外，其他諮詢服務皆採線上預約，語音通話進行，不須碰面，省去舟車勞頓的麻煩。</p>
             </details>
             <details>
                 <summary>常算命是不是會越算命越差？</summary>
-                <p>紫微斗數是人生的一張地圖——打開導航不會讓路變差，反而讓你避開壅塞、提前知道哪裡有休息站。掌握自己的運勢走向，才能做出更好的選擇。</p>
+                <p>紫微斗數是人生的一張地圖，學會紫微斗數就等於掌握了閱讀人生地圖的能力，就跟您打開導航軟體一樣，在人生的漫長旅途中，若能提前知道哪邊會壅塞、哪邊有車禍、哪裡有休息站...就能及早的規劃自己的行程，讓自身旅程更加順暢，又何來命越算越薄的道理呢？</p>
             </details>
             <details>
                 <summary>我沒有帶天命也可以學習紫微斗數嗎？</summary>
-                <p>當然可以！學紫微斗數就像學開車、游泳，只要有興趣與練習，不需要任何天賦或特別條件。</p>
+                <p>當然可以！只要有興趣、熱情，並且定期的練習，就跟學習一般技能(如開車、游泳、跳舞...)一樣，並不需要什麼條件，更別說要帶什麼天命了。</p>
             </details>
             <details>
                 <summary>老師有處理【急件】嗎？</summary>
-                <p>有。可支付 2 倍原價的急件服務費，以大寶老師當週釋出的時段優先安排。請洽官方 Line，有專人協助。</p>
+                <p>大寶老師的服務因為都採預約進行，所以都需要等待，但如果您真的不想等待，可以支付2倍原價的服務費優先進行諮詢(但還是要以大寶老師釋出的時段為主)，可洽官方Line，有專人會協助您預約。</p>
             </details>
             <details>
                 <summary>大寶老師的服務時間是？</summary>
-                <p>週一至週六，每天 10:00～20:00（最後一個時段為 20:00–21:00）。過年期間定期休假 2～3 週，加入官方 Line 可掌握最新動態。</p>
+                <p>每週一至周六，每天10點到20點(最後一個預約時段是2000-2100)。過年定期休假2~3週，加入官方Line可掌握老師最新的預約動態~</p>
             </details>
         </div>
     </section>
@@ -691,7 +326,7 @@
             </a>
         </div>
         <div class="center-btn">
-            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入官方 Line 立刻預約</a>
+            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入【官方Line】立刻預約</a>
         </div>
     </section>
 
@@ -704,9 +339,11 @@
     <div class="admin-modal" id="admin-modal">
         <div class="admin-modal-content">
             <h3 style="margin-bottom: 20px;">🔒 登入後台管理系統</h3>
+            
             <div style="margin-bottom: 20px;">
                 <input type="password" id="admin-pass" class="admin-input" placeholder="請輸入站長密碼" style="border-color:var(--accent-color);">
             </div>
+            
             <div class="admin-actions" style="justify-content: center; gap: 10px;">
                 <button class="admin-btn btn-save" id="btn-login">登入後台</button>
                 <button class="admin-btn btn-cancel" id="admin-cancel">取消</button>
@@ -715,20 +352,6 @@
     </div>
 
     <script>
-        // 展開／收合回饋牆
-        function toggleTestimonials() {
-            const extra = document.getElementById('extra-testimonials');
-            const btn = document.getElementById('show-more-btn');
-            const isOpen = extra.classList.contains('visible');
-            if (isOpen) {
-                extra.classList.remove('visible');
-                btn.textContent = '展開全部 78 則回饋 ▾';
-            } else {
-                extra.classList.add('visible');
-                btn.textContent = '收起 ▴';
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', async () => {
             const { createClient } = window.supabase;
             const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
@@ -781,6 +404,7 @@
                     clickCount = 0;
                     passInput.value = '';
                     modal.style.display = 'flex';
+                    // 開啟視窗時自動將游標聚焦在密碼輸入框
                     setTimeout(() => passInput.focus(), 100);
                 }
             });
@@ -789,6 +413,7 @@
                 modal.style.display = 'none';
             });
 
+            // 加入 Enter 鍵的監聽事件
             passInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     btnLogin.click();
@@ -799,11 +424,16 @@
             btnLogin.addEventListener('click', async () => {
                 const passcode = passInput.value.trim();
                 if(!passcode) return alert('⚠️ 請輸入密碼！');
+
                 btnLogin.innerText = '驗證中...';
+                
+                // 呼叫資料庫的專屬保鑣驗證密碼
                 const { data, error } = await supabase.rpc('verify_admin_password', {
                     input_passcode: passcode
                 });
+
                 if (data === true) {
+                    // 驗證成功
                     sessionStorage.setItem('isAdminLoggedIn', 'true');
                     window.location.href = './admindashboard/admin.html';
                 } else {
@@ -812,11 +442,12 @@
                 btnLogin.innerText = '登入後台';
             });
 
-            // 5. 動態檢查文章列表版本開關
+            // 5. 動態檢查文章列表版本開關 (無縫接軌新功能) - 終極模糊比對版
             const fetchArticleToggle = async () => {
                 try {
                     const { data, error } = await supabase.from('site_settings').select('setting_value').eq('setting_key', 'new_article_list_enabled').single();
                     if (data && data.setting_value === true) {
+                        // 使用 *= 進行模糊比對，無視瀏覽器自動補齊的網址
                         const articleLinks = document.querySelectorAll('a[href*="articles.html"]');
                         articleLinks.forEach(link => link.href = 'new_articles.html');
                     }
