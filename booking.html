@@ -6,31 +6,130 @@
         <title>預約命理諮詢 - 完整論命、流年、紫微占卜 | 大寶老師</title>
         <meta name="description" content="立即線上預約大寶老師命理諮詢！提供紫微斗數完整論命、流年運勢分析、紫微占卜。全程透過官方 Line 語音通話進行，無需碰面，保護您的隱私，輕鬆獲得專業解答。">
         <meta name="keywords" content="預約算命, 線上算命預約, 紫微斗數諮詢, 流年分析預約, 紫微占卜預約">
-        
         <meta property="og:title" content="預約大寶老師命理諮詢">
         <meta property="og:description" content="全程官方 Line 語音通話，免出門即可享受專業的紫微斗數論命與流年分析服務。">
         <meta property="og:image" content="https://dabao.life/images/hero.jpeg">
         <meta property="og:url" content="https://dabao.life/booking.html">
         <meta property="og:type" content="website">
-    
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="styles.css">
-        
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-0XPZVQ42QP"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-
           gtag('config', 'G-0XPZVQ42QP');
         </script>
-        </head>
+        <style>
+        .booking-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .booking-card {
+            background: #1e1e1e;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .booking-card .bc-name {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .booking-card .bc-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .booking-card .bc-meta {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 4px;
+        }
+        .booking-card .bc-price {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-top: 4px;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .step-item {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 24px;
+            text-align: center;
+        }
+        .step-num {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 12px;
+        }
+        .step-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .step-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .earlybird-notice {
+            background: rgba(221,167,106,0.08);
+            border: 1px solid rgba(221,167,106,0.25);
+            border-radius: 10px;
+            padding: 20px 28px;
+            margin: 0 0 40px;
+            font-size: 0.9rem;
+            color: #a08060;
+            line-height: 1.8;
+        }
+        .earlybird-notice strong { color: var(--accent-color); }
+        @media (max-width: 768px) {
+            .steps-grid { grid-template-columns: 1fr 1fr; }
+            .booking-grid { grid-template-columns: 1fr; }
+        }
+        .inner-page-header { padding: 20px 20px 10px; }
+        .inner-content hr.section-divider { margin-bottom: 20px !important; }
+        .steps-grid { margin: 20px 0 !important; }
+        .step-item { padding: 16px !important; }
+        .step-num { font-size: 1.6rem !important; margin-bottom: 8px !important; }
+        h2[style*="margin-bottom:8px"] { margin-top: 0 !important; margin-bottom: 4px !important; }
+        p[style*="margin-bottom:0"] { margin-bottom: 0 !important; }
+        .sticky-cta {
+            position: fixed; bottom: 28px; right: 28px; z-index: 999;
+            background: var(--accent-color); color: #000;
+            padding: 14px 24px; border-radius: 50px;
+            font-weight: 700; font-size: 0.92rem; text-decoration: none;
+            box-shadow: 0 4px 20px rgba(221,167,106,0.4);
+            transition: transform 0.2s, opacity 0.3s;
+            opacity: 0; pointer-events: none;
+        }
+        .sticky-cta.visible { opacity: 1; pointer-events: auto; }
+        .sticky-cta:hover { transform: translateY(-2px); }
+        @media (max-width: 768px) {
+            .sticky-cta { bottom: 20px; right: 16px; left: 16px; text-align: center; border-radius: 10px; }
+        }
+        </style>
+    </head>
 <body>
-    
     <nav class="navbar">
         <div class="container nav-container">
             <a href="index.html" class="logo">
@@ -39,37 +138,104 @@
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">首頁</a></li>
-                <li><a href="chart.html">線上排盤</a></li>
-                <li><a href="booking.html" style="color:var(--accent-color);">線上預約</a></li>
                 <li><a href="course.html">【實戰紫微斗數】課程</a></li>
+                <li><a href="booking.html" style="color:var(--accent-color);">線上預約</a></li>
                 <li><a href="articles.html">教學文章</a></li>
+                <li><a href="chart.html">線上排盤</a></li>
             </ul>
         </div>
     </nav>
 
     <div class="inner-page-header">
         <h1>線上預約</h1>
+        <p style="color:var(--text-muted); font-size:1rem; margin-top:12px;">全程線上語音通話，不需出門，隱私保密</p>
     </div>
 
-    <div class="inner-content" style="text-align: center;">
+    <div class="inner-content">
         <hr class="section-divider" style="margin-bottom: 40px;">
-        <p>現在預約除了可聯繫官方Line讓小幫手為您服務之外，還可以透過線上預約系統來挑選符合自己時間需求的時段，讓自己挑選預約時段，不僅快速而且方便。</p>
-        <p><strong>最棒的是，只要透過這個線上預約系統進行預約，我們就幫您的預約節省 10％ 費用（打 9 折）！</strong><br>不僅省心省力還省錢，現在就利用這個線上預約機制來預約吧。</p>
-        <a href="https://ziweiapp.dabao.life/booking" target="_blank" class="primary-btn" style="margin-top: 40px;">進入「線上預約系統」預約</a>
+
+        <h2 style="color:var(--primary-color); margin-bottom:8px;">預約流程</h2>
+        <p style="color:var(--text-muted); margin-bottom:0;">四個步驟，完成預約</p>
+        <div class="steps-grid">
+            <div class="step-item">
+                <div class="step-num">01</div>
+                <div class="step-title">選擇服務與時段</div>
+                <div class="step-desc">在線上預約系統中選擇想要的服務項目，並挑選想要預約的時段</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">02</div>
+                <div class="step-title">完成付款</div>
+                <div class="step-desc">依照系統指示完成付款（線上預約系統支援信用卡付款）</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">03</div>
+                <div class="step-title">聯繫小幫手確認</div>
+                <div class="step-desc">付款後請務必加入官方 Line 告知小幫手，確認時段已成功保留（我們有多種預約管道，此步驟非常重要）</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">04</div>
+                <div class="step-title">諮詢開始</div>
+                <div class="step-desc">預約時段到來，透過官方 Line 語音通話進行諮詢，全程不需出門，避免舟車勞頓</div>
+            </div>
+        </div>
+
+        <div class="earlybird-notice">
+            🎯 <strong>每月早鳥優惠</strong>：每月 5～10 日為早鳥優惠期間，紫微斗數完整論命 NT$4,200、流年運勢分析 NT$3,200，亦有不定時的優惠方案，預約前可先加入官方 Line 確認是否在優惠期間內
+        </div>
+
+        <div style="text-align:center; margin-bottom: 40px;">
+            <a href="https://ziweiapp.dabao.life/booking" target="_blank" class="primary-btn">進入線上預約系統</a>
+            <p style="color:#555; font-size:0.85rem; margin-top:16px;">或加入 <a href="https://lin.ee/y2XVa6h" target="_blank" style="color:var(--accent-color);">官方 Line</a> 由小幫手協助預約</p>
+        </div>
+
+        <h2 style="color:var(--primary-color); margin-bottom:8px;">線上語音諮詢服務一覽</h2>
+        <p style="color:var(--text-muted); margin-bottom:0;">不確定要選哪個？<a href="index.html#services" style="color:var(--accent-color);">回首頁查看完整說明</a></p>
+        <div class="booking-grid">
+            <div class="booking-card">
+                <span class="bc-name">紫微斗數完整論命</span>
+                <span class="bc-desc">根據生辰排出命盤，分析未來數十年運勢走向與重大事件節點</span>
+                <span class="bc-meta">諮詢時長：60 分鐘</span>
+                <span class="bc-price">NT$4,800</span>
+            </div>
+            <div class="booking-card">
+                <span class="bc-name">流年運勢分析</span>
+                <span class="bc-desc">針對指定年份進行解析，包含重大事件預警，讓妳提前做好準備</span>
+                <span class="bc-meta">諮詢時長：40 分鐘</span>
+                <span class="bc-price">NT$3,600</span>
+            </div>
+            <div class="booking-card">
+                <span class="bc-name">紫微占卜</span>
+                <span class="bc-desc">不需個人資訊，透過 4 個數字針對 6 個月內的事件進行吉凶占測</span>
+                <span class="bc-meta">諮詢時長：30 分鐘</span>
+                <span class="bc-price">NT$1,800</span>
+            </div>
+        </div>
+
+        <p style="color:#555; font-size:0.85rem; text-align:center; margin-top:-10px;">風水堪輿、符令改運、姓名改運...等其他服務請透過 <a href="https://lin.ee/y2XVa6h" target="_blank" style="color:var(--accent-color);">官方 Line</a> 洽詢</p>
     </div>
 
-    <footer class="footer" style="margin-top:150px;"><div class="container"><p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p></div></footer>
+    <a href="https://lin.ee/y2XVa6h" target="_blank" class="sticky-cta" id="sticky-cta">立刻預約諮詢</a>
+
+    <footer class="footer"><div class="container"><p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p></div></footer>
 
     <script>
+        const stickyCta = document.getElementById('sticky-cta');
+        window.addEventListener('scroll', () => {
+            const nearBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200;
+            if (window.scrollY > 100 && !nearBottom) {
+                stickyCta.classList.add('visible');
+            } else {
+                stickyCta.classList.remove('visible');
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', async () => {
             const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
             const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
             const sbClient = window.supabase.createClient(supabaseUrl, supabaseKey);
-
             try {
                 const { data, error } = await sbClient.from('site_settings').select('setting_value').eq('setting_key', 'new_article_list_enabled').single();
                 if (data && data.setting_value === true) {
-                    // 改用模糊比對 *=
                     document.querySelectorAll('a[href*="articles.html"]').forEach(link => link.href = 'new_articles.html');
                 }
             } catch (err) {
