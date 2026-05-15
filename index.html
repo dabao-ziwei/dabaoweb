@@ -278,6 +278,21 @@
         @media (max-width: 480px) {
             .decision-grid { grid-template-columns: 1fr; }
         }
+
+        .sticky-cta {
+            position: fixed; bottom: 28px; right: 28px; z-index: 999;
+            background: var(--accent-color); color: #000;
+            padding: 14px 24px; border-radius: 50px;
+            font-weight: 700; font-size: 0.92rem; text-decoration: none;
+            box-shadow: 0 4px 20px rgba(221,167,106,0.4);
+            transition: transform 0.2s, opacity 0.3s;
+            opacity: 0; pointer-events: none;
+        }
+        .sticky-cta.visible { opacity: 1; pointer-events: auto; }
+        .sticky-cta:hover { transform: translateY(-2px); }
+        @media (max-width: 768px) {
+            .sticky-cta { bottom: 20px; right: 16px; left: 16px; text-align: center; border-radius: 10px; }
+        }
         </style>
     </head>
 <body>
@@ -329,22 +344,22 @@
                 <a href="booking.html" class="decision-card featured">
                     <span class="card-situation">想通盤了解人生走向</span>
                     <span class="card-action">紫微斗數完整論命</span>
-                    <span class="card-desc">未來數十年的運勢脈絡與重大事件，一次掌握。</span>
+                    <span class="card-desc">未來數十年的運勢脈絡與重大事件，一次掌握</span>
                 </a>
                 <a href="booking.html" class="decision-card">
                     <span class="card-situation">想知道今明兩年發生什麼</span>
                     <span class="card-action">流年運勢分析</span>
-                    <span class="card-desc">逐月拆解，哪個月要注意、哪個月可以衝。</span>
+                    <span class="card-desc">年度運勢拆解，近期在意的事情走向，該衝該緩，立見分明</span>
                 </a>
                 <a href="booking.html" class="decision-card">
                     <span class="card-situation">只想問一件近期的事</span>
                     <span class="card-action">紫微占卜</span>
-                    <span class="card-desc">不需要生日，30 分鐘，最快速的入門體驗。</span>
+                    <span class="card-desc">不需要生辰八字，30 分鐘掌握6個月內的運勢吉凶</span>
                 </a>
                 <a href="course.html" class="decision-card">
                     <span class="card-situation">不想每次都來問別人</span>
                     <span class="card-action">實戰紫微斗數課程</span>
-                    <span class="card-desc">從零基礎到能自己看盤，掌握自己的命運。</span>
+                    <span class="card-desc">從零基礎到能自己看盤、改運，掌握自己的命運</span>
                 </a>
             </div>
         </div>
@@ -356,10 +371,10 @@
             <div class="course-highlight-text">
                 <div class="course-eyebrow">實戰紫微斗數 · 現正招生</div>
                 <h2 style="font-size:1.3rem !important; line-height:1.6;">諮詢再準，終究還是要排隊等待，無法即時得到解答<br>自己的命、自己算，自己的運、自己改！</h2>
-                <p>初階到職業，四個階段完整體系。不背星曜，教邏輯與推理。大寶老師親自帶，從看懂自己的盤，一路到能幫別人論命。</p>
+                <p>初階到職業，四個階段完整體系；不背星曜，教邏輯與推理。大寶老師親自帶，從看懂盤到能分析甚至改運，能幫自己也幫別人論命</p>
                 <div class="course-pills">
                     <span>✅ 線上直播 · 可回放</span>
-                    <span>✅ 專屬助教群組</span>
+                    <span>✅ 專屬助教支援</span>
                     <span>✅ 結業考核制</span>
                     <span>✅ 初階班招生中</span>
                 </div>
@@ -462,9 +477,6 @@
             <div class="masonry-item"><img src="images/078.jpeg" alt="客戶回饋" loading="lazy"></div>
         </div>
 
-        <div class="center-btn" style="margin: 20px 0 40px;">
-            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入官方 Line 立刻預約</a>
-        </div>
     </section>
 
     <!-- 服務列表 -->
@@ -483,7 +495,7 @@
                     <h3>紫微斗數完整論命</h3>
                 </div>
                 <div class="service-body">
-                    <p>根據您的出生生辰排出命盤，深入分析未來數十年的運勢走向與重大事件節點，幫您在人生每個岔路口做出更好的選擇。</p><br>
+                    <p>根據您的出生生辰排出命盤，深入分析未來數十年的運勢走向與重大事件節點，幫您在人生每個岔路口做出更好的選擇</p><br>
                     <p>服務內容：未來人生整體運勢走向（若需逐月分析，請另預約流年運勢）</p><br>
                     <p>服務時長：60 分鐘</p>
                     <p>服務費用：NT$4,800</p>
@@ -496,8 +508,8 @@
                     <h3>流年運勢分析</h3>
                 </div>
                 <div class="service-body">
-                    <p>針對特定年份進行逐月解析，包含當年度應注意的事件（結婚、重病、生子、開刀、財運、職場……），讓您提前做好準備。</p><br>
-                    <p>服務內容：指定年份的逐月運勢分析與事件預警</p><br>
+                    <p>針對特定年份進行運勢解析，包含當年度應注意的事件（結婚、重病、生子、開刀、財運、職場……），讓您提前做好準備</p><br>
+                    <p>服務內容：指定年份的運勢分析與事件預警</p><br>
                     <p>服務時長：40 分鐘</p>
                     <p>服務費用：NT$3,600</p>
                 </div>
@@ -509,7 +521,7 @@
                     <h3>紫微占卜</h3>
                 </div>
                 <div class="service-body">
-                    <p>透過 4 個數字引動當下運勢，<strong style="color:#fff;">完全不需要姓名或生日</strong>，針對 6 個月內的特定問題進行吉凶占測。</p><br>
+                    <p>透過 4 個數字引動當下運勢，<strong style="color:#fff;">完全不需要姓名或生日</strong>，針對 6 個月內的特定問題進行吉凶占測</p><br>
                     <p>服務內容：6 個月內特定事件的吉凶分析與方向建議</p><br>
                     <p>服務時長：30 分鐘</p>
                     <p>服務費用：NT$1,800</p>
@@ -522,7 +534,7 @@
                     <h3>風水佈陣改運</h3>
                 </div>
                 <div class="service-body">
-                    <p>環境潛移默化影響你的決策速度、思維清晰度與財運格局。大寶老師現場堪輿居家或辦公空間，給出具體的風水佈局建議。</p><br>
+                    <p>環境潛移默化影響你的決策速度、思維清晰度與財運格局。大寶老師現場堪輿居家或辦公空間，給出具體的風水佈局建議</p><br>
                     <p>服務內容：居家／辦公空間風水堪輿，提供改善方向與佈局建議</p><br>
                     <p>服務時長：30 分鐘</p>
                     <p>服務費用：NT$12,800（限雙北、桃園；其他地區或多物件請洽 Line）</p>
@@ -535,7 +547,7 @@
                     <h3>符令改運</h3>
                 </div>
                 <div class="service-body">
-                    <p>師承正一道，依循請神、勅水、勅墨等完整工序，搭配口訣手印手工撰寫（非印刷符），每道符令均針對命主需求開立。可增財運、事業運、桃花運……</p><br>
+                    <p>師承正一道，依循請神、勅水、勅墨、勅硯、勅紙、勅筆...等完整工序，搭配口訣手印手工撰寫（非印刷符），每道符令均針對命主需求開立。可增財運、事業運、桃花運……</p><br>
                     <p>服務費用：依需求而定，請洽官方 Line（台灣本島含運費）</p>
                 </div>
             </div>
@@ -546,7 +558,7 @@
                     <h3>姓名改運</h3>
                 </div>
                 <div class="service-body">
-                    <p>搭配命盤星曜與五行，打造好聽、好寫、好記，又能加強運勢的名字。不只音學，而是真正結合命盤的個人化命名。</p><br>
+                    <p>搭配命盤星曜與五行屬性，打造好聽、好寫、好記，又能加強運勢的名字。不只音學，而是真正結合命盤的個人化命名</p><br>
                     <p>服務內容：提供 10 組建議名稱供挑選</p><br>
                     <p>服務費用：NT$3,600（5 個工作天交件）</p>
                 </div>
@@ -558,7 +570,7 @@
                     <h3>實戰紫微斗數教學</h3>
                 </div>
                 <div class="service-body">
-                    <p>初階、進階、高階、職業四階段完整課程，從看懂自己的盤到具備論命能力。不背死書，學邏輯與推理，大寶老師親自帶。</p><br>
+                    <p>初階、進階、高階、職業四階段完整課程，從看懂自己的盤到具備論命、改運能力。不背死書，學邏輯與推理，大寶老師親自帶</p><br>
                     <p>課程週期：每週 1 次，每期 12 週，每次 2 小時</p><br>
                     <p>課程費用：早鳥優惠 NT$21,500（原價 NT$25,000）</p>
                 </div>
@@ -575,9 +587,6 @@
             </div>
 
         </div>
-        <div class="center-btn" style="margin: 40px 0;">
-            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入官方 Line 立刻預約</a>
-        </div>
     </section>
 
     <hr class="section-divider">
@@ -591,7 +600,7 @@
             </details>
             <details>
                 <summary>【紫微斗數完整論命】跟【流年運勢分析】又差在哪呢？</summary>
-                <p>完整論命討論的是未來數十年的整體走向；流年運勢分析則是針對某個年份逐月拆解，告訴您哪個月份要注意什麼事件，讓您可以趨吉避凶。</p>
+                <p>完整論命討論的是未來數十年的整體走向；流年運勢分析則是針對某個年份進行拆解，告訴您哪個月份要注意什麼事件，讓您可以趨吉避凶。</p>
             </details>
             <details>
                 <summary>老師在哪裡？需要見面才能進行嗎？</summary>
@@ -624,18 +633,22 @@
 
     <section class="social container" id="social">
         <h2 class="section-title">大寶老師的社群</h2>
-        <div class="social-grid">
-            <a href="https://www.threads.net/@read_urface" target="_blank" class="social-card">
-                <div class="social-img-wrapper"><img src="images/threads-logo.jpeg" alt="Threads"></div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:600px; margin:0 auto 40px;">
+            <a href="https://www.threads.net/@read_urface" target="_blank" style="display:flex; flex-direction:column; gap:6px; background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:24px 28px; text-decoration:none;">
+                <span style="font-size:0.78rem; color:#666; letter-spacing:0.05em;">THREADS</span>
+                <span style="font-size:1.1rem; font-weight:600; color:var(--accent-color);">近萬人追蹤的命理社群</span>
             </a>
-            <a href="https://www.instagram.com/read_urface/" target="_blank" class="social-card">
-                <div class="social-img-wrapper"><img src="images/ig-logo.jpeg" alt="Instagram"></div>
+            <a href="https://www.instagram.com/read_urface/" target="_blank" style="display:flex; flex-direction:column; gap:6px; background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:24px 28px; text-decoration:none;">
+                <span style="font-size:0.78rem; color:#666; letter-spacing:0.05em;">INSTAGRAM</span>
+                <span style="font-size:1.1rem; font-weight:600; color:var(--accent-color);">大寶老師的日常與分享</span>
             </a>
         </div>
         <div class="center-btn">
             <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入官方 Line 立刻預約</a>
         </div>
     </section>
+
+    <a href="https://lin.ee/y2XVa6h" target="_blank" class="sticky-cta" id="sticky-cta">立刻預約諮詢</a>
 
     <footer class="footer">
         <div class="container">
@@ -657,6 +670,18 @@
     </div>
 
     <script>
+        const stickyCta = document.getElementById('sticky-cta');
+        const heroEl = document.querySelector('.hero');
+        window.addEventListener('scroll', () => {
+            const heroBottom = heroEl.getBoundingClientRect().bottom;
+            const nearBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200;
+            if (heroBottom < 0 && !nearBottom) {
+                stickyCta.classList.add('visible');
+            } else {
+                stickyCta.classList.remove('visible');
+            }
+        });
+
         function toggleTestimonials() {
             const extra = document.getElementById('extra-testimonials');
             const btn = document.getElementById('show-more-btn');
