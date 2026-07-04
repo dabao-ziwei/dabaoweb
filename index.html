@@ -694,6 +694,11 @@
         </div>
     </div>
 
+    <div class="image-lightbox" id="image-lightbox" aria-hidden="true">
+        <button class="image-lightbox-close" type="button" aria-label="關閉大圖">&times;</button>
+        <img class="image-lightbox-img" id="image-lightbox-img" src="" alt="客戶回饋大圖">
+    </div>
+
     <script>
         const stickyCta = document.getElementById('sticky-cta');
         const heroEl = document.querySelector('.hero');
@@ -729,6 +734,9 @@
             const annText = document.getElementById('announcement-text');
             const annBanner = document.getElementById('announcement-banner');
             const masonryGrid = document.getElementById('masonry-grid');
+            const lightbox = document.getElementById('image-lightbox');
+            const lightboxImg = document.getElementById('image-lightbox-img');
+            const lightboxClose = document.querySelector('.image-lightbox-close');
             
             const fetchAnnouncement = async () => {
                 const { data, error } = await supabase.from('announcements').select('content').eq('id', 1).single();
@@ -736,18 +744,68 @@
             };
             fetchAnnouncement();
 
+            const prepareLightboxTrigger = (img) => {
+                img.tabIndex = 0;
+                img.setAttribute('role', 'button');
+                img.setAttribute('aria-label', '查看客戶回饋大圖');
+            };
+
             const fetchNewImages = async () => {
                 const { data, error } = await supabase.from('feedbacks').select('image_url').order('created_at', { ascending: true });
                 if (data && data.length > 0) {
                     data.forEach(item => {
                         const div = document.createElement('div');
+                        const img = document.createElement('img');
                         div.className = 'masonry-item';
-                        div.innerHTML = `<img src="${item.image_url}" alt="客戶回饋" loading="lazy">`;
+                        img.src = item.image_url;
+                        img.alt = '客戶回饋';
+                        img.loading = 'lazy';
+                        prepareLightboxTrigger(img);
+                        div.appendChild(img);
                         masonryGrid.prepend(div);
                     });
                 }
             };
             fetchNewImages();
+
+            const openLightbox = (img) => {
+                lightboxImg.src = img.currentSrc || img.src;
+                lightboxImg.alt = img.alt ? `${img.alt}大圖` : '客戶回饋大圖';
+                lightbox.classList.add('visible');
+                lightbox.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('lightbox-open');
+                lightboxClose.focus();
+            };
+
+            const closeLightbox = () => {
+                lightbox.classList.remove('visible');
+                lightbox.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('lightbox-open');
+                lightboxImg.removeAttribute('src');
+            };
+
+            masonryGrid.addEventListener('click', (event) => {
+                const img = event.target.closest('.masonry-item img');
+                if (img) openLightbox(img);
+            });
+
+            masonryGrid.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                const img = event.target.closest('.masonry-item img');
+                if (!img) return;
+                event.preventDefault();
+                openLightbox(img);
+            });
+
+            masonryGrid.querySelectorAll('.masonry-item img').forEach(prepareLightboxTrigger);
+
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (event) => {
+                if (event.target === lightbox) closeLightbox();
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && lightbox.classList.contains('visible')) closeLightbox();
+            });
 
             let clickCount = 0;
             let clickTimer;
