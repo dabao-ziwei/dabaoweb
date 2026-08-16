@@ -712,7 +712,11 @@
                 if (typeof value === 'string') setText(`[data-field="${key}"]`, value);
             });
 
-            document.querySelectorAll('.js-line-cta').forEach((link) => { link.href = courseData.lineUrl; });
+            document.querySelectorAll('.js-line-cta').forEach((link) => {
+                link.href = courseData.lineUrl;
+                link.target = '_blank';
+                link.rel = 'noopener';
+            });
 
             const priceCards = document.getElementById('price-cards');
             priceCards.innerHTML = courseData.prices.map((item) => `
