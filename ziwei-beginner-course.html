@@ -566,7 +566,7 @@
                         <span class="lp-chip" data-field="schedule"></span>
                         <span class="lp-chip" data-field="sessions"></span>
                     </div>
-                    <a class="lp-btn primary js-line-cta" href="#" data-label="hero">加入 LINE 了解初階班</a>
+                    <a class="lp-btn primary js-line-cta" href="#" target="_blank" rel="noopener noreferrer" data-label="hero">加入 LINE 了解初階班</a>
                 </div>
                 <figure class="lp-hero-image">
                     <img src="images/ziwei-beginner-hero.jpg" alt="實戰紫微斗數初階班線上課程學習情境">
@@ -651,7 +651,7 @@
                 <h2 class="lp-title">報名費用</h2>
                 <div class="lp-price-grid" id="price-cards"></div>
                 <div class="lp-payment" id="payment-list"></div>
-                <a class="lp-btn primary js-line-cta" href="#" data-label="pricing">我要報名初階班</a>
+                <a class="lp-btn primary js-line-cta" href="#" target="_blank" rel="noopener noreferrer" data-label="pricing">我要報名初階班</a>
             </div>
         </section>
 
@@ -695,7 +695,7 @@
             <div class="lp-wrap">
                 <h2 class="lp-title">下一次打開命盤<br>不要再只是看見一堆自己背過的東西</h2>
                 <p class="lp-lead" style="margin-left:auto;margin-right:auto;">如果妳是不想大量背誦，想真的看懂紫微斗數命盤，我們<span data-field="startDate"></span>課堂上見</p>
-                <a class="lp-btn primary js-line-cta" href="#" data-label="final">我要報名這一梯</a>
+                <a class="lp-btn primary js-line-cta" href="#" target="_blank" rel="noopener noreferrer" data-label="final">我要報名這一梯</a>
             </div>
         </section>
     </main>
@@ -712,7 +712,11 @@
                 if (typeof value === 'string') setText(`[data-field="${key}"]`, value);
             });
 
-            document.querySelectorAll('.js-line-cta').forEach((link) => { link.href = courseData.lineUrl; });
+            document.querySelectorAll('.js-line-cta').forEach((link) => {
+                link.href = courseData.lineUrl;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+            });
 
             const priceCards = document.getElementById('price-cards');
             priceCards.innerHTML = courseData.prices.map((item) => `
