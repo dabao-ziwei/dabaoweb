@@ -1,300 +1,32 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-    <head><script>window.__sb_state = {};</script><script src="/.webcontainer@runtime.8669d46c.js"></script>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        <title>大寶命理｜紫微斗數算命諮詢 - 命理師大寶老師，流年運勢分析、紫微占卜</title>
-        <meta name="description" content="大寶命理｜命理師大寶老師，十餘年實戰算命經驗，逾萬人諮詢。提供紫微斗數完整論命、流年運勢分析、紫微占卜。全程線上語音，隱私保密">
-        <meta name="keywords" content="大寶, 大寶老師, 大寶命理, 算命, 紫微斗數, 紫微斗數算命, 命理師, 命理老師, 流年運勢, 紫微占卜, 風水改運, 姓名改運">
-        <meta name="author" content="大寶老師">
-        
-        <meta property="og:title" content="大寶命理｜紫微斗數算命・命理師大寶老師">
-        <meta property="og:description" content="十餘年實戰算命經驗，逾萬人諮詢。紫微斗數完整論命、流年運勢分析、紫微占卜，全程線上語音">
-        <meta property="og:image" content="https://dabao.life/images/hero.jpeg">
-        <meta property="og:url" content="https://dabao.life/">
-        <meta property="og:type" content="website">
-    
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="styles.css">
-        
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-0XPZVQ42QP"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-0XPZVQ42QP');
-        </script>
-
-        <style>
-        /* ── 新增區塊樣式（深色主題版）── */
-
-        .decision-section {
-            background: #1e1e1e;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 40px 36px;
-        }
-        .decision-section .ds-title {
-            font-family: 'Noto Serif TC', serif;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 28px;
-            text-align: center;
-        }
-        .decision-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 14px;
-        }
-        .decision-card {
-            background: #252525;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            padding: 20px 16px;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            transition: border-color 0.2s, transform 0.2s;
-        }
-        .decision-card:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-        .decision-card.featured { border-color: rgba(221,167,106,0.45); }
-        .decision-card .card-emoji { font-size: 1.3rem; margin-bottom: 4px; }
-        .decision-card .card-situation { font-size: 0.76rem; color: #777; }
-        .decision-card .card-action { font-size: 0.95rem; font-weight: 600; color: var(--accent-color); }
-        .decision-card .card-desc { font-size: 0.82rem; color: #666; line-height: 1.5; margin-top: 2px; }
-
-        .badge-entry {
-            display: inline-block;
-            background: var(--accent-color);
-            color: #000;
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 20px;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-
-        .course-highlight {
-            background: linear-gradient(135deg, #1a1205 0%, #2a1f0a 60%, #1e1a0e 100%);
-            border: 1px solid rgba(221,167,106,0.25);
-            border-radius: 12px;
-            padding: 44px 40px;
-            display: flex;
-            gap: 40px;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        .course-highlight-text { flex: 1; min-width: 240px; }
-        .course-eyebrow {
-            font-size: 0.75rem;
-            letter-spacing: 0.15em;
-            color: var(--accent-color);
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
-        .course-highlight-text h2 {
-            font-family: 'Noto Serif TC', serif;
-            font-size: 1.55rem;
-            font-weight: 700;
-            color: #fff;
-            line-height: 1.5;
-            margin-bottom: 14px;
-        }
-        .course-highlight-text p {
-            font-size: 0.9rem;
-            color: #a08060;
-            line-height: 1.75;
-            margin-bottom: 18px;
-        }
-        .course-pills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 26px;
-        }
-        .course-pills span {
-            background: rgba(221,167,106,0.1);
-            border: 1px solid rgba(221,167,106,0.3);
-            color: var(--accent-color);
-            font-size: 0.76rem;
-            padding: 4px 12px;
-            border-radius: 20px;
-        }
-        .course-cta-group { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-        .btn-gold-solid {
-            background: var(--accent-color);
-            color: #000;
-            padding: 12px 24px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.92rem;
-            transition: background 0.2s;
-        }
-        .btn-gold-solid:hover { background: #c59156; }
-        .btn-gold-outline {
-            border: 1.5px solid rgba(221,167,106,0.5);
-            color: var(--accent-color);
-            padding: 11px 22px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 0.88rem;
-            transition: border-color 0.2s;
-        }
-        .btn-gold-outline:hover { border-color: var(--accent-color); }
-
-        .course-price-tag { text-align: center; min-width: 150px; }
-        .price-original { font-size: 0.8rem; color: #555; text-decoration: line-through; margin-bottom: 4px; }
-        .price-current { font-family: 'Noto Serif TC', serif; font-size: 2.2rem; font-weight: 700; color: var(--accent-color); line-height: 1; }
-        .price-unit { font-size: 0.75rem; color: #666; margin-top: 6px; }
-        .price-save {
-            display: inline-block;
-            background: rgba(221,167,106,0.15);
-            border: 1px solid rgba(221,167,106,0.35);
-            color: var(--accent-color);
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-top: 10px;
-        }
-
-        #extra-testimonials { display: none; }
-        #extra-testimonials.visible { display: block; }
-        .show-more-btn {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.15);
-            color: #888;
-            padding: 10px 28px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.88rem;
-            margin: 0 auto 32px;
-            display: block;
-            font-family: 'Noto Sans TC', sans-serif;
-            transition: border-color 0.2s, color 0.2s;
-        }
-        .show-more-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
-
-        .service-item-cta {
-            margin-top: 18px;
-            padding-top: 14px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-        }
-        .service-item-cta a {
-            font-size: 0.85rem;
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: 500;
-            transition: opacity 0.2s;
-        }
-        .service-item-cta a:hover { opacity: 0.75; }
-
-        .value-frame { font-size: 0.8rem; color: #555; font-style: italic; margin-top: 8px; }
-
-        .wait-notice {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(221,167,106,0.08);
-            border: 1px solid rgba(221,167,106,0.2);
-            border-radius: 6px;
-            padding: 8px 16px;
-            font-size: 0.82rem;
-            color: #a08060;
-            margin-bottom: 20px;
-        }
-
-        .service-item.featured-service {
-            border-left: 3px solid var(--accent-color);
-            padding-left: 16px;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: #555;
-            font-size: 0.88rem;
-            margin-top: -44px;
-            margin-bottom: 48px;
-        }
-
-        .announcement { padding: 12px 20px 0; }
-        .hero { padding-top: 20px !important; padding-bottom: 40px !important; padding-left: 80px !important; gap: 100px !important; }
-        .hero-image { flex: 2 !important; max-width: 380px !important; margin: 0 auto; }
-        .hero-text { flex: 2 !important; }
-        .hero-text h1 { font-size: 3.2rem !important; }
-        .hero-text .subtitle { font-size: 1.5rem !important; margin-bottom: 24px !important; }
-        .hero-text p { font-size: 1.1rem !important; line-height: 2 !important; }
-
-        /* 統一所有區塊間距 */
-        .section-title { margin: 40px 0 40px 0 !important; }
-        .section-subtitle { margin-top: -28px !important; margin-bottom: 40px !important; }
-        .container { padding-left: 80px !important; padding-right: 80px !important; }
-        .nav-container { padding-left: 20px !important; padding-right: 20px !important; }
-
-        /* 分隔線改淡、減少存在感 */
-        .section-divider { background-color: rgba(255,255,255,0.06) !important; margin: 0 auto !important; }
-
-        /* 決策卡片字放大 */
-        .decision-card .card-action { font-size: 1.05rem !important; }
-        .decision-card .card-situation { font-size: 0.82rem !important; color: #888 !important; }
-        .decision-card .card-desc { font-size: 0.88rem !important; color: #777 !important; }
-        .decision-section .ds-title { font-size: 1.35rem !important; }
-
-        /* 課程區塊標題同步放大 */
-        .course-highlight-text h2 { font-size: 1.75rem !important; }
-        .course-highlight-text p { font-size: 0.95rem !important; }
-
-        .hero-secondary-link {
-            display: block;
-            margin-top: 14px;
-            font-size: 0.78rem;
-            color: #555;
-            text-decoration: none;
-            transition: color 0.2s;
-            letter-spacing: 0.02em;
-        }
-        .hero-secondary-link:hover { color: #888; }
-
-        @media (max-width: 768px) {
-            .course-highlight { padding: 28px 20px; flex-direction: column; }
-            .course-price-tag { width: 100%; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 20px; }
-            .decision-section { padding: 28px 16px; }
-            .decision-grid { grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 480px) {
-            .decision-grid { grid-template-columns: 1fr; }
-        }
-
-        .sticky-cta {
-            position: fixed; bottom: 28px; right: 28px; z-index: 999;
-            background: var(--accent-color); color: #000;
-            padding: 14px 24px; border-radius: 50px;
-            font-weight: 700; font-size: 0.92rem; text-decoration: none;
-            box-shadow: 0 4px 20px rgba(221,167,106,0.4);
-            transition: transform 0.2s, opacity 0.3s;
-            opacity: 0; pointer-events: none;
-        }
-        .sticky-cta.visible { opacity: 1; pointer-events: auto; }
-        .sticky-cta:hover { transform: translateY(-2px); }
-        @media (max-width: 768px) {
-            .sticky-cta { bottom: 20px; right: 16px; left: 16px; text-align: center; border-radius: 10px; }
-        }
-        </style>
-        <link rel="canonical" href="https://dabao.life/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大寶命理｜紫微斗數諮詢，陪妳看清感情、工作與人生方向</title>
+    <meta name="description" content="感情、工作或人生方向卡住了？大寶老師以十餘年實戰經驗，提供紫微斗數完整論命、流年運勢分析與紫微占卜。查看服務、價格與真實諮詢回饋，預約線上諮詢。">
+    <meta name="keywords" content="大寶, 大寶老師, 大寶命理, 算命, 紫微斗數, 紫微斗數算命, 命理師, 流年運勢, 紫微占卜">
+    <meta name="author" content="大寶老師">
+    <meta property="og:title" content="大寶命理｜紫微斗數諮詢，陪妳看清人生方向">
+    <meta property="og:description" content="感情、工作或人生方向卡住了？查看完整論命、流年分析與紫微占卜服務，找到妳現在需要的那一種諮詢。">
+    <meta property="og:image" content="https://dabao.life/images/hero.jpeg">
+    <meta property="og:url" content="https://dabao.life/">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://dabao.life/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="homepage.css">
+    <script async id="cms-sdk" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0XPZVQ42QP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-0XPZVQ42QP');
+    </script>
+    <script defer src="homepage.js?v=20260909-finalqa4"></script>
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -318,540 +50,193 @@
         }
     }
     </script>
-    </head>
-<body>
-
-    <nav class="navbar">
-        <div class="container nav-container">
-            <a href="index.html" class="logo">
-                <img src="images/Dabao logo.jpeg" alt="Dabao Logo" class="nav-logo-icon">
-                <span class="logo-text">大寶 | 紫微斗數</span>
+</head>
+<body class="home-page">
+    <a class="home-skip" href="#main">跳到主要內容</a>
+    <header class="home-header">
+        <nav class="home-wrap home-nav" aria-label="主要導覽">
+            <a href="index.html" class="home-brand">
+                <img src="images/Dabao logo.jpeg" width="40" height="40" alt="">
+                <span>大寶 | 紫微斗數</span>
             </a>
-            <ul class="nav-links">
-                <li><a href="index.html" style="color:var(--accent-color);">首頁</a></li>
-                <li><a href="course.html">【實戰紫微斗數】課程</a></li>
-                <li><a href="booking.html">線上預約</a></li>
-                <li><a href="articles.html">教學文章</a></li>
-                <li><a href="chart.html">線上排盤</a></li>
-                <li><a href="faq.html">常見問題</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="announcement" id="announcement-banner" title="點擊三次可開啟管理員介面">
-        <div class="container">
-            <h3 id="announcement-text">載入中...</h3>
-        </div>
-    </div>
-
-    <!-- Hero -->
-    <section class="hero container">
-        <div class="hero-image">
-            <img src="images/hero.jpeg" alt="大寶老師">
-        </div>
-        <div class="hero-text">
-            <h1>大寶老師</h1>
-            <h3 class="subtitle">紫微斗數論命專家</h3>
-            <p style="font-size:1.1rem; font-weight:500; color:#fff; line-height:1.9;">感情卡關、工作迷茫、錢怎麼賺都不夠？<br>你人生裡最糾結的那幾件事，盤裡都有答案！</p>
-            <p>商業需要顧問，愛情需要顧問，人生更需要專業的指引</p>
-            <p>命有定數，但運可變，讓我協助你掌握運勢<br>人生只有一遭，要笑要哭、要順要顛，一念之間</p>
-            <p>十餘年實戰命理經驗，逾萬人諮詢</p>
-            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn" onclick="gtag('event', 'click', {event_category: 'CTA', event_label: '首頁Hero預約按鈕'})">加入官方 Line 立刻預約</a>
-            <a href="course.html" class="hero-secondary-link">想自己學紫微斗數？了解課程 →</a>
-        </div>
-    </section>
-
-    <!-- 決策輔助 -->
-    <section class="container" style="padding: 40px 20px;">
-        <div class="decision-section">
-            <p class="ds-title">不確定要選哪個服務？</p>
-            <div class="decision-grid">
-                <a href="booking.html" class="decision-card featured">
-                    <span class="card-situation">想通盤了解人生走向</span>
-                    <span class="card-action">紫微斗數完整論命</span>
-                    <span class="card-desc">未來數十年的運勢脈絡與重大事件，一次掌握</span>
-                </a>
-                <a href="booking.html" class="decision-card">
-                    <span class="card-situation">想知道今明兩年發生什麼</span>
-                    <span class="card-action">流年運勢分析</span>
-                    <span class="card-desc">年度運勢拆解，近期在意的事情走向，該衝該緩，立見分明</span>
-                </a>
-                <a href="booking.html" class="decision-card">
-                    <span class="card-situation">只想問一件近期的事</span>
-                    <span class="card-action">紫微占卜</span>
-                    <span class="card-desc">不需要生辰八字，30 分鐘掌握6個月內的運勢吉凶</span>
-                </a>
-                <a href="course.html" class="decision-card">
-                    <span class="card-situation">不想每次都來問別人</span>
-                    <span class="card-action">實戰紫微斗數課程</span>
-                    <span class="card-desc">從零基礎到能自己看盤、改運，掌握自己的命運</span>
-                </a>
+            <!-- Lucide Menu and X icons; license in licenses/lucide.txt. -->
+            <button class="home-menu-toggle" type="button" aria-label="開啟選單" title="開啟選單" aria-expanded="false" aria-controls="home-menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></button>
+            <div class="home-menu" id="home-menu">
+                <a href="#services">諮詢服務</a>
+                <a href="#about">關於大寶</a>
+                <a href="#testimonials">客戶回饋</a>
+                <a href="#faq">常見問題</a>
+                <a href="#course">課程</a>
+                <a class="home-button" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-event="nav_line_click" data-location="navigation">我要預約</a>
             </div>
-        </div>
-    </section>
-
-    <!-- 課程獨立區塊 -->
-    <section class="container" style="padding: 40px 20px;">
-        <div class="course-highlight">
-            <div class="course-highlight-text">
-                <div class="course-eyebrow">實戰紫微斗數 · 現正招生</div>
-                <h2 style="font-size:1.3rem !important; line-height:1.6;">諮詢再準，終究還是要排隊等待，無法即時得到解答<br>自己的命、自己算，自己的運、自己改！</h2>
-                <p>初階到職業，四個階段完整體系；不背星曜，教邏輯與推理。大寶老師親自帶，從看懂盤到能分析甚至改運，能幫自己也幫別人論命</p>
-                <div class="course-pills">
-                    <span>✅ 線上直播 · 可回放</span>
-                    <span>✅ 專屬助教支援</span>
-                    <span>✅ 結業考核制</span>
-                    <span>✅ 初階班招生中</span>
+        </nav>
+    </header>
+    <main id="main">
+        <section class="home-wrap home-hero" id="hero" aria-labelledby="hero-title">
+            <div class="home-hero-copy">
+                <h1 id="hero-title">最近是不是有件事，<br>妳怎麼想都想不明白？</h1>
+                <ul class="home-questions">
+                    <li>這段感情該繼續，還是該停？</li>
+                    <li>工作該撐、該換，還是現在根本不是動的時候？</li>
+                    <li>明明很努力，為什麼這一兩年就是特別卡？</li>
+                </ul>
+                <p class="home-position"><strong>命盤不是替妳決定人生。</strong><br>它能做的，是幫妳把現在的位置、可能的方向，<br class="home-desktop-break">以及妳沒注意到的問題攤開來看。</p>
+                <div class="home-hero-actions">
+                    <a class="home-button" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-event="hero_line_click" data-location="hero">我有事情想問大寶</a>
+                    <a class="home-text-link" href="#service-guide" data-event="hero_service_guide_click" data-location="hero">先看看我適合哪種諮詢 <span aria-hidden="true">↓</span></a>
                 </div>
-                <div class="course-cta-group">
-                    <a href="https://line.me/R/ti/p/@653jrxjt?oat_content=url&ts=03241123" target="_blank" class="btn-gold-solid">索取早鳥優惠</a>
-                    <a href="course.html" class="btn-gold-outline">查看完整課程 →</a>
+                <p class="home-proof"><span>十餘年實戰</span><span>逾萬人諮詢</span><a href="https://www.threads.net/@read_urface" target="_blank" rel="noopener noreferrer" data-event="social_click" data-location="hero">Threads 萬人追蹤</a></p>
+            </div>
+            <img class="home-portrait" src="images/hero.jpeg" width="1280" height="1920" fetchpriority="high" alt="大寶老師肖像">
+        </section>
+
+        <section class="home-band" id="service-guide" aria-labelledby="guide-title">
+            <div class="home-wrap">
+                <h2 id="guide-title">妳現在最想弄清楚的是哪一件事？</h2>
+                <div class="home-three">
+                    <a class="home-guide-card" href="#complete-reading" data-event="service_guide_complete_click" data-service="complete" data-location="service-guide" aria-labelledby="guide-complete-title">
+                        <h3 id="guide-complete-title">我不是只有一個問題，整個人生都有點亂</h3>
+                        <p>工作、感情、財運、家庭、人生方向，好幾件事情纏在一起。</p>
+                        <small>建議妳選：完整論命</small>
+                        <span class="home-text-link">看看完整論命 <span aria-hidden="true">↓</span></span>
+                    </a>
+                    <a class="home-guide-card" href="#annual-reading" data-event="service_guide_annual_click" data-service="annual" data-location="service-guide" aria-labelledby="guide-annual-title">
+                        <h3 id="guide-annual-title">我想知道今年／明年到底怎麼走</h3>
+                        <p>工作會不會變？感情有沒有機會？什麼時間適合動？哪些月份需要特別注意？</p>
+                        <small>建議妳選：流年分析</small>
+                        <span class="home-text-link">看看流年分析 <span aria-hidden="true">↓</span></span>
+                    </a>
+                    <a class="home-guide-card" href="#divination" data-event="service_guide_divination_click" data-service="divination" data-location="service-guide" aria-labelledby="guide-divination-title">
+                        <h3 id="guide-divination-title">我現在就有一件事情想問</h3>
+                        <p>要不要換工作？這個人還有沒有機會？這件事情現在做到底好不好？</p>
+                        <small>建議妳選：紫微占卜</small>
+                        <span class="home-text-link">看看紫微占卜 <span aria-hidden="true">↓</span></span>
+                    </a>
                 </div>
             </div>
-            <div class="course-price-tag">
-                <div class="price-original">原價 NT$25,000</div>
-                <div class="price-current">$21,500</div>
-                <div class="price-unit">早鳥優惠價</div>
-                <div class="price-save">省下 $3,500</div>
+        </section>
+
+        <section class="home-wrap home-section" id="about" aria-labelledby="about-title">
+            <h2 id="about-title">命理不是替妳做決定，<br>我做的是把問題看清楚</h2>
+            <div class="home-three home-philosophy">
+                <div><span class="home-philosophy-number" aria-hidden="true">01</span><h3>不裝神弄鬼</h3><p>我會告訴妳盤上看到什麼，也會告訴妳為什麼這樣判斷。</p></div>
+                <div><span class="home-philosophy-number" aria-hidden="true">02</span><h3>不只看命盤，也看現實</h3><p>感情、工作、錢，最後都不是一句「命很好」就能解決。命盤提供資訊，人還是要做選擇。</p></div>
+                <div><span class="home-philosophy-number" aria-hidden="true">03</span><h3>不替妳下人生判決</h3><p>好的，我會說好；不好的，我也不會硬包裝成好消息。比起一句吉凶，我更在意的是：知道以後，妳下一步怎麼走。</p></div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- 客戶回饋 -->
-    <section class="testimonials container" id="testimonials">
-        <h2 class="section-title">客戶回饋</h2>
+        <section class="home-band" id="testimonials" aria-labelledby="testimonials-title">
+            <div class="home-wrap">
+                <h2 id="testimonials-title">找大寶以前，<br>他們也有事情想不明白</h2>
+                <div class="home-feedback-grid" id="featured-feedback">
+                    <button class="home-feedback" type="button" aria-label="查看第 2 則諮詢回饋大圖"><img src="images/002.jpeg" width="868" height="460" loading="lazy" alt="第 2 則真實諮詢回饋截圖"></button>
+                    <button class="home-feedback" type="button" aria-label="查看第 3 則諮詢回饋大圖"><img src="images/003.jpeg" width="868" height="506" loading="lazy" alt="第 3 則真實諮詢回饋截圖"></button>
+                    <button class="home-feedback" type="button" aria-label="查看第 4 則諮詢回饋大圖"><img src="images/004.jpeg" width="868" height="499" loading="lazy" alt="第 4 則真實諮詢回饋截圖"></button>
+                    <button class="home-feedback" type="button" aria-label="查看第 14 則諮詢回饋大圖"><img src="images/014.jpeg" width="868" height="454" loading="lazy" alt="第 14 則真實諮詢回饋截圖"></button>
+                    <button class="home-feedback" type="button" aria-label="查看第 21 則諮詢回饋大圖"><img src="images/021.jpeg" width="868" height="448" loading="lazy" alt="第 21 則真實諮詢回饋截圖"></button>
+                    <button class="home-feedback" type="button" aria-label="查看第 33 則諮詢回饋大圖"><img src="images/033.jpeg" width="868" height="463" loading="lazy" alt="第 33 則真實諮詢回饋截圖"></button>
+                </div>
+                <div class="home-center"><button class="home-button home-button-outline" type="button" id="testimonial-more" data-event="testimonial_more_click" data-location="testimonials">查看全部真實諮詢回饋 <span aria-hidden="true">→</span></button></div>
+            </div>
+        </section>
 
-        <div class="masonry-grid" id="masonry-grid">
-            <div class="masonry-item"><img src="images/001.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/002.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/003.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/004.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/005.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/006.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/007.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/008.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/009.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/010.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/011.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/012.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/013.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/014.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/015.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/016.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/017.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/018.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/019.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/020.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/021.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/022.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/023.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/024.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/025.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/026.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/027.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/028.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/029.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/030.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/031.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/032.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/033.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/034.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/035.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/036.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/037.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/038.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/039.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/040.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/041.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/042.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/043.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/044.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/045.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/046.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/047.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/048.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/049.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/050.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/051.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/052.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/053.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/054.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/055.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/056.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/057.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/058.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/059.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/060.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/061.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/062.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/063.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/064.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/065.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/066.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/067.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/068.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/069.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/070.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/071.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/072.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/073.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/074.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/075.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/076.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/077.jpeg" alt="客戶回饋" loading="lazy"></div>
-            <div class="masonry-item"><img src="images/078.jpeg" alt="客戶回饋" loading="lazy"></div>
-        </div>
-
-    </section>
-
-    <!-- 服務列表 -->
-    <section class="services container" id="services">
-        <h2 class="section-title">大寶老師的命理諮詢服務</h2>
-
-        <div style="text-align:center; margin-bottom: 40px;">
-            <span class="wait-notice">⏳ 目前預約約需等候 1～2 週，建議提早加入 Line 排候補</span>
-        </div>
-
-        <div class="services-grid">
-
-            <div class="service-item" style="background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:28px;">
-                <div class="service-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <section class="home-wrap home-section" id="services" aria-labelledby="services-title">
+            <h2 id="services-title">找到妳現在需要的那一種諮詢</h2>
+            <div class="home-three home-service-grid">
+                <article class="home-service-card" id="complete-reading">
                     <h3>紫微斗數完整論命</h3>
-                </div>
-                <div class="service-body">
-                    <p>根據您的出生生辰排出命盤，深入分析未來數十年的運勢走向與重大事件節點，幫您在人生每個岔路口做出更好的選擇</p><br>
-                    <p>服務內容：未來人生整體運勢走向（若需逐月分析，請另預約流年運勢）</p><br>
-                    <p>服務時長：60 分鐘</p>
-                    <p>服務費用：NT$4,800</p>
-                </div>
-            </div>
-
-            <div class="service-item" style="background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:28px;">
-                <div class="service-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <p>如果妳想看的不是一件事，而是整個人生</p>
+                    <ul><li>工作適合怎麼走</li><li>感情為什麼總遇到類似問題</li><li>財運真正好的時間在哪</li><li>人生哪些年份是重要轉折</li></ul>
+                    <div class="home-price"><span>60分鐘</span><strong>NT$4,800</strong></div>
+                    <a class="home-button" href="booking.html?service=complete" data-event="service_complete_booking_click" data-service="complete" data-location="services">我想預約完整論命 <span aria-hidden="true">→</span></a>
+                </article>
+                <article class="home-service-card" id="annual-reading">
                     <h3>流年運勢分析</h3>
-                </div>
-                <div class="service-body">
-                    <p>針對特定年份進行運勢解析，包含當年度應注意的事件（結婚、重病、生子、開刀、財運、職場……），讓您提前做好準備</p><br>
-                    <p>服務內容：指定年份的運勢分析與事件預警</p><br>
-                    <p>服務時長：40 分鐘</p>
-                    <p>服務費用：NT$3,600</p>
-                </div>
-            </div>
-
-            <div class="service-item" style="background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:28px;">
-                <div class="service-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    <p>如果妳想知道今年／明年到底會發生什麼</p>
+                    <ul><li>哪些月份工作容易變動</li><li>感情有沒有重要事件</li><li>財運什麼時候適合衝</li><li>什麼時候反而應該保守</li></ul>
+                    <div class="home-price"><span>40分鐘</span><strong>NT$3,600</strong></div>
+                    <a class="home-button" href="booking.html?service=annual" data-event="service_annual_booking_click" data-service="annual" data-location="services">我想預約流年分析 <span aria-hidden="true">→</span></a>
+                </article>
+                <article class="home-service-card" id="divination">
                     <h3>紫微占卜</h3>
-                </div>
-                <div class="service-body">
-                    <p>透過 4 個數字引動當下運勢，<strong style="color:#fff;">完全不需要姓名或生日</strong>，針對 6 個月內的特定問題進行吉凶占測</p><br>
-                    <p>服務內容：6 個月內特定事件的吉凶分析與方向建議</p><br>
-                    <p>服務時長：30 分鐘</p>
-                    <p>服務費用：NT$1,800</p>
-                </div>
+                    <p>如果妳現在只有一件事，很想知道答案</p>
+                    <p class="home-service-description">不需要生日。針對六個月內的具體事件，分析走向、吉凶與方向。</p>
+                    <div class="home-price"><span>30分鐘</span><strong>NT$1,800</strong></div>
+                    <a class="home-button" href="booking.html?service=divination" data-event="service_divination_booking_click" data-service="divination" data-location="services">我想問這件事 <span aria-hidden="true">→</span></a>
+                </article>
             </div>
+            <details class="home-other">
+                <summary><span>其他服務 <small>風水堪輿｜符令｜姓名｜異業合作</small></span><span class="home-other-label">查看其他服務</span></summary>
+                <div class="home-other-list">
+                    <div><h3>風水佈陣改運</h3><p>環境潛移默化影響你的決策速度、思維清晰度與財運格局。大寶老師現場堪輿居家或辦公空間，給出具體的風水佈局建議</p><p>服務內容：居家／辦公空間風水堪輿，提供改善方向與佈局建議</p><p>服務時長：30 分鐘<br>服務費用：NT$12,800（限雙北、桃園；其他地區或多物件請洽 Line）</p></div>
+                    <div><h3>符令改運</h3><p>師承正一道，依循請神、勅水、勅墨、勅硯、勅紙、勅筆...等完整工序，搭配口訣手印手工撰寫（非印刷符），每道符令均針對命主需求開立。可增財運、事業運、桃花運……</p><p>服務費用：依需求而定，請洽官方 Line（台灣本島含運費）</p></div>
+                    <div><h3>姓名改運</h3><p>搭配命盤星曜與五行屬性，打造好聽、好寫、好記，又能加強運勢的名字。不只音學，而是真正結合命盤的個人化命名</p><p>服務內容：提供 10 組建議名稱供挑選<br>服務費用：NT$3,600（5 個工作天交件）</p></div>
+                    <div><h3>異業合作</h3><p>有想要與命理結合的商業想法？歡迎加入官方 Line 洽談合作</p></div>
+                </div>
+                <a class="home-text-link" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-event="other_service_line_click" data-location="other-services">洽詢其他服務 <span aria-hidden="true">↗</span></a>
+            </details>
+        </section>
 
-            <div class="service-item" style="background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:28px;">
-                <div class="service-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-                    <h3>風水佈陣改運</h3>
-                </div>
-                <div class="service-body">
-                    <p>環境潛移默化影響你的決策速度、思維清晰度與財運格局。大寶老師現場堪輿居家或辦公空間，給出具體的風水佈局建議</p><br>
-                    <p>服務內容：居家／辦公空間風水堪輿，提供改善方向與佈局建議</p><br>
-                    <p>服務時長：30 分鐘</p>
-                    <p>服務費用：NT$12,800（限雙北、桃園；其他地區或多物件請洽 Line）</p>
-                </div>
+        <section class="home-band" id="consultation-process" aria-labelledby="process-title">
+            <div class="home-wrap">
+                <h2 id="process-title">預約之後，其實很簡單</h2>
+                <ol class="home-process"><li><span>01</span>選擇服務</li><li><span>02</span>確認日期與時間</li><li><span>03</span>提供排盤需要的資料</li><li><span>04</span>線上諮詢</li></ol>
+                <div class="home-process-note"><h3>諮詢可選擇官方 LINE 語音或 Google Meet。</h3><p>使用 Google Meet 時，可以直接看到大寶操作妳的命盤。諮詢過程可錄影，結束後提供錄影檔案下載。</p><p class="home-recording-note">錄影檔將於雲端保留 1 個月，逾期刪除。</p></div>
             </div>
+        </section>
 
-            <div class="service-item" style="background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:28px;">
-                <div class="service-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-                    <h3>符令改運</h3>
-                </div>
-                <div class="service-body">
-                    <p>師承正一道，依循請神、勅水、勅墨、勅硯、勅紙、勅筆...等完整工序，搭配口訣手印手工撰寫（非印刷符），每道符令均針對命主需求開立。可增財運、事業運、桃花運……</p><br>
-                    <p>服務費用：依需求而定，請洽官方 Line（台灣本島含運費）</p>
-                </div>
+        <section class="home-wrap home-section home-faq" id="faq" aria-labelledby="faq-title">
+            <h2 id="faq-title">常見問題</h2>
+            <details><summary>我該選完整論命、流年還是占卜？</summary><p>想通盤了解工作、感情與人生方向，選完整論命；想了解指定年份的運勢與月份變化，選流年分析；針對六個月內的一件具體事情，選紫微占卜。</p></details>
+            <details><summary>完全不懂紫微斗數可以嗎？</summary><p>可以。妳不需要先學會看命盤，把想問的問題帶來，大寶會說明盤上看到什麼，以及為什麼這樣判斷。</p></details>
+            <details><summary>諮詢是怎麼進行的？</summary><p>採官方 LINE 語音或 Google Meet 線上諮詢，不需要見面。使用 Google Meet 時，可以看到命盤操作，諮詢過程可錄影，結束後提供錄影檔案下載。</p></details>
+            <details><summary>需要準備哪些資料？</summary><p>完整論命與流年分析需要出生日期、出生時間，用來排出命盤。紫微占卜不需要姓名或生日，透過 4 個數字針對具體問題進行分析。</p></details>
+            <details><summary>可以問哪些問題？</summary><p>可以帶著感情、工作、財運、家庭或人生方向的問題來。若只想問六個月內某件事情的走向，可以選擇紫微占卜。</p></details>
+            <details><summary>大概多久可以預約到？</summary><p>實際可預約時段依當期行程為準，可直接查看<a href="https://ziweiapp.dabao.life/booking" target="_blank" rel="noopener noreferrer" data-event="booking_system_click" data-location="faq">線上預約系統</a>或洽<a href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-event="faq_line_click" data-location="faq">官方 LINE</a>。</p></details>
+            <a class="home-text-link" href="faq.html" data-event="full_faq_click" data-location="faq">還有其他問題？查看完整 FAQ <span aria-hidden="true">→</span></a>
+        </section>
+
+        <section class="home-band home-course" id="course" aria-labelledby="course-title">
+            <div class="home-wrap">
+                <h2 id="course-title">如果妳不是只想知道答案，<br>而是想自己學會看盤</h2>
+                <p>從零基礎開始，學的是判斷邏輯，不是死背星曜。</p>
+                <a class="home-text-link" href="course.html" data-event="course_click" data-location="course">了解實戰紫微斗數課程 <span aria-hidden="true">→</span></a>
             </div>
+        </section>
 
-            <div class="service-item" style="background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:28px;">
-                <div class="service-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                    <h3>姓名改運</h3>
-                </div>
-                <div class="service-body">
-                    <p>搭配命盤星曜與五行屬性，打造好聽、好寫、好記，又能加強運勢的名字。不只音學，而是真正結合命盤的個人化命名</p><br>
-                    <p>服務內容：提供 10 組建議名稱供挑選</p><br>
-                    <p>服務費用：NT$3,600（5 個工作天交件）</p>
-                </div>
-            </div>
-
-            <div class="service-item" style="background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:28px;">
-                <div class="service-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                    <h3>實戰紫微斗數教學</h3>
-                </div>
-                <div class="service-body">
-                    <p>初階、進階、高階、職業四階段完整課程，從看懂自己的盤到具備論命、改運能力。不背死書，學邏輯與推理，大寶老師親自帶</p><br>
-                    <p>課程週期：每週 1 次，每期 12 週，每次 2 小時</p><br>
-                    <p>課程費用：早鳥優惠 NT$21,500（原價 NT$25,000）</p>
-                </div>
-            </div>
-
-            <div class="service-item" style="background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:28px;">
-                <div class="service-header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                    <h3>異業合作</h3>
-                </div>
-                <div class="service-body">
-                    <p>有想要與命理結合的商業想法？歡迎加入官方 Line 洽談合作</p>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <hr class="section-divider">
-
-    <section class="faq container" id="faq">
-        <h2 class="section-title">常見問題</h2>
-        <div class="faq-list">
-            <details>
-                <summary>【紫微斗數完整論命】跟【紫微占卜】差異？我該預約哪個？</summary>
-                <p>紫微斗數完整論命需要您的生辰八字進行排盤，針對未來數十年的運勢狀況與重大事件做完整分析<br><br>紫微占卜則完全不需要任何個人資訊，針對 6 個月內已決定或即將決定的事情進行吉凶占測<br><br>想通盤了解人生 → 完整論命；只想快速問一件事 → 紫微占卜（吉凶占卜，快速精準</p>
-            </details>
-            <details>
-                <summary>【紫微斗數完整論命】跟【流年運勢分析】又差在哪呢？</summary>
-                <p>完整論命討論的是未來數十年的整體走向；流年運勢分析則是針對某個年份進行拆解，告訴您哪個月份要注意什麼事件，讓您可以趨吉避凶</p>
-            </details>
-            <details>
-                <summary>老師在哪裡？需要見面才能進行嗎？</summary>
-                <p>目前大寶老師的所有服務，除【風水堪輿】需現場進行外，其他諮詢服務皆採線上語音通話進行，不須碰面，全台灣甚至海外都可以諮詢</p>
-            </details>
-            <details>
-                <summary>目前大概要等多久才能預約到？</summary>
-                <p>目前預約通常需要等候 1～2 週。若有急事，可支付 2 倍原價的急件費用，以大寶老師當週釋出的空檔優先安排。建議提早加入官方 Line 排候補，掌握最新空檔資訊</p>
-            </details>
-            <details>
-                <summary>常算命是不是會越算命越差？</summary>
-                <p>紫微斗數是人生的一張地圖——打開導航不會讓路變差，反而讓你避開壅塞、提前知道哪裡有休息站。掌握自己的運勢走向，才能做出更好的選擇</p>
-            </details>
-            <details>
-                <summary>我沒有帶天命也可以學習紫微斗數嗎？</summary>
-                <p>當然可以！學紫微斗數就像學開車、游泳，只要有興趣與練習，不需要任何天賦或特別條件</p>
-            </details>
-            <details>
-                <summary>老師有處理【急件】嗎？</summary>
-                <p>有。可支付 2 倍原價的急件服務費，以大寶老師當週釋出的時段優先安排。請洽官方 Line，有專人協助</p>
-            </details>
-            <details>
-                <summary>大寶老師的服務時間是？</summary>
-                <p>週一至週六，每天 10:00～20:00（最後一個時段為 20:00–21:00）。過年期間定期休假 2～3 週，加入官方 Line 可掌握最新動態</p>
-            </details>
-        </div>
-    </section>
-
-    <hr class="section-divider">
-
-    <section class="social container" id="social">
-        <h2 class="section-title">大寶老師的社群</h2>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:600px; margin:0 auto 40px;">
-            <a href="https://www.threads.net/@read_urface" target="_blank" style="display:flex; flex-direction:column; gap:6px; background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:24px 28px; text-decoration:none;">
-                <span style="font-size:0.78rem; color:#666; letter-spacing:0.05em;">THREADS</span>
-                <span style="font-size:1.1rem; font-weight:600; color:var(--accent-color);">近萬人追蹤的命理社群</span>
-            </a>
-            <a href="https://www.instagram.com/read_urface/" target="_blank" style="display:flex; flex-direction:column; gap:6px; background:#1e1e1e; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:24px 28px; text-decoration:none;">
-                <span style="font-size:0.78rem; color:#666; letter-spacing:0.05em;">INSTAGRAM</span>
-                <span style="font-size:1.1rem; font-weight:600; color:var(--accent-color);">大寶老師的日常與分享</span>
-            </a>
-        </div>
-        <div class="center-btn">
-            <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入官方 Line 立刻預約</a>
-        </div>
-    </section>
-
-    <a href="https://lin.ee/y2XVa6h" target="_blank" class="sticky-cta" id="sticky-cta" onclick="gtag('event', 'click', {event_category: 'CTA', event_label: '首頁浮動按鈕'})">立刻預約諮詢</a>
-
-    <footer class="footer">
-        <div class="container">
-            <p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p>
+        <section class="home-wrap home-section home-final" id="final-cta" aria-labelledby="final-title">
+            <h2 id="final-title">有些事情，<br>想再久也不一定<span class="home-final-line">會自己變清楚。</span></h2>
+            <p>如果妳最近剛好有一件事情，不知道下一步怎麼走，把問題帶來。</p>
+            <a class="home-button" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-event="final_line_click" data-location="final">我有事情想問大寶</a>
+            <small>不確定自己適合哪種服務也沒關係，小幫手會協助妳判斷。</small>
+        </section>
+    </main>
+    <a class="home-button home-sticky" id="sticky-cta" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-event="sticky_line_click" data-location="sticky" hidden>我有事情想問大寶</a>
+    <footer class="home-footer" id="footer">
+        <div class="home-wrap">
+            <a class="home-brand" href="index.html">大寶 | 紫微斗數</a>
+            <nav aria-label="頁尾導覽"><a href="#services">諮詢服務</a><a href="course.html" data-event="course_click" data-location="footer">課程</a><a href="articles.html">文章</a><a href="chart.html">排盤</a><a href="faq.html">FAQ</a><a href="https://www.threads.net/@read_urface" target="_blank" rel="noopener noreferrer" data-event="social_click" data-location="footer">Threads</a><a href="https://www.instagram.com/read_urface/" target="_blank" rel="noopener noreferrer" data-event="social_click" data-location="footer">Instagram</a></nav>
+            <!-- Preserve the existing three-click admin entry without publishing stale announcements. -->
+            <button type="button" class="home-copyright" id="announcement-banner">© 2026 大寶 | 紫微斗數. All Rights Reserved.</button>
         </div>
     </footer>
-
-    <div class="admin-modal" id="admin-modal">
-        <div class="admin-modal-content">
-            <h3 style="margin-bottom: 20px;">🔒 登入後台管理系統</h3>
-            <div style="margin-bottom: 20px;">
-                <input type="password" id="admin-pass" class="admin-input" placeholder="請輸入站長密碼" style="border-color:var(--accent-color);">
-            </div>
-            <div class="admin-actions" style="justify-content: center; gap: 10px;">
-                <button class="admin-btn btn-save" id="btn-login">登入後台</button>
-                <button class="admin-btn btn-cancel" id="admin-cancel">取消</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="image-lightbox" id="image-lightbox" aria-hidden="true">
-        <button class="image-lightbox-close" type="button" aria-label="關閉大圖">&times;</button>
-        <img class="image-lightbox-img" id="image-lightbox-img" src="" alt="客戶回饋大圖">
-    </div>
-
-    <script>
-        const stickyCta = document.getElementById('sticky-cta');
-        const heroEl = document.querySelector('.hero');
-        window.addEventListener('scroll', () => {
-            const heroBottom = heroEl.getBoundingClientRect().bottom;
-            const nearBottom = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - 200;
-            if (heroBottom < 0 && !nearBottom) {
-                stickyCta.classList.add('visible');
-            } else {
-                stickyCta.classList.remove('visible');
-            }
-        });
-
-        function toggleTestimonials() {
-            const extra = document.getElementById('extra-testimonials');
-            const btn = document.getElementById('show-more-btn');
-            const isOpen = extra.classList.contains('visible');
-            if (isOpen) {
-                extra.classList.remove('visible');
-                btn.textContent = '展開全部 78 則回饋 ▾';
-            } else {
-                extra.classList.add('visible');
-                btn.textContent = '收起 ▴';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            const { createClient } = window.supabase;
-            const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
-            const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
-            const supabase = createClient(supabaseUrl, supabaseKey);
-
-            const annText = document.getElementById('announcement-text');
-            const annBanner = document.getElementById('announcement-banner');
-            const masonryGrid = document.getElementById('masonry-grid');
-            const lightbox = document.getElementById('image-lightbox');
-            const lightboxImg = document.getElementById('image-lightbox-img');
-            const lightboxClose = document.querySelector('.image-lightbox-close');
-            
-            const fetchAnnouncement = async () => {
-                const { data, error } = await supabase.from('announcements').select('content').eq('id', 1).single();
-                annText.innerText = (data && data.content) ? data.content : '歡迎來到 大寶 | 紫微斗數';
-            };
-            fetchAnnouncement();
-
-            const prepareLightboxTrigger = (img) => {
-                img.tabIndex = 0;
-                img.setAttribute('role', 'button');
-                img.setAttribute('aria-label', '查看客戶回饋大圖');
-            };
-
-            const fetchNewImages = async () => {
-                const { data, error } = await supabase.from('feedbacks').select('image_url').order('created_at', { ascending: true });
-                if (data && data.length > 0) {
-                    data.forEach(item => {
-                        const div = document.createElement('div');
-                        const img = document.createElement('img');
-                        div.className = 'masonry-item';
-                        img.src = item.image_url;
-                        img.alt = '客戶回饋';
-                        img.loading = 'lazy';
-                        prepareLightboxTrigger(img);
-                        div.appendChild(img);
-                        masonryGrid.prepend(div);
-                    });
-                }
-            };
-            fetchNewImages();
-
-            const openLightbox = (img) => {
-                lightboxImg.src = img.currentSrc || img.src;
-                lightboxImg.alt = img.alt ? `${img.alt}大圖` : '客戶回饋大圖';
-                lightbox.classList.add('visible');
-                lightbox.setAttribute('aria-hidden', 'false');
-                document.body.classList.add('lightbox-open');
-                lightboxClose.focus();
-            };
-
-            const closeLightbox = () => {
-                lightbox.classList.remove('visible');
-                lightbox.setAttribute('aria-hidden', 'true');
-                document.body.classList.remove('lightbox-open');
-                lightboxImg.removeAttribute('src');
-            };
-
-            masonryGrid.addEventListener('click', (event) => {
-                const img = event.target.closest('.masonry-item img');
-                if (img) openLightbox(img);
-            });
-
-            masonryGrid.addEventListener('keydown', (event) => {
-                if (event.key !== 'Enter' && event.key !== ' ') return;
-                const img = event.target.closest('.masonry-item img');
-                if (!img) return;
-                event.preventDefault();
-                openLightbox(img);
-            });
-
-            masonryGrid.querySelectorAll('.masonry-item img').forEach(prepareLightboxTrigger);
-
-            lightboxClose.addEventListener('click', closeLightbox);
-            lightbox.addEventListener('click', (event) => {
-                if (event.target === lightbox) closeLightbox();
-            });
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape' && lightbox.classList.contains('visible')) closeLightbox();
-            });
-
-            let clickCount = 0;
-            let clickTimer;
-            const modal = document.getElementById('admin-modal');
-            const passInput = document.getElementById('admin-pass');
-            const btnLogin = document.getElementById('btn-login');
-            
-            annBanner.addEventListener('click', () => {
-                clickCount++;
-                if (clickCount === 1) clickTimer = setTimeout(() => { clickCount = 0; }, 1000);
-                if (clickCount === 3) {
-                    clearTimeout(clickTimer);
-                    clickCount = 0;
-                    passInput.value = '';
-                    modal.style.display = 'flex';
-                    setTimeout(() => passInput.focus(), 100);
-                }
-            });
-
-            document.getElementById('admin-cancel').addEventListener('click', () => { modal.style.display = 'none'; });
-            passInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') btnLogin.click(); });
-
-            btnLogin.addEventListener('click', async () => {
-                const passcode = passInput.value.trim();
-                if (!passcode) return alert('⚠️ 請輸入密碼！');
-                btnLogin.innerText = '驗證中...';
-                const { data, error } = await supabase.rpc('verify_admin_password', { input_passcode: passcode });
-                if (data === true) {
-                    sessionStorage.setItem('isAdminLoggedIn', 'true');
-                    window.location.href = './admindashboard/admin.html';
-                } else {
-                    alert('❌ 密碼錯誤！請重新輸入。');
-                }
-                btnLogin.innerText = '登入後台';
-            });
-
-            const fetchArticleToggle = async () => {
-                try {
-                    const { data } = await supabase.from('site_settings').select('setting_value').eq('setting_key', 'new_article_list_enabled').single();
-                    if (data && data.setting_value === true) {
-                        document.querySelectorAll('a[href*="articles.html"]').forEach(link => link.href = 'new_articles.html');
-                    }
-                } catch (err) { console.error('開關讀取失敗:', err); }
-            };
-            fetchArticleToggle();
-        });
-    </script>
+    <dialog class="home-dialog" id="feedback-gallery" aria-labelledby="gallery-title">
+        <div class="home-dialog-bar"><h2 id="gallery-title">真實諮詢回饋</h2><button class="home-icon-button" type="button" data-close-dialog aria-label="關閉回饋圖庫" title="關閉回饋圖庫"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+        <div class="home-gallery-grid" id="gallery-grid"></div>
+    </dialog>
+    <dialog class="home-dialog home-lightbox" id="image-lightbox" aria-label="客戶回饋大圖">
+        <div class="home-dialog-bar"><a class="home-text-link" id="original-image" target="_blank" rel="noopener noreferrer">開啟原圖 <span aria-hidden="true">↗</span></a><button class="home-icon-button" type="button" data-close-dialog aria-label="關閉大圖" title="關閉大圖"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button></div>
+        <img id="image-lightbox-img" alt="客戶回饋大圖">
+    </dialog>
+    <dialog class="home-dialog home-admin" id="admin-modal" aria-labelledby="admin-title">
+        <h2 id="admin-title">登入後台管理系統</h2>
+        <p id="announcement-text"></p>
+        <form id="admin-form">
+            <label for="admin-pass">站長密碼</label>
+            <input type="password" id="admin-pass" class="admin-input" autocomplete="current-password" required>
+            <p id="admin-status" role="status"></p>
+            <div class="home-admin-actions"><button class="home-button" id="btn-login" type="submit">登入後台</button><button class="home-button home-button-outline" id="admin-cancel" type="button" data-close-dialog>取消</button></div>
+        </form>
+    </dialog>
 </body>
 </html>
