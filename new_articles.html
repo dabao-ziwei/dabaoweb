@@ -38,22 +38,27 @@
             color: #f3f4f6;
         }
     </style>
+    <link rel="stylesheet" href="site-navigation.css">
+    <script defer src="site-navigation.js"></script>
 </head>
 <body class="flex flex-col min-h-screen">
     
     <!-- 頂部導覽列 -->
-    <nav class="navbar border-b border-[#333] bg-[#1a1a1a]">
+    <nav class="navbar border-b border-[#333] bg-[#1a1a1a]" data-site-nav aria-label="主要導覽">
         <div class="container nav-container mx-auto px-4 py-4 flex justify-between items-center">
             <a href="index.html" class="logo flex items-center gap-3">
                 <img src="images/Dabao logo.jpeg" alt="Dabao Logo" class="nav-logo-icon w-10 h-10 rounded-full object-cover">
                 <span class="logo-text text-xl font-bold tracking-wider text-white">大寶 | 紫微斗數</span>
             </a>
-            <ul class="nav-links hidden md:flex gap-6 font-medium text-gray-300">
-                <li><a href="index.html" class="hover:text-[#d4af37] transition">首頁</a></li>
-                <li><a href="chart.html" class="hover:text-[#d4af37] transition">線上排盤</a></li>
-                <li><a href="booking.html" class="hover:text-[#d4af37] transition">線上預約</a></li>
-                <li><a href="course.html" class="hover:text-[#d4af37] transition">【實戰紫微斗數】課程</a></li>
-                <li><a href="articles.html" style="color:var(--accent-color, #d4af37);">教學文章</a></li>
+            <button class="site-menu-toggle" type="button" aria-label="開啟選單" title="開啟選單" aria-controls="site-links" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg></button>
+            <ul class="nav-links" id="site-links">
+                <li><a href="index.html">首頁</a></li>
+                <li><a href="index.html#services">諮詢服務</a></li>
+                <li><a href="course.html">紫微課程</a></li>
+                <li><a href="articles.html" aria-current="page">教學文章</a></li>
+                <li><a href="chart.html">線上排盤</a></li>
+                <li><a href="faq.html">常見問題</a></li>
+                <li><a class="site-booking-link" href="booking.html">預約諮詢</a></li>
             </ul>
         </div>
     </nav>
@@ -105,6 +110,7 @@
     <!-- 頁尾 -->
     <footer class="footer border-t border-[#333] bg-[#0a0a0a] py-8 mt-auto">
         <div class="container mx-auto text-center text-gray-500 text-sm">
+            <nav class="site-footer-nav" aria-label="頁尾導覽"><a href="index.html">首頁</a><a href="index.html#services">諮詢服務</a><a href="course.html">紫微課程</a><a href="articles.html">教學文章</a><a href="chart.html">線上排盤</a><a href="faq.html">常見問題</a></nav>
             <p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p>
         </div>
     </footer>
@@ -112,14 +118,14 @@
     <script>
         const supabaseUrl = 'https://uwktzlxlduqyjyoolgrs.supabase.co';
         const supabaseKey = 'sb_publishable_zd-hddZrWPl2uzLUJmouxw_U31_3PYa';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         async function loadPublishedArticles() {
             const grid = document.getElementById('articles-grid');
 
             try {
                 // 抓取已發布的文章，並關聯標籤
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('articles')
                     .select('*, article_tags(tags(name))')
                     .eq('status', 'published')

@@ -1,6 +1,7 @@
 /* Homepage-only rules keep the existing inner-page theme unchanged. */
 .home-page { --home-muted: #b7b7b7; --home-line: #383838; letter-spacing: 0; }
 .home-page [hidden] { display: none !important; }
+.home-page.home-menu-open { overflow: hidden; }
 .home-page a { color: inherit; }
 .home-page button { font: inherit; cursor: pointer; }
 .home-page :is(a, button, summary, input):focus-visible { outline: 2px solid var(--accent-color); outline-offset: 5px; }
@@ -16,9 +17,9 @@
 .home-band { background: #1d1d1d; }
 .home-header { position: sticky; top: 0; z-index: 100; background: #161616; border-bottom: 1px solid var(--home-line); }
 .home-nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 76px; }
-.home-brand { display: inline-flex; align-items: center; gap: 10px; font-family: 'Noto Serif TC', serif; font-size: 20px; font-weight: 700; text-decoration: none; flex-shrink: 0; }
+.home-brand { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-family: 'Noto Serif TC', serif; font-size: 20px; font-weight: 700; text-decoration: none; flex-shrink: 0; }
 .home-brand img { width: 36px; height: 36px; border-radius: 4px; object-fit: cover; }
-.home-menu { display: flex; align-items: center; gap: 22px; }
+.home-menu { display: flex; align-items: center; gap: 16px; }
 .home-menu > a { text-decoration: none; font-size: 14px; }
 .home-menu > a:not(.home-button) { padding-block: 14px; color: var(--home-muted); }
 .home-menu > a:hover { color: var(--accent-color); }
@@ -64,6 +65,7 @@
 .home-price { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 20px; padding-bottom: 20px; }
 .home-price span { color: var(--home-muted); font-size: 14px; }
 .home-price strong { font-size: 26px; font-weight: 500; }
+.home-price small { flex-basis: 100%; color: var(--accent-color); font-size: 14px; }
 .home-page details { background: none; border: 0; border-bottom: 1px solid var(--home-line); border-radius: 0; margin: 0; }
 .home-page summary { padding: 20px 36px 20px 0; font-size: 18px; }
 .home-page summary::after { right: 2px; }

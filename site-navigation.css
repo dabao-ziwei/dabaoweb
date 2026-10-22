@@ -1,0 +1,23 @@
+[data-site-nav] .nav-container { max-width: 1200px; min-height: 76px; height: auto; padding-block: 10px; flex-direction: row; flex-wrap: nowrap; gap: 20px; position: relative; }
+[data-site-nav] .logo { min-height: 44px; flex-shrink: 0; }
+[data-site-nav] .logo-text { font-size: 20px; letter-spacing: 0; }
+[data-site-nav] .nav-logo-icon { width: 36px; height: 36px; object-fit: cover; }
+[data-site-nav] .nav-links { display: flex; align-items: center; gap: 16px; margin: 0; padding: 0; list-style: none; }
+[data-site-nav] .nav-links a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; }
+[data-site-nav] .nav-links a[aria-current="page"] { color: var(--accent-color); }
+[data-site-nav] .site-booking-link { padding-inline: 16px; color: #161616; background: var(--accent-color); border-radius: 4px; font-weight: 700; }
+[data-site-nav] .site-menu-toggle { display: none; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: 0; color: #fff; background: transparent; cursor: pointer; }
+[data-site-nav] :is(a, button):focus-visible, .site-footer-nav a:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 4px; }
+.site-footer-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 20px; }
+.site-footer-nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--text-muted); text-decoration: none; font-size: 14px; }
+body.site-menu-open { overflow: hidden; }
+@media (max-width: 800px) {
+    [data-site-nav] .nav-container { min-height: 64px; padding-block: 8px; }
+    [data-site-nav] .logo-text { font-size: 18px; }
+    [data-site-nav] .nav-logo-icon { width: 30px; height: 30px; }
+    [data-site-nav] .site-menu-toggle { display: inline-flex; }
+    [data-site-nav] .nav-links { display: none; position: absolute; top: 64px; left: 0; right: 0; padding: 14px 20px 24px; max-height: calc(100dvh - 64px); overflow-y: auto; background: #161616; border-bottom: 1px solid #555; }
+    [data-site-nav] .nav-links.is-open { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+    [data-site-nav] .nav-links a { display: flex; min-height: 48px; font-size: 16px; }
+    [data-site-nav] .site-booking-link { justify-content: center; margin-top: 12px; }
+}

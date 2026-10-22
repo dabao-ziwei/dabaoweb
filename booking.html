@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-    <head><script>window.__sb_state = {};</script><script src="/.webcontainer@runtime.8669d46c.js"></script>
+    <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>預約算命｜大寶老師紫微斗數諮詢，流年運勢分析、紫微占卜線上預約</title>
-        <meta name="description" content="預約大寶老師算命諮詢。提供紫微斗數完整論命、流年運勢分析、紫微占卜，可選擇官方 LINE 語音或 Google Meet 線上進行">
+        <meta name="description" content="預約大寶老師紫微斗數完整論命、流年運勢分析與紫微占卜，統一使用 Google Meet 線上諮詢，可自行決定是否開啟鏡頭。完整論命與流年提供錄影，紫微占卜不提供錄影。">
         <meta name="keywords" content="預約算命, 大寶算命, 紫微斗數諮詢, 命理師預約, 流年運勢分析, 紫微占卜預約, 大寶老師預約">
         <meta property="og:title" content="預約算命｜大寶老師紫微斗數諮詢線上預約">
-        <meta property="og:description" content="可選擇官方 LINE 語音或 Google Meet，免出門即可進行紫微斗數論命與流年分析">
+        <meta property="og:description" content="統一使用 Google Meet 線上諮詢。完整論命、流年提供錄影與錄影檔，紫微占卜不提供錄影。">
         <meta property="og:image" content="https://dabao.life/images/hero.jpeg">
         <meta property="og:url" content="https://dabao.life/booking.html">
         <meta property="og:type" content="website">
@@ -129,28 +129,32 @@
         }
         </style>
         <link rel="canonical" href="https://dabao.life/booking.html">
-    </head>
+        <link rel="stylesheet" href="site-navigation.css">
+    <script defer src="site-navigation.js"></script>
+</head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar" data-site-nav aria-label="主要導覽">
         <div class="container nav-container">
             <a href="index.html" class="logo">
                 <img src="images/Dabao logo.jpeg" alt="Dabao Logo" class="nav-logo-icon">
                 <span class="logo-text">大寶 | 紫微斗數</span>
             </a>
-            <ul class="nav-links">
+            <button class="site-menu-toggle" type="button" aria-label="開啟選單" title="開啟選單" aria-controls="site-links" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg></button>
+            <ul class="nav-links" id="site-links">
                 <li><a href="index.html">首頁</a></li>
-                <li><a href="course.html">【實戰紫微斗數】課程</a></li>
-                <li><a href="booking.html" style="color:var(--accent-color);">線上預約</a></li>
+                <li><a href="index.html#services">諮詢服務</a></li>
+                <li><a href="course.html">紫微課程</a></li>
                 <li><a href="articles.html">教學文章</a></li>
                 <li><a href="chart.html">線上排盤</a></li>
                 <li><a href="faq.html">常見問題</a></li>
+                <li><a class="site-booking-link" href="booking.html" aria-current="page">預約諮詢</a></li>
             </ul>
         </div>
     </nav>
 
     <div class="inner-page-header">
         <h1>線上預約</h1>
-        <p style="color:var(--text-muted); font-size:1rem; margin-top:12px;">諮詢可選擇官方 LINE 語音或 Google Meet</p>
+        <p style="color:var(--text-muted); font-size:1rem; margin-top:12px;">諮詢統一使用 Google Meet，可自行決定是否開啟鏡頭</p>
     </div>
 
     <div class="inner-content">
@@ -167,7 +171,7 @@
             <div class="step-item">
                 <div class="step-num">02</div>
                 <div class="step-title">完成付款</div>
-                <div class="step-desc">依照系統指示完成付款（線上預約系統支援信用卡付款）</div>
+                <div class="step-desc">依照系統指示完成付款，可用付款方式以系統或小幫手確認為準</div>
             </div>
             <div class="step-item">
                 <div class="step-num">03</div>
@@ -177,14 +181,14 @@
             <div class="step-item">
                 <div class="step-num">04</div>
                 <div class="step-title">諮詢開始</div>
-                <div class="step-desc">預約時段到來，可選擇官方 LINE 語音或 Google Meet 進行諮詢</div>
+                <div class="step-desc">預約完成後會收到 Google Meet 連結，於預約時段加入諮詢，可自行決定是否開啟鏡頭</div>
             </div>
         </div>
 
-        <p style="color:var(--text-muted); font-size:0.9rem; margin:-12px 0 28px;">使用 Google Meet 時，可直接觀看命盤操作。諮詢過程可錄影，結束後提供錄影檔案下載。錄影檔於雲端保留 1 個月，逾期刪除。</p>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin:-12px 0 28px;">所有線上諮詢均使用 Google Meet，可直接觀看命盤操作。完整論命、流年運勢分析提供錄影與錄影檔，雲端保留 1 個月，逾期刪除；紫微占卜不提供錄影。</p>
 
         <div class="earlybird-notice">
-            🎯 <strong>每月早鳥優惠</strong>：每月 5～10 日為早鳥優惠期間，紫微斗數完整論命 NT$4,200、流年運勢分析 NT$3,200，亦有不定時的優惠方案，預約前可先加入官方 Line 確認是否在優惠期間內
+            🎯 <strong>每月早鳥優惠</strong>：每月 5～10 日為早鳥優惠期間，紫微斗數完整論命 NT$4,200、流年運勢分析 NT$3,200、紫微占卜 NT$1,200，預約前可先加入官方 LINE 確認是否在優惠期間內
         </div>
 
         <div style="text-align:center; margin-bottom: 40px;">
@@ -200,27 +204,31 @@
                 <span class="bc-desc">根據生辰排出命盤，分析未來數十年運勢走向與重大事件節點</span>
                 <span class="bc-meta">諮詢時長：60 分鐘</span>
                 <span class="bc-price">NT$4,800</span>
+                <span class="bc-meta">早鳥 NT$4,200｜提供錄影與錄影檔</span>
             </div>
             <div class="booking-card">
                 <span class="bc-name">流年運勢分析</span>
                 <span class="bc-desc">針對指定年份進行解析，包含重大事件預警，讓妳提前做好準備</span>
                 <span class="bc-meta">諮詢時長：40 分鐘</span>
                 <span class="bc-price">NT$3,600</span>
+                <span class="bc-meta">早鳥 NT$3,200｜提供錄影與錄影檔</span>
             </div>
             <div class="booking-card">
                 <span class="bc-name">紫微占卜</span>
                 <span class="bc-desc">不需個人資訊，透過 4 個數字針對 6 個月內的事件進行吉凶占測</span>
                 <span class="bc-meta">諮詢時長：30 分鐘</span>
                 <span class="bc-price">NT$1,800</span>
+                <span class="bc-meta">早鳥 NT$1,200｜不提供錄影</span>
             </div>
         </div>
 
-        <p style="color:#555; font-size:0.85rem; text-align:center; margin-top:-10px;">風水堪輿、符令改運、姓名改運...等其他服務請透過 <a href="https://lin.ee/y2XVa6h" target="_blank" style="color:var(--accent-color);">官方 Line</a> 洽詢</p>
+        <p style="color:var(--text-muted); font-size:0.9rem; text-align:center; margin-top:12px;">風水佈陣改運 NT$12,800；姓名改運、擇日服務各 NT$4,800；符令改運依需求報價，請透過 <a href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" style="color:var(--accent-color);">官方 LINE</a> 洽詢</p>
     </div>
 
     <a href="https://lin.ee/y2XVa6h" target="_blank" class="sticky-cta" id="sticky-cta" onclick="gtag('event', 'click', {event_category: 'CTA', event_label: '預約頁浮動按鈕'})">立刻預約諮詢</a>
 
-    <footer class="footer"><div class="container"><p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p></div></footer>
+    <footer class="footer"><div class="container"><nav class="site-footer-nav" aria-label="頁尾導覽"><a href="index.html">首頁</a><a href="index.html#services">諮詢服務</a><a href="course.html">紫微課程</a><a href="articles.html">教學文章</a><a href="chart.html">線上排盤</a><a href="faq.html">常見問題</a></nav>
+            <p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p></div></footer>
 
     <script>
         const stickyCta = document.getElementById('sticky-cta');

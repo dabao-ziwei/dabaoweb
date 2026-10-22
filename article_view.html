@@ -89,21 +89,26 @@
         .ql-editor ul, .ql-editor ol { margin-bottom: 1.5em; padding-left: 1.5em; }
         .ql-editor li { margin-bottom: 0.5em; line-height: 1.8; }
     </style>
+    <link rel="stylesheet" href="site-navigation.css">
+    <script defer src="site-navigation.js"></script>
 </head>
 <body>
     
-    <nav class="navbar">
+    <nav class="navbar" data-site-nav aria-label="主要導覽">
         <div class="container nav-container">
             <a href="index.html" class="logo">
                 <img src="images/Dabao logo.jpeg" alt="Dabao Logo" class="nav-logo-icon">
                 <span class="logo-text">大寶 | 紫微斗數</span>
             </a>
-            <ul class="nav-links">
+            <button class="site-menu-toggle" type="button" aria-label="開啟選單" title="開啟選單" aria-controls="site-links" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg></button>
+            <ul class="nav-links" id="site-links">
                 <li><a href="index.html">首頁</a></li>
+                <li><a href="index.html#services">諮詢服務</a></li>
+                <li><a href="course.html">紫微課程</a></li>
+                <li><a href="articles.html" aria-current="page">教學文章</a></li>
                 <li><a href="chart.html">線上排盤</a></li>
-                <li><a href="booking.html">線上預約</a></li>
-                <li><a href="course.html">【實戰紫微斗數】課程</a></li>
-                <li><a href="articles.html" style="color:var(--accent-color);">教學文章</a></li>
+                <li><a href="faq.html">常見問題</a></li>
+                <li><a class="site-booking-link" href="booking.html">預約諮詢</a></li>
             </ul>
         </div>
     </nav>
@@ -132,6 +137,7 @@
             <div id="view-content" class="ql-editor text-lg"></div>
         </article>
         
+        <p style="text-align:center; margin-top:48px;"><a class="primary-btn" href="course.html">了解實戰紫微斗數課程</a></p>
         <div style="text-align:center; margin-top:80px; padding-top:40px; border-top: 1px solid #333;">
             <p style="font-size:1.2rem; color:var(--primary-color); margin-bottom: 20px;">想進一步了解自己的專屬命盤嗎？</p>
             <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn">加入【官方Line】立刻預約諮詢</a>
@@ -140,6 +146,7 @@
 
     <footer class="footer" style="margin-top:100px;">
         <div class="container">
+            <nav class="site-footer-nav" aria-label="頁尾導覽"><a href="index.html">首頁</a><a href="index.html#services">諮詢服務</a><a href="course.html">紫微課程</a><a href="articles.html">教學文章</a><a href="chart.html">線上排盤</a><a href="faq.html">常見問題</a></nav>
             <p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p>
         </div>
     </footer>

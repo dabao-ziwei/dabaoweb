@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-    <head><script>window.__sb_state = {};</script><script src="/.webcontainer@runtime.8669d46c.js"></script>
+    <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>紫微斗數線上排盤｜大寶命理免費命盤，流年運勢自動分析</title>
@@ -29,22 +29,26 @@
           gtag('config', 'G-0XPZVQ42QP');
         </script>
             <link rel="canonical" href="https://dabao.life/chart.html">
-    </head>
+        <link rel="stylesheet" href="site-navigation.css">
+    <script defer src="site-navigation.js"></script>
+</head>
 <body>
     
-    <nav class="navbar">
+    <nav class="navbar" data-site-nav aria-label="主要導覽">
         <div class="container nav-container">
             <a href="index.html" class="logo">
                 <img src="images/Dabao logo.jpeg" alt="Dabao Logo" class="nav-logo-icon">
                 <span class="logo-text">大寶 | 紫微斗數</span>
             </a>
-            <ul class="nav-links">
+            <button class="site-menu-toggle" type="button" aria-label="開啟選單" title="開啟選單" aria-controls="site-links" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg></button>
+            <ul class="nav-links" id="site-links">
                 <li><a href="index.html">首頁</a></li>
-                <li><a href="course.html">【實戰紫微斗數】課程</a></li>
-                <li><a href="booking.html">線上預約</a></li>
+                <li><a href="index.html#services">諮詢服務</a></li>
+                <li><a href="course.html">紫微課程</a></li>
                 <li><a href="articles.html">教學文章</a></li>
-                <li><a href="chart.html" style="color:var(--accent-color);">線上排盤</a></li>
+                <li><a href="chart.html" aria-current="page">線上排盤</a></li>
                 <li><a href="faq.html">常見問題</a></li>
+                <li><a class="site-booking-link" href="booking.html">預約諮詢</a></li>
             </ul>
         </div>
     </nav>
@@ -86,7 +90,8 @@
         <p class="chart-note">* 網站支援行動裝置，為了取得最好的瀏覽體驗，建議使用電腦或大螢幕進行操作</p>
     </section>
 
-    <footer class="footer"><div class="container"><p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p></div></footer>
+    <footer class="footer"><div class="container"><nav class="site-footer-nav" aria-label="頁尾導覽"><a href="index.html">首頁</a><a href="index.html#services">諮詢服務</a><a href="course.html">紫微課程</a><a href="articles.html">教學文章</a><a href="chart.html">線上排盤</a><a href="faq.html">常見問題</a></nav>
+            <p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p></div></footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {

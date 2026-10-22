@@ -86,6 +86,7 @@
     const setMenu = (open) => {
         if (open) sticky.hidden = true;
         menu.classList.toggle('is-open', open);
+        document.body.classList.toggle('home-menu-open', open);
         menuToggle.setAttribute('aria-expanded', String(open));
         menuToggle.setAttribute('aria-label', open ? '關閉選單' : '開啟選單');
         menuToggle.title = open ? '關閉選單' : '開啟選單';
