@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="homepage.css">
+    <link rel="stylesheet" href="homepage.css?v=20261022">
     <script async id="cms-sdk" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0XPZVQ42QP"></script>
     <script>
@@ -26,7 +26,7 @@
         gtag('js', new Date());
         gtag('config', 'G-0XPZVQ42QP');
     </script>
-    <script defer src="homepage.js?v=20260909-finalqa4"></script>
+    <script defer src="homepage.js?v=20261022"></script>
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -62,12 +62,13 @@
             <!-- Lucide Menu and X icons; license in licenses/lucide.txt. -->
             <button class="home-menu-toggle" type="button" aria-label="開啟選單" title="開啟選單" aria-expanded="false" aria-controls="home-menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></button>
             <div class="home-menu" id="home-menu">
+                <a href="index.html" aria-current="page">首頁</a>
                 <a href="#services">諮詢服務</a>
-                <a href="#about">關於大寶</a>
-                <a href="#testimonials">客戶回饋</a>
-                <a href="#faq">常見問題</a>
-                <a href="#course">課程</a>
-                <a class="home-button" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-event="nav_line_click" data-location="navigation">我要預約</a>
+                <a href="course.html" data-event="course_click" data-location="navigation">紫微課程</a>
+                <a href="articles.html">教學文章</a>
+                <a href="chart.html">線上排盤</a>
+                <a href="faq.html">常見問題</a>
+                <a class="home-button" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-event="nav_line_click" data-location="navigation">預約諮詢</a>
             </div>
         </nav>
     </header>
@@ -147,30 +148,31 @@
                     <h3>紫微斗數完整論命</h3>
                     <p>如果妳想看的不是一件事，而是整個人生</p>
                     <ul><li>工作適合怎麼走</li><li>感情為什麼總遇到類似問題</li><li>財運真正好的時間在哪</li><li>人生哪些年份是重要轉折</li></ul>
-                    <div class="home-price"><span>60分鐘</span><strong>NT$4,800</strong></div>
+                    <div class="home-price"><span>60分鐘</span><strong>NT$4,800</strong><small>早鳥 NT$4,200</small></div>
                     <a class="home-button" href="booking.html?service=complete" data-event="service_complete_booking_click" data-service="complete" data-location="services">我想預約完整論命 <span aria-hidden="true">→</span></a>
                 </article>
                 <article class="home-service-card" id="annual-reading">
                     <h3>流年運勢分析</h3>
                     <p>如果妳想知道今年／明年到底會發生什麼</p>
                     <ul><li>哪些月份工作容易變動</li><li>感情有沒有重要事件</li><li>財運什麼時候適合衝</li><li>什麼時候反而應該保守</li></ul>
-                    <div class="home-price"><span>40分鐘</span><strong>NT$3,600</strong></div>
+                    <div class="home-price"><span>40分鐘</span><strong>NT$3,600</strong><small>早鳥 NT$3,200</small></div>
                     <a class="home-button" href="booking.html?service=annual" data-event="service_annual_booking_click" data-service="annual" data-location="services">我想預約流年分析 <span aria-hidden="true">→</span></a>
                 </article>
                 <article class="home-service-card" id="divination">
                     <h3>紫微占卜</h3>
                     <p>如果妳現在只有一件事，很想知道答案</p>
                     <p class="home-service-description">不需要生日。針對六個月內的具體事件，分析走向、吉凶與方向。</p>
-                    <div class="home-price"><span>30分鐘</span><strong>NT$1,800</strong></div>
+                    <div class="home-price"><span>30分鐘</span><strong>NT$1,800</strong><small>早鳥 NT$1,200</small></div>
                     <a class="home-button" href="booking.html?service=divination" data-event="service_divination_booking_click" data-service="divination" data-location="services">我想問這件事 <span aria-hidden="true">→</span></a>
                 </article>
             </div>
             <details class="home-other">
-                <summary><span>其他服務 <small>風水堪輿｜符令｜姓名｜異業合作</small></span><span class="home-other-label">查看其他服務</span></summary>
+                <summary><span>其他服務 <small>風水堪輿｜符令｜姓名｜擇日｜異業合作</small></span><span class="home-other-label">查看其他服務</span></summary>
                 <div class="home-other-list">
                     <div><h3>風水佈陣改運</h3><p>環境潛移默化影響你的決策速度、思維清晰度與財運格局。大寶老師現場堪輿居家或辦公空間，給出具體的風水佈局建議</p><p>服務內容：居家／辦公空間風水堪輿，提供改善方向與佈局建議</p><p>服務時長：30 分鐘<br>服務費用：NT$12,800（限雙北、桃園；其他地區或多物件請洽 Line）</p></div>
                     <div><h3>符令改運</h3><p>師承正一道，依循請神、勅水、勅墨、勅硯、勅紙、勅筆...等完整工序，搭配口訣手印手工撰寫（非印刷符），每道符令均針對命主需求開立。可增財運、事業運、桃花運……</p><p>服務費用：依需求而定，請洽官方 Line（台灣本島含運費）</p></div>
-                    <div><h3>姓名改運</h3><p>搭配命盤星曜與五行屬性，打造好聽、好寫、好記，又能加強運勢的名字。不只音學，而是真正結合命盤的個人化命名</p><p>服務內容：提供 10 組建議名稱供挑選<br>服務費用：NT$3,600（5 個工作天交件）</p></div>
+                    <div><h3>姓名改運</h3><p>搭配命盤星曜與五行屬性，打造好聽、好寫、好記，又能加強運勢的名字。不只音學，而是真正結合命盤的個人化命名</p><p>服務內容：提供 10 組建議名稱供挑選<br>服務費用：NT$4,800（5 個工作天交件）</p></div>
+                    <div><h3>擇日服務</h3><p>服務費用：NT$4,800，服務需求與安排請洽官方 LINE 小幫手</p></div>
                     <div><h3>異業合作</h3><p>有想要與命理結合的商業想法？歡迎加入官方 Line 洽談合作</p></div>
                 </div>
                 <a class="home-text-link" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-event="other_service_line_click" data-location="other-services">洽詢其他服務 <span aria-hidden="true">↗</span></a>
@@ -181,7 +183,7 @@
             <div class="home-wrap">
                 <h2 id="process-title">從預約到諮詢，其實很簡單</h2>
                 <ol class="home-process"><li><span>01</span>選擇服務</li><li><span>02</span>確認日期與時間</li><li><span>03</span>提供排盤需要的資料</li><li><span>04</span>線上諮詢</li></ol>
-                <div class="home-process-note"><h3>諮詢可選擇官方 LINE 語音或 Google Meet。</h3><p>使用 Google Meet 時，可以直接看到大寶操作妳的命盤。諮詢過程可錄影，結束後提供錄影檔案下載。</p><p class="home-recording-note">錄影檔將於雲端保留 1 個月，逾期刪除。</p></div>
+                <div class="home-process-note"><h3>諮詢統一使用 Google Meet</h3><p>預約完成後會收到 Google Meet 連結，可自行決定是否開啟鏡頭，也可以直接看到大寶操作妳的命盤</p><p>完整論命、流年運勢分析提供錄影與錄影檔；紫微占卜不提供錄影</p><p class="home-recording-note">錄影檔將於雲端保留 1 個月，逾期刪除。</p></div>
             </div>
         </section>
 
@@ -189,7 +191,7 @@
             <h2 id="faq-title">常見問題</h2>
             <details><summary>我該選完整論命、流年還是占卜？</summary><p>想通盤了解工作、感情與人生方向，選完整論命；想了解指定年份的運勢與月份變化，選流年分析；針對六個月內的一件具體事情，選紫微占卜。</p></details>
             <details><summary>完全不懂紫微斗數可以嗎？</summary><p>可以。妳不需要先學會看命盤，把想問的問題帶來，大寶會說明盤上看到什麼，以及為什麼這樣判斷。</p></details>
-            <details><summary>諮詢是怎麼進行的？</summary><p>採官方 LINE 語音或 Google Meet 線上諮詢，不需要見面。使用 Google Meet 時，可以看到命盤操作，諮詢過程可錄影，結束後提供錄影檔案下載。</p></details>
+            <details><summary>諮詢是怎麼進行的？</summary><p>統一使用 Google Meet 線上諮詢，預約完成後會收到連結，可自行決定是否開啟鏡頭。完整論命、流年運勢分析提供錄影與錄影檔，雲端保留 1 個月，逾期刪除；紫微占卜不提供錄影。</p></details>
             <details><summary>需要準備哪些資料？</summary><p>完整論命與流年分析需要出生日期、出生時間，用來排出命盤。紫微占卜不需要姓名或生日，透過 4 個數字針對具體問題進行分析。</p></details>
             <details><summary>可以問哪些問題？</summary><p>可以帶著感情、工作、財運、家庭或人生方向的問題來。若只想問六個月內某件事情的走向，可以選擇紫微占卜。</p></details>
             <details><summary>大概多久可以預約到？</summary><p>實際可預約時段依當期行程為準，可直接查看<a href="https://ziweiapp.dabao.life/booking" target="_blank" rel="noopener noreferrer" data-event="booking_system_click" data-location="faq">線上預約系統</a>或洽<a href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-event="faq_line_click" data-location="faq">官方 LINE</a>。</p></details>
@@ -215,7 +217,7 @@
     <footer class="home-footer" id="footer">
         <div class="home-wrap">
             <a class="home-brand" href="index.html">大寶 | 紫微斗數</a>
-            <nav aria-label="頁尾導覽"><a href="#services">諮詢服務</a><a href="course.html" data-event="course_click" data-location="footer">課程</a><a href="articles.html">文章</a><a href="chart.html">排盤</a><a href="faq.html">FAQ</a><a href="https://www.threads.net/@read_urface" target="_blank" rel="noopener noreferrer" data-event="social_click" data-location="footer">Threads</a><a href="https://www.instagram.com/read_urface/" target="_blank" rel="noopener noreferrer" data-event="social_click" data-location="footer">Instagram</a></nav>
+            <nav aria-label="頁尾導覽"><a href="index.html">首頁</a><a href="#services">諮詢服務</a><a href="course.html" data-event="course_click" data-location="footer">紫微課程</a><a href="articles.html">教學文章</a><a href="chart.html">線上排盤</a><a href="faq.html">常見問題</a><a href="https://www.threads.net/@read_urface" target="_blank" rel="noopener noreferrer" data-event="social_click" data-location="footer">Threads</a><a href="https://www.instagram.com/read_urface/" target="_blank" rel="noopener noreferrer" data-event="social_click" data-location="footer">Instagram</a></nav>
             <!-- Preserve the existing three-click admin entry without publishing stale announcements. -->
             <button type="button" class="home-copyright" id="announcement-banner">© 2026 大寶 | 紫微斗數. All Rights Reserved.</button>
         </div>

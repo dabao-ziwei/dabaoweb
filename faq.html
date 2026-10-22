@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-    <head><script>window.__sb_state = {};</script><script src="/.webcontainer@runtime.8669d46c.js"></script>
+    <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>常見問題｜大寶命理紫微斗數諮詢 FAQ</title>
@@ -80,7 +80,7 @@
                     "name": "需要見面才能進行諮詢嗎？",
                     "acceptedAnswer": {
                         "@type": "Answer",
-                        "text": "除風水堪輿需現場進行外，其他諮詢服務可選擇官方 LINE 語音或 Google Meet。使用 Google Meet 時，可直接觀看命盤操作；諮詢過程可錄影，結束後提供錄影檔案下載，錄影檔於雲端保留 1 個月，逾期刪除。"
+                        "text": "風水堪輿需現場進行；完整論命、流年運勢分析與紫微占卜統一使用 Google Meet。預約完成後會收到連結，可自行決定是否開啟鏡頭。完整論命、流年運勢分析提供錄影與錄影檔，雲端保留 1 個月，逾期刪除；紫微占卜不提供錄影。"
                     }
                 },
                 {
@@ -94,21 +94,25 @@
             ]
         }
         </script>
-    </head>
+        <link rel="stylesheet" href="site-navigation.css">
+    <script defer src="site-navigation.js"></script>
+</head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar" data-site-nav aria-label="主要導覽">
         <div class="container nav-container">
             <a href="index.html" class="logo">
                 <img src="images/Dabao logo.jpeg" alt="Dabao Logo" class="nav-logo-icon">
                 <span class="logo-text">大寶 | 紫微斗數</span>
             </a>
-            <ul class="nav-links">
+            <button class="site-menu-toggle" type="button" aria-label="開啟選單" title="開啟選單" aria-controls="site-links" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg></button>
+            <ul class="nav-links" id="site-links">
                 <li><a href="index.html">首頁</a></li>
-                <li><a href="course.html">【實戰紫微斗數】課程</a></li>
-                <li><a href="booking.html">線上預約</a></li>
+                <li><a href="index.html#services">諮詢服務</a></li>
+                <li><a href="course.html">紫微課程</a></li>
                 <li><a href="articles.html">教學文章</a></li>
                 <li><a href="chart.html">線上排盤</a></li>
-                <li><a href="faq.html" style="color:var(--accent-color);">常見問題</a></li>
+                <li><a href="faq.html" aria-current="page">常見問題</a></li>
+                <li><a class="site-booking-link" href="booking.html">預約諮詢</a></li>
             </ul>
         </div>
     </nav>
@@ -137,7 +141,7 @@
         <div class="faq-list">
             <details>
                 <summary>老師在哪裡？需要見面才能進行嗎？</summary>
-                <p>目前大寶老師的所有服務，除【風水堪輿】需現場進行外，其他諮詢服務可選擇官方 LINE 語音或 Google Meet，不須碰面，全台灣甚至海外都可以諮詢。<br><br>使用 Google Meet 時，可直接觀看命盤操作。諮詢過程可錄影，結束後提供錄影檔案下載。錄影檔於雲端保留 1 個月，逾期刪除。</p>
+                <p>風水堪輿需現場進行；完整論命、流年運勢分析與紫微占卜統一使用 Google Meet，不須碰面，全台灣甚至海外都可以諮詢。預約完成後會收到連結，可自行決定是否開啟鏡頭。<br><br>完整論命、流年運勢分析提供錄影與錄影檔，雲端保留 1 個月，逾期刪除；紫微占卜不提供錄影。</p>
             </details>
             <details>
                 <summary>目前大概要等多久才能預約到？</summary>
@@ -178,7 +182,8 @@
         </div>
     </div>
 
-    <footer class="footer"><div class="container"><p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p></div></footer>
+    <footer class="footer"><div class="container"><nav class="site-footer-nav" aria-label="頁尾導覽"><a href="index.html">首頁</a><a href="index.html#services">諮詢服務</a><a href="course.html">紫微課程</a><a href="articles.html">教學文章</a><a href="chart.html">線上排盤</a><a href="faq.html">常見問題</a></nav>
+            <p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p></div></footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {

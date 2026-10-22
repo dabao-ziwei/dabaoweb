@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>實戰紫微斗數初階班｜大寶紫微斗數</title>
-    <meta name="description" content="實戰紫微斗數初階班，從零建立解盤判斷方式，不靠死背星曜答案，線上直播、可回放，加入 LINE 了解本梯報名資訊">
+    <meta name="description" content="實戰紫微斗數初階班，從零建立解盤判斷方式。12 堂、共 24 小時 Google Meet 線上課程，每堂提供回放，加入官方 LINE 詢問課程與報名資訊。">
     <meta name="keywords" content="實戰紫微斗數初階班, 紫微斗數課程, 紫微斗數教學, 紫微斗數入門, 大寶紫微斗數, 大寶老師">
     <meta name="author" content="大寶老師">
 
@@ -42,43 +42,9 @@
         fbq('track', 'PageView');
     </script>
 
-    <script id="course-data" type="application/json">
-    {
-        "courseName": "實戰紫微斗數初階班",
-        "startDate": "10/5（一）",
-        "schedule": "每週一 19:00～21:00",
-        "sessions": "共 12 堂",
-        "sessionLength": "每堂 2 小時",
-        "lineUrl": "https://lin.ee/y2XVa6h",
-        "lineKeyword": "初階班",
-        "payment": ["現金匯款", "PayPal", "信用卡", "Apple Pay"],
-        "prices": [
-            {
-                "name": "早鳥特惠",
-                "period": "即日起～8/31",
-                "price": "NT$19,800",
-                "schemaPrice": "19800",
-                "note": "原價 NT$25,000，現省 NT$5,200",
-                "featured": true
-            },
-            {
-                "name": "招生優惠",
-                "period": "9/1～9/20",
-                "price": "NT$21,500",
-                "schemaPrice": "21500",
-                "note": "比原價省 NT$3,500"
-            },
-            {
-                "name": "原價",
-                "period": "9/21～10/1",
-                "price": "NT$25,000",
-                "schemaPrice": "25000",
-                "note": "10/1 為最後報名日"
-            }
-        ]
-    }
-    </script>
-    <script type="application/ld+json">
+    <script defer src="course-data.js"></script>
+    <script defer src="beginner-course.js"></script>
+    <script id="beginner-course-schema" type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "Course",
@@ -92,14 +58,7 @@
         "url": "https://dabao.life/ziwei-beginner-course.html",
         "inLanguage": "zh-TW",
         "educationalLevel": "Beginner",
-        "courseMode": "online",
-        "offers": {
-            "@type": "Offer",
-            "url": "https://dabao.life/ziwei-beginner-course.html",
-            "price": "19800",
-            "priceCurrency": "TWD",
-            "availability": "https://schema.org/InStock"
-        }
+        "timeRequired": "PT24H"
     }
     </script>
     <script type="application/ld+json">
@@ -141,10 +100,10 @@
             },
             {
                 "@type": "Question",
-                "name": "可以刷卡嗎？",
+                "name": "如何付款？",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "可以，支援現金匯款、PayPal、信用卡與 Apple Pay"
+                    "text": "所有課程報名與付款統一由官方 LINE 小幫手協助，請向小幫手確認可用付款方式"
                 }
             }
         ]
@@ -169,6 +128,11 @@
             line-height: 1.75;
         }
         .lp-wrap { max-width: 1180px; margin: 0 auto; padding: 0 22px; }
+        .lp-page .nav-container { min-height: 76px; height: auto; gap: 12px 24px; padding-block: 12px; }
+        .lp-page .logo { min-height: 44px; }
+        .lp-page .logo-text { font-size: 20px; letter-spacing: 0; }
+        .lp-overview-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--lp-gold); text-underline-offset: 4px; }
+        .lp-page :is(a, summary):focus-visible { outline: 2px solid var(--lp-gold); outline-offset: 4px; }
         .lp-section { padding: 64px 0; }
         .lp-section.tight { padding: 46px 0; }
         .lp-kicker {
@@ -384,13 +348,14 @@
         }
         .lp-price-grid {
             display: grid;
-            grid-template-columns: 1.12fr 0.94fr 0.94fr;
+            grid-template-columns: minmax(0, 1fr);
+            max-width: 640px;
             gap: 14px;
             align-items: stretch;
         }
         .lp-price-card {
             background: var(--lp-panel);
-            border-radius: 10px;
+            border-radius: 6px;
             padding: 24px;
         }
         .lp-price-card.featured {
@@ -496,10 +461,9 @@
         @media (max-width: 980px) {
             .lp-hero-grid,
             .lp-method-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: minmax(0, 1fr);
             }
-            .lp-result-grid,
-            .lp-price-grid {
+            .lp-result-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
@@ -513,6 +477,7 @@
             .lp-hero-image img { aspect-ratio: 4 / 3; }
             .lp-quick-info {
                 gap: 6px;
+                flex-wrap: wrap;
             }
             .lp-chip {
                 padding: 6px 9px;
@@ -547,10 +512,11 @@
 
     <nav class="navbar">
         <div class="container nav-container">
-            <a href="https://www.dabao.life" class="logo" target="_blank" rel="noopener">
+            <a href="index.html" class="logo">
                 <img src="images/Dabao logo.jpeg" alt="大寶紫微斗數標誌" class="nav-logo-icon">
-                <span class="logo-text">回到大寶｜紫微斗數官網</span>
+                <span class="logo-text">大寶｜紫微斗數官網</span>
             </a>
+            <a class="lp-overview-link" href="course.html">返回課程總覽</a>
         </div>
     </nav>
 
@@ -562,11 +528,12 @@
                     <p class="lp-hero-sub">不是再背更多答案<br>而是建立真正能拿來解盤的判斷方式</p>
                     <p class="lp-hero-small"><span>專為零基礎而開</span><span>學過但想重新系統化，也很適合</span></p>
                     <div class="lp-quick-info">
-                        <span class="lp-chip"><span data-field="startDate"></span> 開課</span>
-                        <span class="lp-chip" data-field="schedule"></span>
-                        <span class="lp-chip" data-field="sessions"></span>
+                        <span class="lp-chip" data-course-field="startDate"></span>
+                        <span class="lp-chip" data-course-field="schedule"></span>
+                        <span class="lp-chip" data-course-field="sessions"></span>
                     </div>
-                    <a class="lp-btn primary js-line-cta" href="#" target="_blank" rel="noopener noreferrer" data-label="hero">加入 LINE 了解初階班</a>
+                    <p class="lp-hero-small" data-course-field="enrollmentStatus"></p>
+                    <a class="lp-btn primary js-line-cta" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-label="hero">加入 LINE 詢問初階班</a>
                 </div>
                 <figure class="lp-hero-image">
                     <img src="images/ziwei-beginner-hero.jpg" alt="實戰紫微斗數初階班線上課程學習情境">
@@ -637,8 +604,8 @@
                 <h2 class="lp-title">線上直播、可回放</h2>
                 <p class="lp-class-subtitle">老師會在專屬學習群組內回答課後疑問</p>
                 <div class="lp-class-grid">
-                    <div class="lp-result"><span class="lp-icon"><svg viewBox="0 0 24 24"><path d="M7 3v4M17 3v4M4 8h16v12H4z"/></svg></span><div><h3><span data-field="startDate"></span> 開課</h3><p data-field="schedule"></p></div></div>
-                    <div class="lp-result"><span class="lp-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><div><h3 data-field="sessions"></h3><p data-field="sessionLength"></p></div></div>
+                    <div class="lp-result"><span class="lp-icon"><svg viewBox="0 0 24 24"><path d="M7 3v4M17 3v4M4 8h16v12H4z"/></svg></span><div><h3 data-course-field="startDate"></h3><p data-course-field="schedule"></p></div></div>
+                    <div class="lp-result"><span class="lp-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span><div><h3 data-course-field="sessions"></h3><p data-course-field="sessionLength"></p></div></div>
                     <div class="lp-result"><span class="lp-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="m10 10 5 2-5 2v-4Z"/></svg></span><div><h3>線上直播、可回放</h3><p>Google Meet 線上直播，每堂課提供錄影回放供複習</p></div></div>
                     <div class="lp-result lp-highlight"><span class="lp-icon"><svg viewBox="0 0 24 24"><path d="M7 8h10M7 12h6"/><path d="M4 5h16v11H8l-4 3V5Z"/></svg></span><div><h3>專屬學習群組</h3><p>老師本人會在群組內回覆學員</p></div></div>
                     <div class="lp-result"><span class="lp-icon"><svg viewBox="0 0 24 24"><path d="M5 19h14"/><path d="M7 17 17 7l-2-2L5 15v2h2Z"/></svg></span><div><h3>專屬助教一對一協助</h3><p>學習問題有人接住</p></div></div>
@@ -649,9 +616,16 @@
         <section class="lp-section lp-method" id="pricing">
             <div class="lp-wrap">
                 <h2 class="lp-title">報名費用</h2>
-                <div class="lp-price-grid" id="price-cards"></div>
-                <div class="lp-payment" id="payment-list"></div>
-                <a class="lp-btn primary js-line-cta" href="#" target="_blank" rel="noopener noreferrer" data-label="pricing">我要報名初階班</a>
+                <div class="lp-price-grid" id="price-cards">
+                    <article class="lp-price-card featured">
+                        <div class="lp-price-name">報名費用</div>
+                        <div class="lp-price-period" data-course-field="enrollmentStatus"></div>
+                        <div class="lp-price-value" data-course-field="price"></div>
+                        <div class="lp-price-note" data-course-field="priceNote"></div>
+                    </article>
+                </div>
+                <div class="lp-payment">所有課程報名與付款統一由官方 LINE 小幫手協助，請向小幫手確認可用付款方式</div>
+                <a class="lp-btn primary js-line-cta" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-label="pricing">我要報名初階班</a>
             </div>
         </section>
 
@@ -660,7 +634,7 @@
                 <h2 class="lp-title">想報名，不用填一堆表格</h2>
                 <div class="lp-flow">
                     <div class="lp-step"><div class="lp-step-number">1</div><h3>加入官方 LINE</h3><p>點擊頁面上的報名按鈕</p></div>
-                    <div class="lp-step"><div class="lp-step-number">2</div><h3>輸入「<span data-field="lineKeyword"></span>」</h3><p>取得本梯完整資訊</p></div>
+                    <div class="lp-step"><div class="lp-step-number">2</div><h3>詢問「初階班」</h3><p>確認課程與報名資訊</p></div>
                     <div class="lp-step"><div class="lp-step-number">3</div><h3>小幫手協助付款</h3><p>所有報名與付款統一由官方 LINE 小幫手協助</p></div>
                 </div>
             </div>
@@ -687,92 +661,18 @@
                 <details><summary>以前學過紫微斗數，還適合初階班嗎？</summary><p>適合，透過有系統的學習方式，可加深對紫微斗數的瞭解與認知，並從中學到原本可能沒有注意到的點，告別卡關，重新拾回學習熱情</p></details>
                 <details><summary>缺課怎麼辦？</summary><p>每堂課程都提供錄影檔，讓學員可以反覆回放學習，除此之外，您的學習疑問除了可在專屬學習群中詢問老師、跟同學討論，也有專屬助教一對一提供學習協助，幫助妳解除困惑</p></details>
                 <details><summary>課後能問老師嗎？</summary><p>當然可以，而且我們很在意妳是否卡關，或是有問題不敢問，所以除了可在專屬學習群中詢問老師、跟同學討論外，專屬助教更能一對一的給予妳學習指引，讓妳不再卡關，恢復學習信心</p></details>
-                <details><summary>可以刷卡嗎？</summary><p>可以，支援現金匯款、PayPal、信用卡與 Apple Pay</p></details>
+                <details><summary>如何付款？</summary><p>所有課程報名與付款統一由官方 LINE 小幫手協助，請向小幫手確認可用付款方式</p></details>
             </div>
         </section>
 
         <section class="lp-section lp-final">
             <div class="lp-wrap">
                 <h2 class="lp-title">下一次打開命盤<br>不要再只是看見一堆自己背過的東西</h2>
-                <p class="lp-lead" style="margin-left:auto;margin-right:auto;">如果妳是不想大量背誦，想真的看懂紫微斗數命盤，我們<span data-field="startDate"></span>課堂上見</p>
-                <a class="lp-btn primary js-line-cta" href="#" target="_blank" rel="noopener noreferrer" data-label="final">我要報名這一梯</a>
+                <p class="lp-lead" style="margin-left:auto;margin-right:auto;">如果妳不想大量背誦，想真的看懂紫微斗數命盤，<span data-course-field="finalInvitation"></span></p>
+                <a class="lp-btn primary js-line-cta" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-label="final">我要報名初階班</a>
             </div>
         </section>
     </main>
 
-    <script>
-        const courseData = JSON.parse(document.getElementById('course-data').textContent);
-
-        const setText = (selector, value) => {
-            document.querySelectorAll(selector).forEach((node) => { node.textContent = value; });
-        };
-
-        const renderCourseData = () => {
-            Object.entries(courseData).forEach(([key, value]) => {
-                if (typeof value === 'string') setText(`[data-field="${key}"]`, value);
-            });
-
-            document.querySelectorAll('.js-line-cta').forEach((link) => {
-                link.href = courseData.lineUrl;
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-            });
-
-            const priceCards = document.getElementById('price-cards');
-            priceCards.innerHTML = courseData.prices.map((item) => `
-                <article class="lp-price-card${item.featured ? ' featured' : ''}">
-                    <div class="lp-price-name">${item.name}</div>
-                    <div class="lp-price-period">${item.period}</div>
-                    <div class="lp-price-value">${item.price}</div>
-                    <div class="lp-price-note">${item.note}</div>
-                </article>
-            `).join('');
-
-            const paymentList = document.getElementById('payment-list');
-            paymentList.innerHTML = `<b>付款方式：</b>支援「${courseData.payment.join('」、「')}」支付`;
-        };
-
-        const track = (name, label) => {
-            if (typeof gtag === 'function') {
-                gtag('event', name, {
-                    event_category: 'ziwei_beginner_course',
-                    event_label: label || '',
-                    course_name: courseData.courseName
-                });
-            }
-        };
-
-        const trackMeta = (eventName, params = {}) => {
-            if (typeof fbq === 'function') fbq('track', eventName, params);
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCourseData();
-            trackMeta('ViewContent', { content_name: courseData.courseName });
-
-            document.querySelectorAll('.js-line-cta').forEach((link) => {
-                link.addEventListener('click', () => {
-                    const label = link.dataset.label || '';
-                    track('generate_lead', label);
-                    trackMeta('Lead', { content_name: courseData.courseName });
-                });
-            });
-
-            const pricing = document.getElementById('pricing');
-            if ('IntersectionObserver' in window && pricing) {
-                let viewedPricing = false;
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach((entry) => {
-                        if (!viewedPricing && entry.isIntersecting) {
-                            viewedPricing = true;
-                            track('view_pricing', 'pricing_section');
-                            observer.disconnect();
-                        }
-                    });
-                }, { threshold: 0.35 });
-                observer.observe(pricing);
-            }
-        });
-    </script>
 </body>
 </html>
