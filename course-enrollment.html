@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="cms-config.js"></script>
+    <title>課程招生資訊｜大寶紫微斗數</title>
+    <meta name="description" content="查看大寶紫微斗數課程的招生日期、課程時數、費用與報名資訊，透過官方 LINE 小幫手詢問與報名。">
+    <link rel="canonical" href="https://dabao.life/course-enrollment.html">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="site-navigation.css">
+    <link rel="stylesheet" href="cms-public.css">
+    <link rel="stylesheet" href="enrollment.css">
+    <script defer src="cms-client.js"></script>
+    <script defer src="course-data.js"></script>
+    <script defer src="site-navigation.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0XPZVQ42QP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        if (!window.DabaoCmsPreview) gtag('config', 'G-0XPZVQ42QP');
+    </script>
+    <script defer src="enrollment-tracking.js"></script>
+    <script id="enrollment-schema" type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"課程招生資訊"}</script>
+</head>
+<body>
+    <nav class="navbar" data-site-nav aria-label="主要導覽"><div class="container nav-container">
+        <a class="logo" href="index.html"><img class="nav-logo-icon" src="images/Dabao logo.jpeg" alt=""><span class="logo-text">大寶｜紫微斗數</span></a>
+        <button class="site-menu-toggle" type="button" aria-label="開啟選單" title="開啟選單" aria-expanded="false" aria-controls="site-links"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 5h16M4 12h16M4 19h16"/></svg></button>
+        <ul class="nav-links" id="site-links"><li><a href="index.html">首頁</a></li><li><a href="index.html#services">諮詢服務</a></li><li><a href="course.html">紫微課程</a></li><li><a href="articles.html">教學文章</a></li><li><a href="chart.html">線上排盤</a></li><li><a href="faq.html">常見問題</a></li></ul>
+    </div></nav>
+    <main class="enrollment-page">
+        <a href="course.html">返回課程總覽</a>
+        <img class="enrollment-cover" src="images/ziwei-beginner-hero.jpg" alt="線上課程與學習筆記情境">
+        <h1 data-course-field="courseName">課程招生資訊</h1>
+        <p data-course-field="description"></p>
+        <dl class="enrollment-information"><div><dt>開課日期</dt><dd data-course-field="startDate"></dd></div><div><dt>上課時間</dt><dd data-course-field="schedule"></dd></div><div><dt>課程時數</dt><dd><span data-course-field="sessions"></span> · <span data-course-field="sessionLength"></span></dd></div><div><dt>授課平台</dt><dd data-course-field="platform"></dd></div><div><dt>報名費用</dt><dd class="enrollment-public-price" data-course-field="price"></dd></div></dl>
+        <p data-course-field="priceNote"></p><p data-course-field="enrollmentStatus" role="status"></p>
+        <a class="primary-btn" data-enrollment-signup href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer">加入官方 LINE 詢問</a>
+    </main>
+    <footer class="footer"><a href="index.html">返回官方網站</a></footer>
+</body>
+</html>

@@ -1,0 +1,16 @@
+.cms-preview-banner { padding:10px 20px; text-align:center; background:#f4dda9; color:#463419; font:14px/1.5 system-ui,sans-serif; }
+.cms-enrollment-list { display:grid; gap:0; margin-top:32px; border-top:1px solid #444; }
+.cms-enrollment-row { display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px 24px; padding-block:22px; border-bottom:1px solid #444; }
+.cms-enrollment-row h3 { margin:0; font-size:20px; }
+.cms-enrollment-row p { margin:6px 0 0; }
+.cms-enrollment-row a { display:inline-flex; align-items:center; min-height:44px; color:#dda76a; text-underline-offset:4px; }
+.cms-status { color:#dda76a; font-size:14px; margin-bottom:12px; }
+.cms-home-enrollment { display:flex; align-items:baseline; flex-wrap:wrap; gap:8px 18px; margin:20px 0; }
+.cms-home-enrollment strong { color:#dda76a; }
+.cms-gallery-more { display:flex; justify-content:center; margin-top:24px; }
+#featured-feedback[data-cms-managed] .home-feedback { display:block; }
+#featured-feedback[data-cms-managed] .home-feedback[hidden] { display:none!important; }
+.cms-empty { color:#b7b7b7; padding-block:20px; }
+@media(max-width:800px) { .path-overview { grid-template-columns:1fr!important; } }
+#other-enrollments { grid-column:1 / -1; }
+#other-enrollments:empty { display:none; }

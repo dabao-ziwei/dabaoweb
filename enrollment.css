@@ -1,0 +1,11 @@
+.enrollment-page { width:min(100%,960px); padding:44px 24px 72px; margin:auto; }
+.enrollment-page>a:first-child { display:inline-flex; min-height:44px; align-items:center; color:#dda76a; }
+.enrollment-cover { display:block; width:100%; height:200px; object-fit:cover; margin:18px 0 32px; border-radius:4px; }
+.enrollment-page h1 { font:600 32px/1.5 'Noto Serif TC',serif; margin-bottom:18px; }
+.enrollment-page p { color:#b7b7b7; margin-bottom:18px; }
+.enrollment-information { margin:30px 0; }
+.enrollment-information>div { display:grid; grid-template-columns:130px minmax(0,1fr); gap:16px; padding:18px 0; border-top:1px solid #444; }
+.enrollment-information dt { color:#b7b7b7; }
+.enrollment-information dd { margin:0; }
+.enrollment-public-price { color:#dda76a; font-size:26px; }
+@media(max-width:600px) { .enrollment-page { padding:28px 16px 48px; } .enrollment-page h1 { font-size:26px; } .enrollment-information>div { grid-template-columns:100px minmax(0,1fr); gap:12px; } }

@@ -26,6 +26,7 @@
 
     // Preserve the existing GA event and labels, with explicit destinations for V2 paths.
     document.addEventListener('click', (event) => {
+        if (window.DabaoCmsPreview) return;
         const link = event.target.closest('a[data-course-cta]');
         if (!link || typeof window.gtag !== 'function') return;
         const location = link.dataset.location;

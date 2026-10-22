@@ -234,7 +234,7 @@ async function trackClick(page, selector, expectedAction) {
             const NativeDate = Date;
             class FixedDate extends NativeDate { constructor(...args) { super(...(args.length ? args : [now])); } }
             const schema = { textContent: '' };
-            const sandbox = { window: {}, document: { querySelectorAll: () => [], getElementById: () => schema }, Date: FixedDate };
+            const sandbox = { window: {}, document: { querySelectorAll: () => [], querySelector: () => null, getElementById: id => id === 'beginner-course-schema' ? schema : null }, Date: FixedDate };
             vm.runInNewContext(courseScript, sandbox);
             check(`enrollment expiry ${now}`, sandbox.window.DabaoCourse.open === expectedOpen && Boolean(JSON.parse(schema.textContent).hasCourseInstance) === expectedOpen);
         }

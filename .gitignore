@@ -1,1 +1,10 @@
-node_modules
+node_modules/
+.env
+.env.*
+!.env.example
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+cms-data/
+backups/
+test-results/

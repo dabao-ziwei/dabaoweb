@@ -3,6 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="cms-config.js"></script>
+    <link rel="stylesheet" href="cms-public.css">
+    <script defer src="cms-client.js"></script>
     <title>紫微斗數課程｜大寶老師實戰教學，從初階到職業班</title>
     <meta name="description" content="大寶老師實戰紫微斗數課程，從零基礎到獨立看盤、解盤。了解教學方法、三位學員故事、初階到職業四階段學習路徑與線上學習支援，再查看初階班招生資訊。">
     <meta name="robots" content="index, follow">
@@ -22,7 +25,7 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'G-0XPZVQ42QP');
+        if (!window.DabaoCmsPreview) gtag('config', 'G-0XPZVQ42QP');
     </script>
     <script type="application/ld+json">
     {
@@ -76,7 +79,7 @@
                 <p class="hero-note">從零基礎，到能獨立看盤、解盤，<br>一套以邏輯、推理與實戰為核心的紫微斗數學習系統</p>
                 <div class="hero-actions">
                     <a class="button" href="#learning-path" data-course-cta="learning_path" data-location="hero">看看四階段學習路徑</a>
-                    <a class="text-link" href="#enrollment" data-course-cta="enrollment" data-location="hero">目前招生｜實戰紫微斗數初階班 <span aria-hidden="true">↓</span></a>
+                    <a class="text-link" href="#enrollment" data-course-cta="enrollment" data-location="hero" data-enrollment-hero-label>目前招生｜實戰紫微斗數初階班 <span aria-hidden="true">↓</span></a>
                 </div>
             </div>
         </section>
@@ -244,8 +247,8 @@
             <div class="wrap enrollment-layout">
                 <div>
                     <p class="eyebrow">目前招生</p>
-                    <h2 id="enrollment-title">實戰紫微斗數初階班</h2>
-                    <p class="enrollment-note">先從看懂命盤結構開始，建立一套能繼續往下走的判斷基礎</p>
+                    <h2 id="enrollment-title" data-enrollment-heading>實戰紫微斗數初階班</h2>
+                    <p class="enrollment-note" data-enrollment-description>先從看懂命盤結構開始，建立一套能繼續往下走的判斷基礎</p>
                 </div>
                 <div class="enrollment-facts">
                     <p><small>開課日期</small><strong data-course-field="startDate"></strong></p>
@@ -253,10 +256,11 @@
                     <p><small>課程堂數</small><strong data-course-field="sessions"></strong><span data-course-field="sessionLength"></span></p>
                     <p class="enrollment-price"><small>報名費用</small><strong data-course-field="price"></strong><span>詳情可洽官方 LINE 小幫手</span></p>
                 </div>
+                <div class="cms-enrollment-list" id="other-enrollments"></div>
                 <div class="enrollment-actions">
                     <p class="enrollment-status" data-course-field="enrollmentStatus"></p>
                     <a class="button" href="ziwei-beginner-course.html" data-course-cta="beginner_lp" data-location="enrollment">查看本期初階班完整資訊</a>
-                    <a class="text-link" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-course-cta="line" data-location="enrollment">還有問題？加入官方 LINE 詢問 <span aria-hidden="true">→</span></a>
+                    <a class="text-link" href="https://lin.ee/y2XVa6h" data-cms-line target="_blank" rel="noopener noreferrer" data-course-cta="line" data-location="enrollment">還有問題？加入官方 LINE 詢問 <span aria-hidden="true">→</span></a>
                 </div>
             </div>
         </section>
@@ -293,7 +297,7 @@
                 <p>先從真正知道「怎麼判斷」開始</p>
                 <div class="final-actions">
                     <a class="button" href="ziwei-beginner-course.html" data-course-cta="beginner_lp" data-location="final">查看本期初階班完整資訊</a>
-                    <a class="text-link" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-course-cta="line" data-location="final">還有問題？加入官方 LINE 詢問 <span aria-hidden="true">→</span></a>
+                    <a class="text-link" href="https://lin.ee/y2XVa6h" data-cms-line target="_blank" rel="noopener noreferrer" data-course-cta="line" data-location="final">還有問題？加入官方 LINE 詢問 <span aria-hidden="true">→</span></a>
                 </div>
             </div>
         </section>

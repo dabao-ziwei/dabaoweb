@@ -1,0 +1,10 @@
+FROM node:24-bookworm-slim
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev && mkdir -p /var/lib/dabao && chown node:node /var/lib/dabao
+COPY --chown=node:node . .
+USER node
+ENV NODE_ENV=production CMS_HOST=0.0.0.0 CMS_PORT=4280 CMS_DATA_DIR=/var/lib/dabao
+EXPOSE 4280
+HEALTHCHECK --interval=30s --timeout=5s CMD node -e "fetch('http://127.0.0.1:4280/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+CMD ["node", "cms/server.mjs"]

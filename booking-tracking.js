@@ -3,6 +3,7 @@
     const service = ['complete', 'annual', 'divination'].includes(requestedService) ? requestedService : 'unspecified';
     // Keep the external system URL unchanged; it does not declare query-string support.
     document.getElementById('booking-system-link').addEventListener('click', () => {
+        if (window.DabaoCmsPreview) return;
         if (typeof window.gtag === 'function') {
             window.gtag('event', 'booking_system_click', {
                 service,

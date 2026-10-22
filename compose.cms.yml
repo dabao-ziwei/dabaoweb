@@ -1,0 +1,17 @@
+# Local container review only. Production requires approved HTTPS hosting.
+services:
+  cms:
+    build:
+      context: .
+      dockerfile: Dockerfile.cms
+    ports:
+      - "127.0.0.1:4280:4280"
+    environment:
+      NODE_ENV: development
+      CMS_ORIGIN: http://localhost:4280
+      CMS_PUBLIC_ORIGINS: http://localhost:4280
+    volumes:
+      - dabao-cms-data:/var/lib/dabao
+    restart: unless-stopped
+volumes:
+  dabao-cms-data:

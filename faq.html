@@ -3,6 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="cms-config.js"></script>
+    <link rel="stylesheet" href="cms-public.css">
+    <script defer src="cms-client.js"></script>
         <title>常見問題｜大寶命理紫微斗數諮詢 FAQ</title>
         <meta name="description" content="大寶老師紫微斗數諮詢常見問題。預約流程、服務差異、等候時間、急件處理、服務時間一次看清楚。">
         <meta name="keywords" content="大寶老師常見問題, 紫微斗數諮詢FAQ, 算命預約流程, 紫微斗數服務說明">
@@ -22,7 +25,7 @@
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-0XPZVQ42QP');
+          if (!window.DabaoCmsPreview) gtag('config', 'G-0XPZVQ42QP');
         </script>
         <style>
         .faq-section-title {
@@ -176,7 +179,7 @@
         <div class="faq-cta">
             <p>沒有找到你的問題？加入官方 Line 由小幫手為你解答</p>
             <div class="faq-cta-btns">
-                <a href="https://lin.ee/y2XVa6h" target="_blank" class="primary-btn" style="margin-top:0;" onclick="gtag('event', 'click', {event_category: 'CTA', event_label: 'FAQ頁加入Line按鈕'})">加入官方 Line 詢問</a>
+                <a href="https://lin.ee/y2XVa6h" data-cms-line target="_blank" class="primary-btn" style="margin-top:0;" onclick="gtag('event', 'click', {event_category: 'CTA', event_label: 'FAQ頁加入Line按鈕'})">加入官方 Line 詢問</a>
                 <a href="booking.html" class="primary-btn" style="margin-top:0;" onclick="gtag('event', 'click', {event_category: 'CTA', event_label: 'FAQ頁預約按鈕'})">直接預約諮詢</a>
             </div>
         </div>

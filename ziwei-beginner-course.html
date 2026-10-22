@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="cms-config.js"></script>
+    <link rel="stylesheet" href="cms-public.css">
+    <script defer src="cms-client.js"></script>
 
     <title>實戰紫微斗數初階班｜大寶紫微斗數</title>
     <meta name="description" content="實戰紫微斗數初階班，從零建立解盤判斷方式。12 堂、共 24 小時 Google Meet 線上課程，每堂提供回放，加入官方 LINE 詢問課程與報名資訊。">
@@ -27,9 +30,10 @@
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', 'G-0XPZVQ42QP');
+        if (!window.DabaoCmsPreview) gtag('config', 'G-0XPZVQ42QP');
     </script>
     <script>
+        if (!window.DabaoCmsPreview) {
         !function(f,b,e,v,n,t,s)
         {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
         n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -40,6 +44,7 @@
         'https://connect.facebook.net/en_US/fbevents.js');
         fbq('init', '1406282658043757');
         fbq('track', 'PageView');
+        }
     </script>
 
     <script defer src="course-data.js"></script>
@@ -505,7 +510,7 @@
         }
     </style>
 </head>
-<body class="lp-page">
+<body class="lp-page" data-cms-course="beginner">
     <noscript>
         <img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1406282658043757&ev=PageView&noscript=1">
     </noscript>
@@ -533,7 +538,7 @@
                         <span class="lp-chip" data-course-field="sessions"></span>
                     </div>
                     <p class="lp-hero-small" data-course-field="enrollmentStatus"></p>
-                    <a class="lp-btn primary js-line-cta" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-label="hero">加入 LINE 詢問初階班</a>
+                    <a class="lp-btn primary js-line-cta" href="https://lin.ee/y2XVa6h" data-cms-line target="_blank" rel="noopener noreferrer" data-label="hero">加入 LINE 詢問初階班</a>
                 </div>
                 <figure class="lp-hero-image">
                     <img src="images/ziwei-beginner-hero.jpg" alt="實戰紫微斗數初階班線上課程學習情境">
@@ -625,7 +630,7 @@
                     </article>
                 </div>
                 <div class="lp-payment">所有課程報名與付款統一由官方 LINE 小幫手協助，請向小幫手確認可用付款方式</div>
-                <a class="lp-btn primary js-line-cta" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-label="pricing">我要報名初階班</a>
+                <a class="lp-btn primary js-line-cta" href="https://lin.ee/y2XVa6h" data-cms-line target="_blank" rel="noopener noreferrer" data-label="pricing">我要報名初階班</a>
             </div>
         </section>
 
@@ -669,7 +674,7 @@
             <div class="lp-wrap">
                 <h2 class="lp-title">下一次打開命盤<br>不要再只是看見一堆自己背過的東西</h2>
                 <p class="lp-lead" style="margin-left:auto;margin-right:auto;">如果妳不想大量背誦，想真的看懂紫微斗數命盤，<span data-course-field="finalInvitation"></span></p>
-                <a class="lp-btn primary js-line-cta" href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" data-label="final">我要報名初階班</a>
+                <a class="lp-btn primary js-line-cta" href="https://lin.ee/y2XVa6h" data-cms-line target="_blank" rel="noopener noreferrer" data-label="final">我要報名初階班</a>
             </div>
         </section>
     </main>
