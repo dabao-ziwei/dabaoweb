@@ -132,8 +132,8 @@ async function trackClick(page, selector, expectedAction) {
         await open(page, 'course.html');
         check('GA one config', await page.evaluate(() => window.dataLayer.filter(x => x[0] === 'config' && x[1] === 'G-0XPZVQ42QP').length === 1));
         check('GA pageview default enabled', await page.evaluate(() => window.dataLayer.find(x => x[0] === 'config')?.[2]?.send_page_view !== false));
-        for (const [selector, action] of [['.nav-button', 'enrollment'], ['#hero .button', 'learning_path'], ['#hero .text-link', 'enrollment'], ['.path-enrollment-link', 'enrollment']]) await trackClick(page, selector, action);
-        for (const selector of ['#enrollment a[data-course-cta="line"]', '.final-section a[data-course-cta="line"]']) {
+        for (const [selector, action] of [['#hero .button', 'learning_path'], ['#hero .text-link', 'enrollment'], ['.path-enrollment-link', 'enrollment']]) await trackClick(page, selector, action);
+        for (const selector of ['.nav-button', '#enrollment a[data-course-cta="line"]', '.final-section a[data-course-cta="line"]']) {
             const popup = page.waitForEvent('popup');
             await trackClick(page, selector, 'line');
             const child = await popup;
@@ -183,7 +183,7 @@ async function trackClick(page, selector, expectedAction) {
         });
         await runFlow('B directly find beginner', async () => {
             await open(page, 'index.html'); await page.locator('#course a').click(); await page.waitForURL('**/course.html');
-            await page.locator('.nav-button').click(); await page.locator('#enrollment .button').click(); await page.waitForURL('**/ziwei-beginner-course.html');
+            await page.locator('#hero .text-link').click(); await page.locator('#enrollment .button').click(); await page.waitForURL('**/ziwei-beginner-course.html');
         });
         await runFlow('C teaching articles to course', async () => {
             await open(page, 'articles.html'); await page.getByRole('link', { name: '了解實戰紫微斗數課程', exact: true }).click(); await page.waitForURL('**/course.html');
@@ -200,7 +200,7 @@ async function trackClick(page, selector, expectedAction) {
         await runFlow('F mobile course registration', async () => {
             await page.setViewportSize({ width: 375, height: 812 }); await open(page, 'index.html');
             await page.locator('.home-menu-toggle').click(); await page.locator('#home-menu a[href="course.html"]').click(); await page.waitForURL('**/course.html');
-            await page.locator('.menu-toggle').click(); await page.locator('.nav-button').click(); await page.locator('#enrollment .button').click(); await page.waitForURL('**/ziwei-beginner-course.html');
+            await page.locator('#hero .text-link').click(); await page.locator('#enrollment .button').click(); await page.waitForURL('**/ziwei-beginner-course.html');
             const promise = page.waitForEvent('popup'); await page.locator('.js-line-cta').first().click(); const popup = await promise; await popup.close();
         });
         for (const file of ['index.html', 'booking.html', 'faq.html']) {

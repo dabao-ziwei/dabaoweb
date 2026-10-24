@@ -21,3 +21,37 @@ body.site-menu-open { overflow: hidden; }
     [data-site-nav] .nav-links a { display: flex; min-height: 48px; font-size: 16px; }
     [data-site-nav] .site-booking-link { justify-content: center; margin-top: 12px; }
 }
+
+/* Shared homepage/course navigation; page-specific menu controllers stay intact. */
+.dabao-header { position: sticky; top: 0; z-index: 100; background: #161616; border-bottom: 1px solid #383838; }
+.dabao-header > nav { display: flex; align-items: center; justify-content: space-between; width: min(100%, 1200px); min-height: 76px; margin-inline: auto; padding-inline: 32px; gap: 20px; line-height: 1.8; }
+.dabao-header :is(.home-brand, .brand) { display: inline-flex; align-items: center; flex-shrink: 0; gap: 10px; min-height: 44px; color: #fff; font-family: "Noto Serif TC", serif; font-size: 20px; font-weight: 700; text-decoration: none; }
+.dabao-header :is(.home-brand, .brand) img { width: 36px; height: 36px; border-radius: 4px; object-fit: cover; }
+.dabao-header :is(.home-menu, .site-menu) { display: flex; align-items: center; gap: 16px; }
+.dabao-header :is(.home-menu, .site-menu) > a { padding-block: 14px; color: #b7b7b7; font-size: 14px; text-decoration: none; }
+.dabao-header :is(.home-menu, .site-menu) > a:hover,
+.dabao-header :is(.home-menu, .site-menu) > a[aria-current="page"] { color: #dda76a; }
+.dabao-header :is(.home-menu, .site-menu) > a[aria-current="page"] { box-shadow: inset 0 -1px #dda76a; }
+.dabao-header :is(.home-menu, .site-menu) > :is(.home-button, .nav-button) { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 12px 22px; color: #161616; background: #dda76a; border: 1px solid #dda76a; border-radius: 4px; font-size: 16px; font-weight: 700; line-height: 1.5; text-align: center; }
+.dabao-header :is(.home-menu, .site-menu) > :is(.home-button, .nav-button):hover { color: #161616; background: #edbc84; border-color: #edbc84; }
+.dabao-header :is(.home-menu-toggle, .menu-toggle) { display: none; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; color: #fff; background: none; border: 0; cursor: pointer; }
+.dabao-header .menu-close-icon { display: none; }
+.dabao-header [aria-expanded="true"] .menu-open-icon { display: none; }
+.dabao-header [aria-expanded="true"] .menu-close-icon { display: block; }
+.dabao-header :is(a, button):focus-visible { outline: 2px solid #dda76a; outline-offset: 5px; }
+
+@media (max-width: 1000px) {
+    .dabao-header > nav { padding-inline: 24px; }
+    .dabao-header :is(.home-menu, .site-menu) { gap: 14px; }
+    .dabao-header :is(.home-brand, .brand) { font-size: 18px; }
+    .dabao-header :is(.home-brand, .brand) img { width: 30px; height: 30px; }
+}
+@media (max-width: 800px) {
+    .dabao-header > nav { min-height: 63px; padding-inline: 20px; }
+    .dabao-header :is(.home-menu-toggle, .menu-toggle) { display: inline-flex; }
+    .dabao-header :is(.home-menu, .site-menu) { display: none; position: absolute; top: 64px; left: 0; right: 0; max-height: calc(100dvh - 64px); padding: 16px 20px 24px; overflow-y: auto; background: #161616; border-bottom: 1px solid #555; }
+    .dabao-header :is(.home-menu, .site-menu).is-open { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+    .dabao-header :is(.home-menu, .site-menu) > a { padding-block: 12px; font-size: 16px; }
+    .dabao-header :is(.home-menu, .site-menu) > a[aria-current="page"] { box-shadow: none; }
+    .dabao-header :is(.home-menu, .site-menu) > :is(.home-button, .nav-button) { margin-top: 12px; }
+}

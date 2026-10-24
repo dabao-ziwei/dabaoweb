@@ -22,6 +22,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="homepage.css?v=20261022">
+    <link rel="stylesheet" href="site-navigation.css">
     <script async id="cms-sdk" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0XPZVQ42QP"></script>
     <script>
@@ -57,14 +58,17 @@
 </head>
 <body class="home-page">
     <a class="home-skip" href="#main">跳到主要內容</a>
-    <header class="home-header">
+    <header class="home-header dabao-header">
         <nav class="home-wrap home-nav" aria-label="主要導覽">
             <a href="index.html" class="home-brand">
                 <img src="images/Dabao logo.jpeg" width="40" height="40" alt="">
                 <span>大寶 | 紫微斗數</span>
             </a>
             <!-- Lucide Menu and X icons; license in licenses/lucide.txt. -->
-            <button class="home-menu-toggle" type="button" aria-label="開啟選單" title="開啟選單" aria-expanded="false" aria-controls="home-menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg></button>
+            <button class="home-menu-toggle" type="button" aria-label="開啟選單" title="開啟選單" aria-expanded="false" aria-controls="home-menu">
+                <svg class="menu-open-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 5h16"></path><path d="M4 12h16"></path><path d="M4 19h16"></path></svg>
+                <svg class="menu-close-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+            </button>
             <div class="home-menu" id="home-menu">
                 <a href="index.html" aria-current="page">首頁</a>
                 <a href="#services">諮詢服務</a>
