@@ -2,9 +2,24 @@
 
 ## 交付狀態
 
-本分支實作 Supabase 後端與既有管理介面的串接，但**尚未執行正式 SQL、部署 Edge Function、建立正式管理員、上傳雲端圖片或啟用正式前台**。
-`cms-config.js` 維持 `enabled: false`。GitHub Pages 上看到登入表單不代表後端已啟用，合併程式碼也不會自動建立雲端服務。
+2026/10/24 擁有者另行核准正式建置與遷移後，已執行私有 CMS SQL、以 Docker 打包部署 `dabao-cms`、匯入 79 則回饋與 237 個媒體檔，並建立獨立 CMS 管理員；沒有重設既有 Auth 帳戶密碼。
+本分支將 `cms-config.js` 改為 Supabase `enabled: true`，**正式靜態網站仍須待本分支 PR 經人工審查、合併及 GitHub Pages 部署後才會啟用登入**。本輪沒有自動合併或部署 GitHub Pages。
 本機 Postgres／私有媒體驗收不能替代正式 Supabase Auth、Storage、TLS、Edge 資源限制及實際權限的驗收。
+
+### 本輪正式驗收與限制
+
+- 4 個課程、1 個期別、79 則回饋、79 組媒體、2 個既有版本與 336 筆既有操作紀錄已遷移；237 個雲端媒體檔逐檔 SHA-256 與來源一致
+- 已保存 Git 外私有快照，核對原有網站六張資料表內容未變；六張 CMS 表皆啟用 RLS，anon／authenticated 無管理 RPC 執行權限，媒體 bucket 私有
+- 真實 HTTPS API 已驗證 Auth 登入、10 字元初始密碼、拒絕 9 字元新密碼、私有圖片、WASM 上傳與像素遮蔽、發布、軟刪除、登出及撤銷 session
+- 600×900 與 1440×2560 合成測試圖片通過實際 Edge 處理；不代表所有 10 MiB／2400 萬像素上限檔案、併發流量或 Free 配額已壓力測試
+- 測試圖片未公開，已軟刪除並保留還原資料；公開課程／期別／回饋內容與測試前相同。測試發布會新增版本與 audit，沒有刪除紀錄
+- 密碼變更與全部 session 撤銷流程已通過本機整合測試；本輪未變更正式管理員初始密碼，應由擁有者首次登入後自行更換
+- 修正正式 Gateway 轉送路徑、弱 ETag 及 Storage `400 / NoSuchKey / statusCode=404` 相容性，並補測試；修正已刪除項目完成發布後仍被計入待發布的問題
+- 本機整合 18 項、隔離瀏覽器 55 項、真實雲端唯讀 16 項、管理 API 23 項、後台瀏覽器 31 項、公開頁瀏覽器 35 項通過；瀏覽器使用本機靜態檔搭配真實 HTTPS 雲端 API，不是已部署的正式前台畫面
+- 桌機 1440×900／1280×720 與手機 390×844／375×812 無水平溢出及 console error；草稿預覽沙箱與真實私有圖片正常
+- 驗收後已撤銷全部 CMS 測試 session，清除 admin 本輪登入節流計數與本機臨時金鑰副本，登出 CLI；正式初始密碼僅交付 Git 外私有檔案，未變更
+- 既有 `generate-seo` 原始程式雜湊保持一致。平台套用專案環境變數後其版本號有更新，未重新上傳或修改該函式來源
+- 正式備份排程、災難還原演練與長期流量監測仍須另行安排；本輪沒有建立付費方案
 
 ## 已核對的現有環境
 
@@ -103,12 +118,14 @@ CMS_REVIEW_PACKAGE=/private/new-review-package node tests/cms-supabase-preview.m
 保留全部課程／期別／回饋草稿與發布狀態、排序、精選、media、版本、audit；每個資料檔／原圖／清晰版／縮圖附 SHA-256。
 匯出目錄必須是新的、位於網站與來源資料之外的私有目錄。
 
-## 正式啟用順序：每步均待核准
+## 重建／重新啟用順序：每步均待核准
+
+以下保留為重建操作指南，不代表上述 2026/10/24 已完成步驟尚未執行。後續重新部署或改動權限仍須取得核准。
 
 1. 本機功能、Desktop／Mobile 與人工 Review 通過
 2. 確認備份、回退計畫、平台健康、方案限制、既有匿名寫入 RPC／Storage 權限；不直接套用舊的全面 lockdown 腳本
 3. 擁有者核准 `supabase/migrations/202610240001_dabao_cms.sql`：只新增私有 CMS schema、service-only RPC 與私有 bucket
-4. 核准部署 `dabao-cms`，保留原 `generate-seo`；不更動其他 Function／Auth providers。先執行 `npm ci`、`npm run cms:supabase:prepare`，將鎖定版本的 JS／WASM／授權檔產生到忽略版本控制的 vendor 目錄；原始 npm 版本及 integrity 由 package-lock 管理。`supabase/config.toml` 已列出靜態檔案，必須使用具 Docker 的 Supabase CLI 本機打包（`--use-docker`），不能用 Dashboard／`--use-api` 部署。實際完整 bundle 必須低於平台上限；本機資產總量檢查不能取代真正打包。本環境沒有 Docker，因此尚未執行此步
+4. 核准部署 `dabao-cms`，保留原 `generate-seo`；不更動其他 Function／Auth providers。先執行 `npm ci`、`npm run cms:supabase:prepare`，將鎖定版本的 JS／WASM／授權檔產生到忽略版本控制的 vendor 目錄；原始 npm 版本及 integrity 由 package-lock 管理。`supabase/config.toml` 已列出靜態檔案，使用具 Docker 的 Supabase CLI 本機打包，不使用 Dashboard／`--use-api` 部署。2026/10/24 使用 CLI 2.122.0 預設 Docker 打包，實際部署套件為 5.0 MB；該版本沒有 `--use-docker` 旗標
 5. Edge secret 設 `CMS_ALLOWED_ORIGINS=https://dabao.life,https://www.dabao.life`。Supabase URL／service role 使用平台提供的 server-side secrets
 6. 匯出最新本機遷移包並核對數量／hash；私有環境中以明確專案確認執行 import，不使用聊天傳遞 service role key
 7. 建立／選定 CMS 專用 Auth 帳戶，再由擁有者核准加入 `dabao_cms.admins`。不要任意把目前登入 Dashboard 的 GitHub／Google 帳戶當成網站管理員
@@ -129,7 +146,7 @@ window.DabaoCmsConfig = {
 匯入命令沒有掛在 install／startup／CI，需手動提供專案 ID：
 
 ```sh
-# 僅在正式遷移已核准、私人環境已設定秘密後執行；本輪沒有執行。
+# 僅供另行核准的全新目標重建；2026/10/24 已匯入的正式目標不可重複執行。
 node cms/supabase/import.mjs /private/verified-package --confirm-project=uwktzlxlduqyjyoolgrs
 ```
 
@@ -144,7 +161,7 @@ service role、遷移包、正式管理員密碼與原圖永遠不進 Git。
 - 前台關閉 CMS 不等於撤銷後台 session／關閉 Edge；停用需另行撤銷 CMS 管理權限並保留資料
 - 平台備份、離站備份、保留期限與還原演練仍需在選定方案與實際雲端環境驗收
 - 舊公開圖片 URL 與已下載資料無法因新 CMS 取消發布而回收
-- 無 Docker／Supabase 本機完整 stack 的環境，以真 Postgres SQL＋隔離 Auth／Storage 邊界測試；不能宣稱已通過正式雲端端到端測試
+- 無 Docker／Supabase 本機完整 stack 的環境，可用真 Postgres SQL＋隔離 Auth／Storage 邊界測試，但不能據此宣稱正式雲端驗收；本輪另行執行的真實雲端測試範圍見上述紀錄
 - 專案現有文章與公告仍沿用舊功能；本輪不額外擴充文章編輯 CMS
 
 參考：

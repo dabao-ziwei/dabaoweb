@@ -108,7 +108,7 @@ export class CloudModel {
         for(const c of data.courses)c.totalHours=c.sessions!==null&&c.minutes!==null?c.sessions*c.minutes/60:null;
         for(const f of data.feedback)f.uploadedAt=this.document.media.find(m=>m.id===f.mediaId)?.created_at;
         const publicData=this.publicData();
-        return {...data,pending:kinds.reduce((n,k)=>n+this.rows(k,true).filter(r=>!same(r.draft,r.published)).length,0),recent:this.recent,versions:this.versions,publicSummary:{cohorts:publicData.cohorts,courses:publicData.courses,feedbackCount:publicData.feedbackCount,publishedAt:publicData.publishedAt}};
+        return {...data,pending:kinds.reduce((n,k)=>n+this.rows(k,true).filter(r=>r.deleted_at?r.published!==null:!same(r.draft,r.published)).length,0),recent:this.recent,versions:this.versions,publicSummary:{cohorts:publicData.cohorts,courses:publicData.courses,feedbackCount:publicData.feedbackCount,publishedAt:publicData.publishedAt}};
     }
     commit(hash) { return {hash,revision:this.revision,document:this.document,audit:this.audit,...(this.versionSnapshot?{snapshot:this.versionSnapshot,reason:this.reason}:{})}; }
 }
