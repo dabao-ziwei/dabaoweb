@@ -15,15 +15,6 @@
 .home-wrap { width: min(100%, 1200px); margin-inline: auto; padding-inline: 32px; }
 .home-section, .home-band { padding-block: 72px; }
 .home-band { background: #1d1d1d; }
-.home-header { position: sticky; top: 0; z-index: 100; background: #161616; border-bottom: 1px solid var(--home-line); }
-.home-nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 76px; }
-.home-brand { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-family: 'Noto Serif TC', serif; font-size: 20px; font-weight: 700; text-decoration: none; flex-shrink: 0; }
-.home-brand img { width: 36px; height: 36px; border-radius: 4px; object-fit: cover; }
-.home-menu { display: flex; align-items: center; gap: 16px; }
-.home-menu > a { text-decoration: none; font-size: 14px; }
-.home-menu > a:not(.home-button) { padding-block: 14px; color: var(--home-muted); }
-.home-menu > a:hover { color: var(--accent-color); }
-.home-menu-toggle { display: none; width: 44px; height: 44px; border: 0; color: white; background: none; font-size: 24px !important; }
 .home-page .home-button { display: inline-flex; justify-content: center; align-items: center; gap: 12px; min-height: 48px; padding: 12px 22px; background: var(--accent-color); border: 1px solid var(--accent-color); border-radius: 4px; color: #161616; font-weight: 700; font-size: 16px; line-height: 1.5; text-decoration: none; text-align: center; }
 .home-page .home-button:hover { background: #edbc84; border-color: #edbc84; color: #161616; }
 .home-page .home-button-outline { color: var(--accent-color); background: transparent; }
@@ -111,9 +102,6 @@
 .home-admin #announcement-text { font-size: 14px; margin-bottom: 20px; }
 .home-admin label { display: block; margin-bottom: 8px; }
 @media (max-width: 1000px) {
-    .home-menu { gap: 14px; }
-    .home-brand { font-size: 18px; }
-    .home-brand img { width: 30px; height: 30px; }
     .home-wrap { padding-inline: 24px; }
     .home-page h1 { font-size: 32px; }
     .home-hero { gap: 24px; }
@@ -123,12 +111,6 @@
 @media (max-width: 800px) {
     .home-page :is(section, article, main) { scroll-margin-top: 80px; }
     .home-wrap { padding-inline: 20px; }
-    .home-nav { height: 63px; min-height: 63px; }
-    .home-menu-toggle { display: inline-flex; align-items: center; justify-content: center; }
-    .home-menu { display: none; position: absolute; top: 64px; left: 0; right: 0; padding: 16px 20px 24px; background: #161616; border-bottom: 1px solid #555; max-height: calc(100dvh - 64px); overflow-y: auto; }
-    .home-menu.is-open { display: flex; flex-direction: column; align-items: stretch; gap: 0; }
-    .home-menu > a { font-size: 16px; padding-block: 12px; }
-    .home-menu .home-button { margin-top: 12px; }
     .home-hero { grid-template-columns: 1fr; padding-block: 28px 40px; gap: 14px; }
     .home-page h1 { font-size: 28px; }
     .home-page h2 { font-size: 26px; margin-bottom: 24px; }
