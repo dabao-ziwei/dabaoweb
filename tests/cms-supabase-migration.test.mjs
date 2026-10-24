@@ -52,4 +52,7 @@ test('Supabase REST adapter: secrets stay server-side, provider errors sanitized
     await assert.rejects(()=>failing.rpc('read'),e=>e.status===503&&!e.message.includes('PRIVATE'));
     const conflict=supabaseServices({url:'https://local-test.invalid',key:'secret',fetcher:async()=>Response.json({message:'CMS_CONFLICT'},{status:400})});
     await assert.rejects(()=>conflict.rpc('commit'),e=>e.status===409);
+    const missing=supabaseServices({url:'https://local-test.invalid',key:'secret',fetcher:async()=>Response.json({statusCode:'404',error:'not_found',message:'Object not found',code:'NoSuchKey'},{status:400})});
+    await assert.rejects(()=>missing.getObject('missing','full'),e=>e.status===404);
+    await assert.rejects(()=>missing.rpc('read'),e=>e.status===503);
 });
