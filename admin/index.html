@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-TW">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>大寶｜內容管理</title>
+    <link rel="stylesheet" href="/admin/admin.css">
+    <script src="/cms-config.js"></script>
+    <script defer src="/admin/admin.js"></script>
+</head>
+<body>
+    <main id="login-screen" class="login-screen">
+        <form id="login-form" class="login-form">
+            <img src="/images/Dabao logo.jpeg" alt="" width="48" height="48">
+            <h1>大寶內容管理</h1>
+            <label>管理員帳號<input name="username" autocomplete="username" required maxlength="80"></label>
+            <label>密碼<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
+            <p id="login-error" role="alert"></p>
+            <button class="primary" type="submit">登入</button>
+            <a href="/index.html">返回官方網站</a>
+        </form>
+    </main>
+    <div id="workspace" class="workspace" hidden>
+        <aside class="sidebar">
+            <a class="admin-brand" href="/admin/"><img src="/images/Dabao logo.jpeg" alt="" width="32" height="32">大寶｜內容管理</a>
+            <nav aria-label="後台功能">
+                <button type="button" data-page="dashboard">儀表板</button>
+                <button type="button" data-page="courses">課程管理</button>
+                <button type="button" data-page="cohorts">招生期別</button>
+                <button type="button" data-page="feedback">諮詢回饋</button>
+                <button type="button" data-page="history">發布紀錄</button>
+                <button type="button" data-page="settings">系統設定</button>
+            </nav>
+            <div class="sidebar-bottom"><a href="/index.html" target="_blank" rel="noopener noreferrer">查看官方網站</a><button id="logout" type="button">登出</button></div>
+        </aside>
+        <main class="main-panel">
+            <header class="toolbar"><div><p class="eyebrow" id="account"></p><h1 id="page-title">儀表板</h1></div><div class="toolbar-actions"><button id="refresh" type="button">重新整理</button><select id="preview-target" aria-label="選擇草稿預覽頁面"><option value="course.html">課程總覽</option><option value="index.html">首頁回饋</option><option value="ziwei-beginner-course.html">初階班招生頁</option></select><a id="preview-link" class="button" href="/course.html?cms-preview=1" target="_blank" rel="noopener noreferrer">預覽草稿</a><button id="publish" type="button" class="primary">發布</button></div></header>
+            <p id="notice" class="notice" role="status" aria-live="polite"></p>
+            <section id="content" aria-live="polite"></section>
+        </main>
+    </div>
+    <dialog id="editor" aria-labelledby="editor-title"><form id="edit-form"><div class="dialog-head"><h2 id="editor-title"></h2><button type="button" data-close="editor" class="icon-button" aria-label="關閉" title="關閉">×</button></div><div id="editor-fields" class="form-grid"></div><p id="form-error" role="alert"></p><div class="dialog-actions"><button type="button" data-close="editor">取消</button><button type="submit" class="primary">儲存草稿</button></div></form></dialog>
+    <dialog id="confirm-dialog" aria-labelledby="confirm-title"><form method="dialog"><h2 id="confirm-title">確認操作</h2><p id="confirm-message"></p><div class="dialog-actions"><button value="cancel">取消</button><button class="primary" value="confirm">確認</button></div></form></dialog>
+    <dialog id="redactor" aria-labelledby="redactor-title"><div class="dialog-head"><h2 id="redactor-title">遮蔽敏感資訊</h2><button type="button" data-close="redactor" class="icon-button" aria-label="關閉" title="關閉">×</button></div><p>框選需要遮蔽的範圍，儲存後會產生已遮蔽的新圖片</p><canvas id="redact-canvas" aria-label="框選敏感資訊遮蔽範圍"></canvas><div class="dialog-actions"><button type="button" id="redact-undo">取消上一個範圍</button><button type="button" id="redact-save" class="primary">儲存遮蔽圖片</button></div><p id="redact-error" role="alert"></p></dialog>
+</body>
+</html>

@@ -10,6 +10,11 @@
     const gallery = document.getElementById('feedback-gallery');
     const galleryGrid = document.getElementById('gallery-grid');
     const moreButton = document.getElementById('testimonial-more');
+    const managed = Boolean(window.DabaoCMS?.enabled);
+    const galleryNext = document.getElementById('gallery-next');
+    let managedSnapshot = null;
+    let totalFeedback = 0;
+    let nextOffset = null;
     const lightbox = document.getElementById('image-lightbox');
     const lightboxImage = document.getElementById('image-lightbox-img');
     const mobile = window.matchMedia('(max-width: 800px)');
@@ -26,6 +31,7 @@
     let scrollTimer = 0;
 
     const track = (name, params = {}) => {
+        if (window.DabaoCmsPreview) return;
         if (typeof window.gtag === 'function') {
             window.gtag('event', name, { ...params, page_type: 'homepage' });
         }
@@ -122,7 +128,7 @@
         const imageButton = event.target.closest('.home-feedback');
         if (imageButton) {
             const image = imageButton.querySelector('img');
-            lightboxImage.src = image.currentSrc || image.src;
+            lightboxImage.src = imageButton.dataset.full || image.currentSrc || image.src;
             lightboxImage.alt = image.alt;
             document.getElementById('original-image').href = lightboxImage.src;
             openDialog(lightbox);
@@ -154,17 +160,20 @@
         });
     });
     const updateFeedbackCount = () => {
-        moreButton.textContent = `查看 ${feedback.length} 則真實諮詢回饋 →`;
-        document.getElementById('gallery-title').textContent = `${feedback.length} 則真實諮詢回饋`;
+        const count = managed ? totalFeedback : feedback.length;
+        moreButton.textContent = `查看 ${count} 則真實諮詢回饋 →`;
+        moreButton.disabled = managed && count === 0;
+        document.getElementById('gallery-title').textContent = `${count} 則真實諮詢回饋`;
     };
     const renderGallery = () => {
         if (!galleryDirty) return;
         const fragment = document.createDocumentFragment();
-        feedback.forEach(({ src, alt }) => {
+        feedback.forEach(({ src, alt, fullSrc }) => {
             const button = document.createElement('button');
             button.type = 'button';
             button.className = 'home-feedback';
             button.setAttribute('aria-label', `查看${alt}大圖`);
+            if (fullSrc) button.dataset.full = fullSrc;
             const image = document.createElement('img');
             image.src = src;
             image.alt = alt;
@@ -175,10 +184,55 @@
         galleryGrid.replaceChildren(fragment);
         galleryDirty = false;
     };
-    moreButton.addEventListener('click', () => {
+    const loadManagedGallery = async (reset = false) => {
+        const result = await window.DabaoCMS.feedback(reset ? 0 : nextOffset || 0);
+        const images = result.items.map(item => ({ src:item.thumbnail,fullSrc:item.image,alt:item.description||'真實諮詢回饋' }));
+        feedback = reset ? images : [...feedback,...images];
+        totalFeedback = result.total;
+        nextOffset = result.next;
+        galleryDirty = true;
         renderGallery();
-        openDialog(gallery);
+        galleryNext.hidden = nextOffset === null;
+        updateFeedbackCount();
+    };
+    moreButton.addEventListener('click', async () => {
+        try {
+            if (managed) await loadManagedGallery(true);
+            else renderGallery();
+            openDialog(gallery);
+        } catch { moreButton.textContent = '回饋暫時無法載入，請稍後再試'; }
     });
+    galleryNext.addEventListener('click', async () => {
+        galleryNext.disabled = true;
+        try { await loadManagedGallery(); }
+        catch { galleryNext.textContent = '載入失敗，點擊重試'; }
+        finally { galleryNext.disabled = false; }
+    });
+    const updateManagedFeedback = (snapshot) => {
+        managedSnapshot = snapshot;
+        totalFeedback = snapshot?.feedbackCount || 0;
+        const grid = document.getElementById('featured-feedback');
+        grid.dataset.cmsManaged = 'true';
+        grid.replaceChildren();
+        const count = snapshot ? (mobile.matches ? snapshot.settings.featuredMobile : snapshot.settings.featuredDesktop) : 0;
+        (snapshot?.featuredFeedback || []).slice(0,count).forEach(item => {
+            const button=document.createElement('button'),image=document.createElement('img');
+            button.type='button';button.className='home-feedback';button.dataset.full=item.image;
+            button.setAttribute('aria-label',`查看${item.description||'真實諮詢回饋'}大圖`);
+            image.src=item.thumbnail;image.alt=item.description||'真實諮詢回饋';image.width=item.width;image.height=item.height;image.loading='lazy';
+            button.append(image);grid.append(button);
+        });
+        if (!grid.childElementCount) { const note=document.createElement('p');note.className='cms-empty';note.textContent=snapshot?'回饋整理中':'回饋資訊暫時無法載入';grid.append(note); }
+        feedback=[];nextOffset=null;galleryDirty=true;
+        if(lightbox.open) lightbox.close();
+        if(gallery.open) loadManagedGallery(true).catch(()=>gallery.close());
+        updateFeedbackCount();scheduleSticky();
+    };
+    if (managed) {
+        updateManagedFeedback(null);
+        window.DabaoCMS.subscribe(updateManagedFeedback);
+        mobile.addEventListener('change',()=>updateManagedFeedback(managedSnapshot));
+    }
     updateFeedbackCount();
     window.addEventListener('scroll', () => {
         scheduleSticky();
@@ -197,7 +251,7 @@
     const loadCms = async () => {
         if (!sbClient) return;
         const results = await Promise.allSettled([
-            sbClient.from('feedbacks').select('image_url').order('created_at', { ascending: true }),
+            managed ? Promise.resolve({data:null}) : sbClient.from('feedbacks').select('image_url').order('created_at', { ascending: true }),
             sbClient.from('announcements').select('content').eq('id', 1).single(),
             sbClient.from('site_settings').select('setting_value').eq('setting_key', 'new_article_list_enabled').single()
         ]);
@@ -219,7 +273,6 @@
             if (gallery.open) renderGallery();
         }
         // The current CMS only exposes content, not a reliable expiry. Keep public announcements hidden.
-        if (announcement?.content) document.getElementById('announcement-text').textContent = announcement.content;
         if (settings?.setting_value === true) {
             document.querySelectorAll('a[href="articles.html"]').forEach((link) => { link.href = 'new_articles.html'; });
         }
@@ -235,49 +288,16 @@
     if (window.supabase) initializeCms();
     else document.getElementById('cms-sdk').addEventListener('load', initializeCms, { once: true });
 
-    // Existing admin RPC/session contract is retained; the three-click entry moves to the footer.
+    // The old entry is retained, but authentication belongs to the server.
     let clickCount = 0;
     let clickTimer;
-    const adminModal = document.getElementById('admin-modal');
-    const passInput = document.getElementById('admin-pass');
-    const btnLogin = document.getElementById('btn-login');
-    const adminStatus = document.getElementById('admin-status');
     document.getElementById('announcement-banner').addEventListener('click', () => {
         clickCount++;
         if (clickCount === 1) clickTimer = setTimeout(() => { clickCount = 0; }, 1000);
         if (clickCount === 3) {
             clearTimeout(clickTimer);
             clickCount = 0;
-            passInput.value = '';
-            adminStatus.textContent = '';
-            openDialog(adminModal);
-            passInput.focus();
-        }
-    });
-    document.getElementById('admin-form').addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const passcode = passInput.value.trim();
-        if (!passcode || btnLogin.disabled) return;
-        if (!sbClient) {
-            adminStatus.textContent = '登入服務暫時無法連線，請稍後重試。';
-            return;
-        }
-        btnLogin.disabled = true;
-        btnLogin.textContent = '驗證中...';
-        try {
-            const { data, error } = await sbClient.rpc('verify_admin_password', { input_passcode: passcode });
-            if (error) throw error;
-            if (data === true) {
-                sessionStorage.setItem('isAdminLoggedIn', 'true');
-                window.location.href = './admindashboard/admin.html';
-            } else {
-                adminStatus.textContent = '密碼錯誤！請重新輸入。';
-            }
-        } catch {
-            adminStatus.textContent = '登入服務暫時無法連線，請稍後重試。';
-        } finally {
-            btnLogin.disabled = false;
-            btnLogin.textContent = '登入後台';
+            window.location.href = new URL('/admin/',window.DabaoCmsConfig?.apiBase || location.origin).href;
         }
     });
 })();

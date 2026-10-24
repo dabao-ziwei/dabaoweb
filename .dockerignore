@@ -1,0 +1,11 @@
+.git
+node_modules
+.env
+.env.*
+cms-data
+backups
+test-results
+*.sqlite*
+course-*-preview.*
+course-testimonial-prototype.*
+course-v2-testimonial-preview.*

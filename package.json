@@ -1,8 +1,18 @@
 {
   "scripts": {
-    "start": "servor --reload"
+    "start": "servor --reload",
+    "cms:start": "node cms/server.mjs",
+    "cms:admin": "node cms/cli.mjs admin",
+    "cms:import": "node cms/cli.mjs import",
+    "cms:backup": "node cms/cli.mjs backup",
+    "cms:restore": "node cms/cli.mjs restore",
+    "cms:test": "node --test tests/cms-api.test.mjs"
+  },
+  "engines": {
+    "node": ">=24.12.0"
   },
   "dependencies": {
-    "servor": "^4.0.2"
+    "servor": "^4.0.2",
+    "sharp": "0.35.5"
   }
 }

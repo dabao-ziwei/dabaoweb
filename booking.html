@@ -3,6 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="cms-config.js"></script>
+    <link rel="stylesheet" href="cms-public.css">
+    <script defer src="cms-client.js"></script>
         <title>預約算命｜大寶老師紫微斗數諮詢，流年運勢分析、紫微占卜線上預約</title>
         <meta name="description" content="預約大寶老師紫微斗數完整論命、流年運勢分析與紫微占卜，統一使用 Google Meet 線上諮詢，可自行決定是否開啟鏡頭。完整論命與流年提供錄影，紫微占卜不提供錄影。">
         <meta name="keywords" content="預約算命, 大寶算命, 紫微斗數諮詢, 命理師預約, 流年運勢分析, 紫微占卜預約, 大寶老師預約">
@@ -21,7 +24,7 @@
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-0XPZVQ42QP');
+          if (!window.DabaoCmsPreview) gtag('config', 'G-0XPZVQ42QP');
         </script>
         <style>
         .booking-grid {
@@ -193,7 +196,7 @@
 
         <div style="text-align:center; margin-bottom: 40px;">
             <a href="https://ziweiapp.dabao.life/booking" target="_blank" rel="noopener noreferrer" class="primary-btn" id="booking-system-link">進入線上預約系統</a>
-            <p style="color:#555; font-size:0.85rem; margin-top:16px;">或加入 <a href="https://lin.ee/y2XVa6h" target="_blank" style="color:var(--accent-color);">官方 Line</a> 由小幫手協助預約</p>
+            <p style="color:#555; font-size:0.85rem; margin-top:16px;">或加入 <a href="https://lin.ee/y2XVa6h" data-cms-line target="_blank" style="color:var(--accent-color);">官方 Line</a> 由小幫手協助預約</p>
         </div>
 
         <h2 style="color:var(--primary-color); margin-bottom:8px;">線上諮詢服務一覽</h2>
@@ -222,10 +225,10 @@
             </div>
         </div>
 
-        <p style="color:var(--text-muted); font-size:0.9rem; text-align:center; margin-top:12px;">風水佈陣改運 NT$12,800；姓名改運、擇日服務各 NT$4,800；符令改運依需求報價，請透過 <a href="https://lin.ee/y2XVa6h" target="_blank" rel="noopener noreferrer" style="color:var(--accent-color);">官方 LINE</a> 洽詢</p>
+        <p style="color:var(--text-muted); font-size:0.9rem; text-align:center; margin-top:12px;">風水佈陣改運 NT$12,800；姓名改運、擇日服務各 NT$4,800；符令改運依需求報價，請透過 <a href="https://lin.ee/y2XVa6h" data-cms-line target="_blank" rel="noopener noreferrer" style="color:var(--accent-color);">官方 LINE</a> 洽詢</p>
     </div>
 
-    <a href="https://lin.ee/y2XVa6h" target="_blank" class="sticky-cta" id="sticky-cta" onclick="gtag('event', 'click', {event_category: 'CTA', event_label: '預約頁浮動按鈕'})">立刻預約諮詢</a>
+    <a href="https://lin.ee/y2XVa6h" data-cms-line target="_blank" class="sticky-cta" id="sticky-cta" onclick="gtag('event', 'click', {event_category: 'CTA', event_label: '預約頁浮動按鈕'})">立刻預約諮詢</a>
 
     <footer class="footer"><div class="container"><nav class="site-footer-nav" aria-label="頁尾導覽"><a href="index.html">首頁</a><a href="index.html#services">諮詢服務</a><a href="course.html">紫微課程</a><a href="articles.html">教學文章</a><a href="chart.html">線上排盤</a><a href="faq.html">常見問題</a></nav>
             <p>© 2026 大寶 | 紫微斗數. All Rights Reserved.</p></div></footer>

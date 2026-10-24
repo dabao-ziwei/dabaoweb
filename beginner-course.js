@@ -1,25 +1,25 @@
 (() => {
     'use strict';
 
-    const { data } = window.DabaoCourse;
+    const data = () => window.DabaoCourse.data;
     const track = (name, label) => {
-        if (typeof window.gtag === 'function') {
+        if (!window.DabaoCmsPreview && typeof window.gtag === 'function') {
             window.gtag('event', name, {
                 event_category: 'ziwei_beginner_course',
                 event_label: label || '',
-                course_name: data.courseName
+                course_name: data().courseName
             });
         }
     };
     const trackMeta = (name) => {
-        if (typeof window.fbq === 'function') window.fbq('track', name, { content_name: data.courseName });
+        if (!window.DabaoCmsPreview && typeof window.fbq === 'function') window.fbq('track', name, { content_name: data().courseName });
     };
 
     const ready = () => {
         trackMeta('ViewContent');
         document.querySelectorAll('.js-line-cta').forEach((link) => {
-            link.href = data.lineUrl;
-            if (!window.DabaoCourse.open) link.textContent = '加入 LINE 詢問下一梯';
+            if (!window.DabaoCMS?.enabled) link.href = data().lineUrl;
+            if (!window.DabaoCMS?.enabled && !window.DabaoCourse.open) link.textContent = '加入 LINE 詢問下一梯';
             link.addEventListener('click', () => {
                 track('generate_lead', link.dataset.label);
                 trackMeta('Lead');
@@ -35,6 +35,7 @@
             observer.observe(pricing);
         }
     };
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready, { once: true });
-    else ready();
+    const initialize = () => (window.DabaoCMS?.ready || Promise.resolve()).then(ready);
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize, { once: true });
+    else initialize();
 })();
