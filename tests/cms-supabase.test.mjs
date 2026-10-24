@@ -20,6 +20,13 @@ test('Supabase CMS: real isolated Postgres migration, API lifecycle and authoriz
     const state=async()=>{const result=await call('/api/admin/state');assert.equal(result.status,200,JSON.stringify(result.data));return result.data;};
     const publish=async()=>{const result=await call('/api/admin/publish','POST',{confirm:'publish'});assert.equal(result.status,200,JSON.stringify(result.data));return result.data.version;};
     try{
+        await t.test('hosted gateway and full URL prefixes route identically without bypassing auth',async()=>{
+            for(const prefix of ['/functions/v1/dabao-cms','/dabao-cms']){
+                assert.equal((await app.handler(new Request(origin+prefix+'/healthz'))).status,200);
+                assert.equal((await app.handler(new Request(origin+prefix+'/api/admin/state'))).status,401);
+            }
+            assert.equal((await app.handler(new Request(origin+'/dabao-cms-invalid/healthz'))).status,404);
+        });
         await t.test('migration is idempotent and touches no existing public tables',async()=>{
             const sql=await fs.readFile(new URL('../supabase/migrations/202610240001_dabao_cms.sql',import.meta.url),'utf8');await app.pg.exec(sql);
             assert.equal((await app.pg.query("select count(*)::int n from pg_tables where schemaname='public'")).rows[0].n,0);
@@ -52,6 +59,8 @@ test('Supabase CMS: real isolated Postgres migration, API lifecycle and authoriz
             const pub=await call('/api/public/content'),draft=await call('/api/admin/preview');
             assert.equal(pub.data.cohorts[0].price,25000);assert.equal(draft.data.cohorts[0].price,26000);
             assert.equal((await call('/api/public/content','GET',null,{headers:{'If-None-Match':pub.headers.get('ETag')}})).status,304);
+            assert.equal((await call('/api/public/content','GET',null,{headers:{'If-None-Match':'W/'+pub.headers.get('ETag')}})).status,304);
+            assert.equal((await call('/api/public/content','GET',null,{headers:{'If-None-Match':'"other", W/'+pub.headers.get('ETag')}})).status,304);
             await publish();assert.equal((await call('/api/public/content')).data.cohorts[0].price,26000);
             assert.equal((await call('/api/admin/cohorts/'+cohort.id,'PUT',{data:cohort,revision:cohort.revision})).status,409);
         });
@@ -90,6 +99,7 @@ test('Supabase CMS: real isolated Postgres migration, API lifecycle and authoriz
             current=(await state()).feedback.find(f=>f.id===item.id);
             assert.equal((await call('/api/admin/feedback/'+item.id,'DELETE',{confirm:item.id,revision:current.revision})).status,200);
             assert.equal((await state()).feedback.some(f=>f.id===item.id),false);assert(app.objects.has(originalMedia+'/original'));
+            await publish();assert.equal((await state()).pending,0);
         });
         await t.test('logout revokes the exact CMS session immediately',async()=>{
             const stolen=token;assert.equal((await call('/api/admin/logout','POST',{})).status,200);token=stolen;assert.equal((await call('/api/admin/state')).status,401);token='';await login();

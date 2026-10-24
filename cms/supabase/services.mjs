@@ -9,7 +9,7 @@ export function supabaseServices({url,key,fetcher=fetch}) {
             if(message.includes('CMS_UNAUTHORIZED'))fail('請重新登入',401);
             if(message.includes('CMS_FORBIDDEN'))fail('沒有後台權限',403);
             if(message.includes('CMS_CONFLICT'))fail('資料已更新，請重新載入後再儲存',409);
-            if(response.status===404)fail('找不到資料',404);
+            if(response.status===404||(path.startsWith('/storage/v1/object/')&&response.status===400&&String(data.statusCode)==='404'&&data.code==='NoSuchKey'))fail('找不到資料',404);
             // Never forward provider response bodies, stack traces or SQL to clients.
             fail('雲端服務暫時無法使用，請稍後再試',503);
         }

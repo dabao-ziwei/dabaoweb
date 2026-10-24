@@ -23,8 +23,10 @@ export function createCloudHandler({services,images,origins,basePath='/functions
         try{
             if(origin&&!origins.includes(origin))fail('不允許此來源',403);
             if(request.method==='OPTIONS')return new Response(null,{status:204,headers});
-            if(!url.pathname.startsWith(basePath+'/'))fail('找不到 API',404);
-            const route=url.pathname.slice(basePath.length),method=request.method;
+            // Hosted Edge Gateway removes /functions/v1 before forwarding.
+            const prefix=[basePath,basePath.replace(/^\/functions\/v1/,'')].find(path=>url.pathname.startsWith(path+'/'));
+            if(!prefix)fail('找不到 API',404);
+            const route=url.pathname.slice(prefix.length),method=request.method;
             const admin=route.startsWith('/api/admin/');
             const token=(request.headers.get('Authorization')||'').replace(/^Bearer /,'');
             const hash=/^[a-f0-9]{64}$/.test(token)?await sha256(new TextEncoder().encode(token)):'';
@@ -79,7 +81,8 @@ export function createCloudHandler({services,images,origins,basePath='/functions
                 }else fail('找不到 API',404);
                 const raw=JSON.stringify(result),etag='"'+await sha256(new TextEncoder().encode(raw))+'"';
                 const publicHeaders={...headers,'ETag':etag,'Cache-Control':'no-cache, must-revalidate','Content-Type':'application/json; charset=utf-8'};
-                if(request.headers.get('If-None-Match')===etag)return new Response(null,{status:304,headers:publicHeaders});
+                const candidates=(request.headers.get('If-None-Match')||'').split(',').map(value=>value.trim().replace(/^W\//,''));
+                if(candidates.includes(etag)||candidates.includes('*'))return new Response(null,{status:304,headers:publicHeaders});
                 return new Response(raw,{headers:publicHeaders});
             }
             const mediaRoute=route.match(/^\/(api\/admin\/)?media\/([a-z0-9-]{1,100})\/(full|thumb|original)$/);
