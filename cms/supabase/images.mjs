@@ -2,6 +2,13 @@ import { fail } from '../validation.mjs';
 export async function sha256(bytes) {
     return [...new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))].map(b=>b.toString(16).padStart(2,'0')).join('');
 }
+export function lazyImageProcessor(load) {
+    let ready;
+    return {async transform(bytes,rectangles){
+        ready ||= Promise.resolve().then(load).catch(error=>{ready=undefined;throw error;});
+        return (await ready).transform(bytes,rectangles);
+    }};
+}
 const label = (bytes,start,end) => new TextDecoder().decode(bytes.subarray(start,end));
 export function inspectSignature(bytes) {
     const view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);

@@ -42,18 +42,17 @@ export function createCloudHandler({services,images,origins,basePath='/functions
                 if(typeof data.username!=='string'||data.username.length>80||typeof data.password!=='string'||data.password.length>128)fail('帳號或密碼錯誤',401);
                 const name=data.username.trim().toLowerCase();
                 const ip=request.headers.get('x-forwarded-for')?.split(',')[0].trim()||'unknown';
-                for(const [bucket,limit] of [['account:'+name,5],['ip:'+ip,20]]){
-                    const result=await services.rpc('attempt',{bucket:await sha256(new TextEncoder().encode(bucket)),limit});
-                    if(!result.allowed)fail('登入嘗試過多，請 15 分鐘後再試',429);
-                }
+                const attempts=await Promise.all([['account:'+name,5],['ip:'+ip,20]].map(async([bucket,limit])=>services.rpc('attempt',{bucket:await sha256(new TextEncoder().encode(bucket)),limit})));
+                if(attempts.some(result=>!result.allowed))fail('登入嘗試過多，請 15 分鐘後再試',429);
                 const member=await services.rpc('lookup',{name});
                 if(!member)fail('帳號或密碼錯誤',401);
                 const email=await services.emailForUser(member.userId);
                 const verified=await services.signIn(email,data.password);
                 if(verified.user.id!==member.userId)fail('帳號或密碼錯誤',401);
+                const state=new CloudModel(await services.rpc('read'),name).adminData();
                 const access=[...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('');
                 const session=await services.rpc('login',{userId:member.userId,hash:await sha256(new TextEncoder().encode(access))});
-                return json({...session,token:access});
+                return json({...session,token:access,state});
             }
             let session;
             if(admin){session=await requireSession();if(!['GET','HEAD'].includes(method)&&!origin)fail('管理請求缺少來源',403);}
@@ -121,7 +120,7 @@ export function createCloudHandler({services,images,origins,basePath='/functions
                         const file=form.get('file');if(!file||typeof file.arrayBuffer!=='function')fail('請選擇圖片');
                         bytes=new Uint8Array(await file.arrayBuffer());name=file.name;
                     }
-                    const transformed=images.transform(bytes,rectangles),digest=await sha256(transformed.full);
+                    const transformed=await images.transform(bytes,rectangles),digest=await sha256(transformed.full);
                     const sourceHash=await sha256(bytes);
                     let image=model.document.media.find(m=>m.sha256===digest||(!redact&&m.source_sha256===sourceHash));
                     if(!image){
