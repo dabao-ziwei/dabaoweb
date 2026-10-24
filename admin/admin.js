@@ -32,8 +32,11 @@
     async function hydrateImages(root){
         if(!cloud)return;
         for(const img of root.querySelectorAll('img[data-media-id]')){
+            if(!state||$('#workspace').hidden)return;
+            if(!img.isConnected)continue;
             try{
                 const src=await transport.image(img.dataset.mediaId,img.dataset.variant||'full');
+                if(!state||$('#workspace').hidden)return;
                 if(!img.isConnected)continue;img.src=src;
                 const link=img.closest('a');if(link)link.href=await transport.image(img.dataset.mediaId,'full');
             }catch(error){notice(error.message,true);}
