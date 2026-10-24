@@ -51,6 +51,9 @@ test('Supabase CMS: real isolated Postgres migration, API lifecycle and authoriz
         });
         await t.test('login uses Auth plus CMS allowlist; never returns provider tokens',async()=>{
             const result=await login();assert.match(token,/^[a-f0-9]{64}$/);assert.equal(result.data.access_token,undefined);
+            assert.deepEqual(result.data.state.feedback,(await state()).feedback);
+            assert.equal(result.data.state.courses.length,4);
+            assert.equal(JSON.stringify(result.data).includes('test-auth-token'),false);
             const stored=(await app.pg.query('select token_hash from dabao_cms.sessions')).rows[0];assert.notEqual(stored.token_hash,token);
         });
         await t.test('draft/publish/preview and ETag remain consistent',async()=>{

@@ -24,7 +24,9 @@ try{
     const page=await ctx.newPage();
     const open=async(file,p=page)=>{await p.goto(app.origin+'/'+file,{waitUntil:'networkidle'});if(!file.startsWith('admin'))await p.evaluate(()=>window.DabaoCMS?.ready);};
     await open('admin/');await screenshot(page,'cloud-login-desktop');
+    const loginRequestsStart=report.requests.length;
     await page.locator('[name=username]').fill('admin');await page.locator('[name=password]').fill(app.password);await page.locator('#login-form button').click();await page.locator('#workspace').waitFor({state:'visible'});
+    check('login renders populated dashboard with one API request',report.requests.slice(loginRequestsStart).filter(r=>r.method!=='OPTIONS').length===1&&await page.locator('.metrics strong').count()===3);
     check('cross-origin cloud login works',await page.locator('#account').textContent().then(t=>t.includes('admin')));
     check('no auth token persisted in browser storage',await page.evaluate(()=>localStorage.length===0&&sessionStorage.length===0));
     await screenshot(page,'cloud-dashboard-desktop');
@@ -67,6 +69,11 @@ try{
     await page.locator('[data-page=feedback]').click();const bytes=await sharp({create:{width:300,height:400,channels:3,background:'#bd8499'}}).png().toBuffer();await page.locator('#feedback-upload').setInputFiles({name:'synthetic-test.png',mimeType:'image/png',buffer:bytes});await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('已處理 1 張'));check('mobile upload stays draft',await page.locator('#content').textContent().then(t=>t.includes('尚未填寫說明')));
     await page.locator('[data-page=settings]').click();await page.locator('#password-form [name=current]').fill(app.password);await page.locator('#password-form [name=password]').fill('1234567890');await page.locator('#password-form [name=confirm]').fill('1234567890');await page.locator('#password-form button').click();await page.locator('#login-screen').waitFor({state:'visible'});check('10-character password change logs out',true);
     await page.locator('[name=username]').fill('admin');await page.locator('#login-form [name=password]').fill('1234567890');await page.locator('#login-form button').click();await page.locator('#workspace').waitFor({state:'visible'});await page.locator('#logout').click();await page.locator('#login-screen').waitFor({state:'visible'});check('logout returns to login',true);
+    await ctx.route(app.apiOrigin+'/functions/v1/dabao-cms/api/admin/login',async route=>{const response=await route.fetch();const data=await response.json();delete data.state;await route.fulfill({response,json:data});});
+    const fallbackStart=report.requests.length;
+    await page.locator('[name=username]').fill('admin');await page.locator('#login-form [name=password]').fill('1234567890');await page.locator('#login-form button').click();await page.locator('#workspace').waitFor({state:'visible'});
+    check('new client supports older cloud login response',report.requests.slice(fallbackStart).filter(r=>r.method!=='OPTIONS'&&r.url.includes('/api/admin/')).map(r=>new URL(r.url).pathname.split('/api/admin/')[1]).join(',')==='login,state'&&Boolean((await page.locator('#content').textContent()).trim()));
+    await page.locator('#logout').click();await page.locator('#login-screen').waitFor({state:'visible'});
     check('no browser console errors',report.errors.length===0);check('no uncaught page errors',report.pageErrors.length===0);
 }catch(error){report.failure={message:error.message,stack:error.stack};process.exitCode=1;}finally{
     await fs.writeFile(path.join(output,'browser-report.json'),JSON.stringify(report,null,2));await browser.close();await app.close();

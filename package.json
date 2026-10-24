@@ -7,7 +7,7 @@
     "cms:backup": "node cms/cli.mjs backup",
     "cms:restore": "node cms/cli.mjs restore",
     "cms:test": "node --test tests/cms-api.test.mjs",
-    "cms:supabase:test": "node --test tests/cms-supabase.test.mjs tests/cms-supabase-migration.test.mjs",
+    "cms:supabase:test": "node --test tests/cms-supabase.test.mjs tests/cms-supabase-migration.test.mjs tests/cms-login-performance.test.mjs",
     "cms:supabase:preview": "node tests/cms-supabase-preview.mjs",
     "cms:supabase:prepare": "node cms/supabase/prepare.mjs",
     "cms:supabase:export": "node cms/supabase/migration.mjs export",

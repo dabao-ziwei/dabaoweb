@@ -23,7 +23,7 @@
     }
     const request=(url,method,data)=>api(url,{method,body:JSON.stringify(data)});
     function showLogin(){ document.querySelectorAll('dialog[open]').forEach(dialog=>dialog.close());$('#workspace').hidden=true;$('#login-screen').hidden=false;state=null; }
-    async function bootstrap(){const session=await api('session');csrf=session.csrf;if(session.authenticated){$('#account').textContent=`${session.username} · ${localEnvironment?'本機 CMS':'管理環境'} · Asia/Taipei`;$('#login-screen').hidden=true;$('#workspace').hidden=false;await refresh();}else showLogin();}
+    async function bootstrap(initial){const session=initial||await api('session');csrf=session.csrf;if(session.authenticated){const next=session.state||await api('state');state=next;$('#account').textContent=`${session.username} · ${localEnvironment?'本機 CMS':'管理環境'} · Asia/Taipei`;$('#login-screen').hidden=true;$('#workspace').hidden=false;render();}else showLogin();}
     async function refresh(){state=await api('state');render();}
     async function confirm(message){$('#confirm-message').textContent=message;const dialog=$('#confirm-dialog');dialog.returnValue='';dialog.showModal();return new Promise(resolve=>dialog.addEventListener('close',()=>resolve(dialog.returnValue==='confirm'),{once:true}));}
     const badge=item=>`<span class="status ${item.changed?'pending':item.published?'good':''}">${item.changed?'有未發布草稿':item.published?'已發布':'草稿'}</span>`;
@@ -90,7 +90,7 @@
     }
     function formData(form){const data={};for(const input of form.querySelectorAll('[name]'))data[input.name]=input.type==='checkbox'?input.checked:input.type==='number'||input.name==='weekday'?(input.value===''?null:Number(input.value)):input.value;return data;}
     function renderSettings(){const settings=state.settings[0];$('#content').innerHTML=`<section class="band"><h2>公開網站設定</h2><form id="settings-form" class="settings-form">${field('featuredDesktop','首頁桌面精選數量','number',settings.featuredDesktop,{required:true,min:1,max:24})}${field('featuredMobile','首頁手機精選數量','number',settings.featuredMobile,{required:true,min:1,max:24})}${field('lineUrl','官方 LINE 網址','url',settings.lineUrl,{required:true})}<button class="primary" type="submit">儲存設定草稿</button></form></section><section><h2>變更登入密碼</h2><form id="password-form" class="settings-form"><label>目前密碼<input type="password" name="current" autocomplete="current-password" required></label><label>新密碼<input type="password" name="password" minlength="10" maxlength="128" autocomplete="new-password" required></label><label>再次輸入新密碼<input type="password" name="confirm" minlength="10" maxlength="128" autocomplete="new-password" required></label><button type="submit">變更密碼並重新登入</button></form></section>`;}
-    $('#login-form').addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter;button.disabled=true;$('#login-error').textContent='';try{const data=Object.fromEntries(new FormData(event.target));const session=await request('login','POST',data);csrf=session.csrf;event.target.reset();await bootstrap();}catch(error){$('#login-error').textContent=error.message;}finally{button.disabled=false;}});
+    $('#login-form').addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter,label=button.textContent;button.disabled=true;button.textContent='登入中...';event.target.setAttribute('aria-busy','true');$('#login-error').textContent='';try{const data=Object.fromEntries(new FormData(event.target));const session=await request('login','POST',data);csrf=session.csrf;event.target.reset();await bootstrap(cloud?session:undefined);}catch(error){$('#login-error').textContent=error.message;}finally{button.disabled=false;button.textContent=label;event.target.removeAttribute('aria-busy');}});
     document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',()=>{page=button.dataset.page;feedbackPage=0;notice('');render();}));
     $('#refresh').addEventListener('click',()=>refresh().then(()=>notice('已重新載入')).catch(error=>notice(error.message,true)));
     $('#preview-target').addEventListener('change',event=>{$('#preview-link').href='/'+event.target.value+'?cms-preview=1';});
@@ -115,7 +115,7 @@
         // request data, and the bridge never exposes tokens or write methods.
         frame.contentWindow.postMessage({type:'dabao-preview-response',id:message.id,data,error},'*',data?.bytes?[data.bytes]:[]);
     });
-    $('#logout').addEventListener('click',()=>request('logout','POST',{}).then(bootstrap).catch(error=>notice(error.message,true)));
+    $('#logout').addEventListener('click',()=>request('logout','POST',{}).then(()=>bootstrap()).catch(error=>notice(error.message,true)));
     $('#publish').addEventListener('click',async()=>{const button=$('#publish');button.disabled=true;try{if(!await confirm(`確定發布 ${state.pending} 項草稿？公開網站的課程與回饋將更新。`))return;await request('publish','POST',{confirm:'publish'});const channel=new BroadcastChannel('dabao-cms');channel.postMessage('published');channel.close();await refresh();notice(localEnvironment?'本機發布成功，本機預覽已使用新資料':'發布成功，公開網站已使用新資料');}catch(error){notice(error.message,true);}finally{button.disabled=!state?.pending;}});
     document.addEventListener('click',async event=>{
         const button=event.target.closest('button');if(!button)return;
