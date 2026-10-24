@@ -106,3 +106,6 @@ pre { white-space:pre-wrap; overflow-wrap:anywhere; padding:16px; background:#ee
     th,td { padding:12px 8px; }
     .table-wrap table { min-width:580px; }
 }
+/* Cloud previews retain authentication in a same-origin frame, not a URL token. */
+#preview-dialog { width: min(1400px, calc(100vw - 24px)); height: calc(100dvh - 24px); max-height: none; }
+#preview-frame { display: block; width: 100%; height: calc(100% - 66px); border: 0; background: #161616; }

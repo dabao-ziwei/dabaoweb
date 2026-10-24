@@ -1,0 +1,9 @@
+project_id = "dabao-cms-local"
+
+[functions.dabao-cms]
+# Public content/images and password login share this handler. Every admin route
+# verifies an opaque CMS session against Postgres; disabling the gateway JWT
+# check here does not make administrative routes public.
+verify_jwt = false
+entrypoint = "./functions/dabao-cms/index.ts"
+static_files = ["./functions/dabao-cms/vendor/magick.wasm", "./functions/dabao-cms/vendor/LICENSE", "./functions/dabao-cms/vendor/NOTICE", "./functions/dabao-cms/vendor/manifest.json"]

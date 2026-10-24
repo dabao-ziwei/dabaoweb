@@ -1,5 +1,10 @@
 # 大寶 CMS：操作、架構與部署審查
 
+## Supabase 串接分支
+
+2026/10/24 起，沿用既有 DabaoWeb 專案的雲端後台整合，請以 [CMS-SUPABASE.md](CMS-SUPABASE.md) 為本輪串接／核准流程。
+以下 Node＋SQLite 說明仍適用舊本機模式；不表示需要購買另一台主機，也不表示正式後台已啟用。
+
 ## 狀態與範圍
 
 本機正式資料模型與真實 API 已實作；不是 localStorage prototype。

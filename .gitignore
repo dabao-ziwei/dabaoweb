@@ -8,3 +8,7 @@ node_modules/
 cms-data/
 backups/
 test-results/
+.supabase/
+supabase/.temp/
+supabase/.branches/
+supabase/functions/dabao-cms/vendor/
