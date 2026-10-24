@@ -115,7 +115,7 @@
             menuToggle.focus();
         }
     });
-    document.addEventListener('click', (event) => {
+    document.addEventListener('click', async (event) => {
         if (!event.target.closest('.home-nav')) setMenu(false);
         const cta = event.target.closest('[data-event]');
         if (cta) {
@@ -128,7 +128,12 @@
         const imageButton = event.target.closest('.home-feedback');
         if (imageButton) {
             const image = imageButton.querySelector('img');
-            lightboxImage.src = imageButton.dataset.full || image.currentSrc || image.src;
+            const source = imageButton.dataset.full || image.currentSrc || image.src;
+            try {
+                lightboxImage.src = window.DabaoCMS?.preview ? await window.DabaoCMS.image(source) : source;
+            } catch {
+                return;
+            }
             lightboxImage.alt = image.alt;
             document.getElementById('original-image').href = lightboxImage.src;
             openDialog(lightbox);
