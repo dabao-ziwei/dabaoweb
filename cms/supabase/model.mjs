@@ -1,4 +1,4 @@
-import { kinds, validate, effectiveCohort, fail } from '../validation.mjs';
+import { kinds, validate, effectiveCohort, fail, number } from '../validation.mjs';
 
 export const emptyDocument = () => ({ courses:[], cohorts:[], feedback:[], settings:[], media:[] });
 const same = (a,b) => JSON.stringify(a) === JSON.stringify(b);
@@ -20,6 +20,20 @@ export class CloudModel {
     row(kind,id) { return this.rows(kind,true).find(row=>row.id===id); }
     item(row) { return {...row.draft,id:row.id,revision:row.revision,updatedAt:row.updated_at,published:Boolean(row.published&&row.published.isVisible!==false),changed:!same(row.draft,row.published)}; }
     log(action,kind,id,before,after) { this.audit.push({action,kind,id,before:structuredClone(before??null),after:structuredClone(after??null)}); }
+    dashboardSettings() {
+        const settings=this.document.dashboardSettings;
+        return {refreshMinutes:settings?.refreshMinutes??5,revision:settings?.revision??0};
+    }
+    saveDashboardSettings(input,revision) {
+        const before=this.dashboardSettings();
+        if(revision!==before.revision)fail('設定已被其他視窗修改，請重新載入後再儲存',409);
+        if(!input||typeof input!=='object'||Array.isArray(input))fail('設定格式不正確');
+        const refreshMinutes=number(input.refreshMinutes,'自動刷新間隔（分鐘）',1,60);
+        const after={refreshMinutes,revision:before.revision+1};
+        this.document.dashboardSettings=after;
+        this.log('save_dashboard_settings','dashboard','site',before,after);
+        return after;
+    }
     update(row,draft) { row.draft=draft;row.revision++;row.updated_at=new Date().toISOString();row.updated_by=this.actor; }
     save(kind,id,input,revision) {
         const value=validate(kind,input),old=id?this.row(kind,id):null;
@@ -108,7 +122,7 @@ export class CloudModel {
         for(const c of data.courses)c.totalHours=c.sessions!==null&&c.minutes!==null?c.sessions*c.minutes/60:null;
         for(const f of data.feedback)f.uploadedAt=this.document.media.find(m=>m.id===f.mediaId)?.created_at;
         const publicData=this.publicData();
-        return {...data,pending:kinds.reduce((n,k)=>n+this.rows(k,true).filter(r=>r.deleted_at?r.published!==null:!same(r.draft,r.published)).length,0),recent:this.recent,versions:this.versions,publicSummary:{cohorts:publicData.cohorts,courses:publicData.courses,feedbackCount:publicData.feedbackCount,publishedAt:publicData.publishedAt}};
+        return {...data,dashboardSettings:this.dashboardSettings(),pending:kinds.reduce((n,k)=>n+this.rows(k,true).filter(r=>r.deleted_at?r.published!==null:!same(r.draft,r.published)).length,0),recent:this.recent,versions:this.versions,publicSummary:{cohorts:publicData.cohorts,courses:publicData.courses,feedbackCount:publicData.feedbackCount,publishedAt:publicData.publishedAt}};
     }
     commit(hash) { return {hash,revision:this.revision,document:this.document,audit:this.audit,...(this.versionSnapshot?{snapshot:this.versionSnapshot,reason:this.reason}:{})}; }
 }

@@ -24,10 +24,15 @@
 - 一次瀏覽／點擊為一次小請求與資料庫 upsert；不經圖片路徑、不觸發圖片處理、不讀寫 CMS 內容文件
 - 後台登入先完成，統計獨立載入；統計失敗不讓登入失敗，不以假 0 替代讀取失敗
 - 操作紀錄仍在「發布紀錄」，不再作為儀表板主內容
+- 儀表板預設每 5 分鐘自動刷新；「系統設定 → 儀表板設定」可改為 1～60 分鐘，儲存後立即生效，重新登入仍保留，不必發布網站
+- 刷新只重讀統計，不重新載入整頁、不變更所選日期區間；離開儀表板、登出或分頁切到背景時停止排程，回到前景補更新，dialog 開啟時略過該次排程
+- 每次請求完成後才排下一次，不堆疊請求；自動刷新失敗保留上次數據並在下個間隔重試
 - 正式網域以外不計數；本機測試伺服器可明確啟用 `localMetricsQA`，僅對隔離資料庫測試
 - admin、CMS 草稿預覽和非清單頁面不計數
 
 新表只在私有 `dabao_cms` schema，啟用 RLS 並撤銷直接存取。新 RPC 只允許 service_role 呼叫；查報表必須通過既有管理員 session 驗證。匿名訪客只能透過受來源／大小／固定代碼限制的 Edge 端點送計數，不能讀報表
+
+刷新間隔保存於既有私有 CMS JSON 文件的 `dashboardSettings`，和公開網站設定／發布版本分開；不新增資料表或 migration。舊資料自動採預設值。儲存需更新後的 `dabao-cms` Edge，不可只更新前端；舊 Edge 不支援時會回報儲存失敗，其他管理功能仍可使用
 
 ## 正式上線順序（另需擁有者核准）
 
@@ -46,6 +51,7 @@
 ```sh
 node --test tests/site-metrics.test.mjs
 node tests/site-metrics-browser.mjs
+node tests/dashboard-refresh-browser.mjs
 npm run cms:supabase:test
 node tests/cms-supabase-browser.mjs
 ```
