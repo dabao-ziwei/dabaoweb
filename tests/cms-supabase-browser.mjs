@@ -26,13 +26,13 @@ try{
     await open('admin/');await screenshot(page,'cloud-login-desktop');
     const loginRequestsStart=report.requests.length;
     await page.locator('[name=username]').fill('admin');await page.locator('[name=password]').fill(app.password);await page.locator('[name=remember]').check();await page.locator('#login-form button').click();await page.locator('#workspace').waitFor({state:'visible'});
-    check('login renders populated dashboard with one API request',report.requests.slice(loginRequestsStart).filter(r=>r.method!=='OPTIONS').length===1&&await page.locator('.metrics strong').count()===3);
+    check('login renders dashboard without extra session/state requests; statistics load independently',report.requests.slice(loginRequestsStart).filter(r=>r.method!=='OPTIONS'&&!r.url.includes('/metrics?')).length===1&&await page.locator('.metrics strong').count()===4);
     check('cross-origin cloud login works',await page.locator('#account').textContent().then(t=>t.includes('admin')));
     check('no auth token persisted in browser storage',await page.evaluate(()=>localStorage.length===0&&sessionStorage.length===0));
     const cookies=await ctx.cookies();const remembered=cookies.find(c=>c.name==='__Host-dabaoCMS');
     check('remember cookie is HttpOnly Secure and expires in30days',remembered?.httpOnly&&remembered.secure&&remembered.sameSite==='None'&&remembered.expires>Date.now()/1000+29*86400);
     check('remember cookie cannot be read by JavaScript',!await page.evaluate(()=>document.cookie.includes('dabaoCMS')));
-    await page.reload({waitUntil:'networkidle'});check('remember restores populated dashboard after reload',await page.locator('#workspace').isVisible()&&await page.locator('.metrics strong').count()===3);
+    await page.reload({waitUntil:'networkidle'});check('remember restores populated dashboard after reload',await page.locator('#workspace').isVisible()&&await page.locator('.metrics strong').count()===4);
     await screenshot(page,'cloud-dashboard-desktop');
     const course=await ctx.newPage(),home=await ctx.newPage(),lp=await ctx.newPage();
     let releaseContent;const contentGate=new Promise(resolve=>{releaseContent=resolve;});
@@ -88,7 +88,7 @@ try{
     await ctx.route(app.apiOrigin+'/functions/v1/dabao-cms/api/admin/login',async route=>{const response=await route.fetch();const data=await response.json();delete data.state;await route.fulfill({response,json:data});});
     const fallbackStart=report.requests.length;
     await page.locator('[name=username]').fill('admin');await page.locator('#login-form [name=password]').fill('1234567890');await page.locator('#login-form button').click();await page.locator('#workspace').waitFor({state:'visible'});
-    check('new client supports older cloud login response',report.requests.slice(fallbackStart).filter(r=>r.method!=='OPTIONS'&&r.url.includes('/api/admin/')).map(r=>new URL(r.url).pathname.split('/api/admin/')[1]).join(',')==='login,state'&&Boolean((await page.locator('#content').textContent()).trim()));
+    check('new client supports older cloud login response',report.requests.slice(fallbackStart).filter(r=>r.method!=='OPTIONS'&&r.url.includes('/api/admin/')&&!r.url.includes('/metrics?')).map(r=>new URL(r.url).pathname.split('/api/admin/')[1]).join(',')==='login,state'&&Boolean((await page.locator('#content').textContent()).trim()));
     await page.locator('#logout').click();await page.locator('#login-screen').waitFor({state:'visible'});
     await page.reload({waitUntil:'networkidle'});check('logout remains logged out after reload',await page.locator('#login-screen').isVisible()&&!(await ctx.cookies()).some(c=>c.name==='__Host-dabaoCMS'));
     check('no browser console errors',report.errors.length===0);check('no uncaught page errors',report.pageErrors.length===0);

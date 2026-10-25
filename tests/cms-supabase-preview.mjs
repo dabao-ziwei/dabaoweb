@@ -8,10 +8,10 @@ import os from 'node:os';
 import { sandbox } from './support/cloud-sandbox.mjs';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
-const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.ico':'image/x-icon'};
-export async function previewServer({port=4283,apiPort=4284,password,packageDirectory}={}){
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.ico':'image/x-icon'};
+export async function previewServer({port=4283,apiPort=4284,password,packageDirectory,metricsEnabled=false}={}){
     const origin=`http://localhost:${port}`,apiOrigin=`http://localhost:${apiPort}`;
-    const app=await sandbox({origins:[origin],port,packageDirectory,fixtures:packageDirectory?0:6,publicMediaBase:apiOrigin+'/storage/v1/object/public/dabao-cms-public'});
+    const app=await sandbox({origins:[origin],port,packageDirectory,fixtures:packageDirectory?0:6,metricsEnabled,publicMediaBase:apiOrigin+'/storage/v1/object/public/dabao-cms-public'});
     if(password)await app.services.changePassword('local-admin@example.invalid',app.password,password,app.userId);
     const api=http.createServer(async(req,res)=>{
         try{
@@ -26,7 +26,7 @@ export async function previewServer({port=4283,apiPort=4284,password,packageDire
             if(!['GET','HEAD'].includes(req.method)){res.writeHead(405);res.end();return;}
             res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
             if(decoded==='/cms-config.js'){
-                res.setHeader('Content-Type',mime['.js']);res.end(`window.DabaoCmsConfig=${JSON.stringify({enabled:true,provider:'supabase',apiBase:apiOrigin+'/functions/v1/dabao-cms',pollSeconds:60})};window.DabaoCmsPreview=new URLSearchParams(location.search).get('cms-preview')==='1';`);return;
+                res.setHeader('Content-Type',mime['.js']);res.end(`window.DabaoCmsConfig=${JSON.stringify({enabled:true,provider:'supabase',apiBase:apiOrigin+'/functions/v1/dabao-cms',pollSeconds:60,localMetricsQA:metricsEnabled})};window.DabaoCmsPreview=new URLSearchParams(location.search).get('cms-preview')==='1';`);return;
             }
             const relative=decoded==='/'?'index.html':decoded==='/admin/'?'admin/index.html':decoded.slice(1);
             if(relative.split('/').some(p=>p==='..'||p.startsWith('.'))||/^(cms|supabase|tests|node_modules)\//.test(relative)||!mime[path.extname(relative)])throw new Error('Not found');

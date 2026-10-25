@@ -1,6 +1,7 @@
 import { fail } from '../validation.mjs';
 import { CloudModel } from './model.mjs';
 import { sha256 } from './images.mjs';
+import { validEvent, reportWithLabels } from '../../site-metrics-catalog.mjs';
 
 const maxBody=10*1024*1024+65536;
 const cookieName='__Host-dabaoCMS';
@@ -15,7 +16,7 @@ async function input(request) {
     if(!request.headers.get('Content-Type')?.startsWith('application/json'))fail('請使用 JSON 格式',415);
     try{const data=JSON.parse(new TextDecoder().decode(await readBody(request,128*1024)));if(!data||typeof data!=='object'||Array.isArray(data))fail('JSON 必須為物件',400);return data;}catch(e){if(e.status)throw e;fail('JSON 格式錯誤',400);}
 }
-export function createCloudHandler({services,images,origins,basePath='/functions/v1/dabao-cms'}) {
+export function createCloudHandler({services,images,origins,metricsEnabled=false,basePath='/functions/v1/dabao-cms'}) {
     let imageJobs=0;
     const loadModel=(record,actor)=>new CloudModel(record,actor,services.publicMediaBase);
     return async request=>{
@@ -36,6 +37,22 @@ export function createCloudHandler({services,images,origins,basePath='/functions
             const hash=/^[a-f0-9]{64}$/.test(token)?await sha256(new TextEncoder().encode(token)):'';
             const requireSession=async()=>{if(!hash)fail('請重新登入',401);return services.rpc('session',{hash});};
             if(route==='/healthz'&&method==='GET')return json({ok:true});
+            if(route==='/api/public/metrics'&&method==='POST'){
+                if(!metricsEnabled)return json({enabled:false},503);
+                if(!origin)fail('統計請求缺少來源',403);
+                let event;
+                try{event=JSON.parse(new TextDecoder().decode(await readBody(request,512)));}catch(error){if(error.status)throw error;fail('統計格式不正確',400);}
+                if(!validEvent(event))fail('統計格式不正確',400);
+                await services.metrics('collect',event);
+                return new Response(null,{status:204,headers});
+            }
+            if(route==='/api/admin/metrics'&&method==='GET'){
+                if(!hash)fail('請重新登入',401);
+                if(!metricsEnabled){await requireSession();return json({enabled:false});}
+                const days=Number(url.searchParams.get('days')||0);
+                if(![0,1,7,30].includes(days))fail('統計區間不正確',400);
+                return json(reportWithLabels(await services.metrics('report',{hash,days})));
+            }
             if(route==='/api/admin/session'&&method==='GET'){
                 if(!hash)return json({authenticated:false});
                 try{const {record,...session}=await services.rpc('session_bundle',{hash});return json({...session,state:loadModel(record,session.username).adminData()});}catch(e){if(e.status===401){headers['Set-Cookie']=sessionCookie('',0);return json({authenticated:false});}throw e;}
@@ -91,7 +108,7 @@ export function createCloudHandler({services,images,origins,basePath='/functions
             if(route==='/api/admin/preview'&&method==='GET')return json(model.publicData({draft:true}));
             if(route.startsWith('/api/public/')&&method==='GET'){
                 const data=model.publicData();let result;
-                if(route==='/api/public/content'){const {feedback,...content}=data;result=content;}
+                if(route==='/api/public/content'){const {feedback,...content}=data;result={...content,metrics:{enabled:metricsEnabled,version:1}};}
                 else if(route==='/api/public/feedback'){
                     const offset=Number(url.searchParams.get('offset')||0),limit=Number(url.searchParams.get('limit')||24);
                     if(!Number.isInteger(offset)||offset<0||offset>100000||!Number.isInteger(limit)||limit<1||limit>60)fail('分頁參數不正確');

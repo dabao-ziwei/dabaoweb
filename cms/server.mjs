@@ -153,7 +153,7 @@ export function createCms(config=configuration()) {
             try {decoded=decodeURIComponent(route);}catch{fail('網址格式不正確',400);}
             let relative=route==='/'?'index.html':route==='/admin'||route==='/admin/'?'admin/index.html':decoded.replace(/^\//,'');
             if(relative.split('/').some(part=>part==='..'||part.startsWith('.'))||relative.includes('\\')||relative.includes('\0'))fail('無法存取此檔案',403);
-            const extension=path.extname(relative);
+            const extension=relative==='site-metrics-catalog.mjs'?'.js':path.extname(relative);
             if(!mime[extension]||relative.startsWith('cms/')||relative.startsWith('node_modules/')||relative.startsWith('tests/')||relative==='package.json'||relative==='package-lock.json')fail('無法存取此檔案',403);
             const target=path.resolve(config.root,relative);
             if(!target.startsWith(config.root+path.sep))fail('無法存取此檔案',403);
