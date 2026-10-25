@@ -109,3 +109,9 @@ pre { white-space:pre-wrap; overflow-wrap:anywhere; padding:16px; background:#ee
 /* Cloud previews retain authentication in a same-origin frame, not a URL token. */
 #preview-dialog { width: min(1400px, calc(100vw - 24px)); height: calc(100dvh - 24px); max-height: none; }
 #preview-frame { display: block; width: 100%; height: calc(100% - 66px); border: 0; background: #161616; }
+.image-trigger { display:block; width:100%; padding:0; border:0; background:transparent; }
+.image-trigger:hover { background:transparent; }
+#media-viewer { width:min(1000px,calc(100vw - 32px)); }
+#media-viewer-image { width:100%; max-height:none; background:transparent; }
+#media-viewer .dialog-head { position:sticky; top:0; z-index:1; background:#fff; }
+body:has(dialog[open]) { overflow:hidden; }

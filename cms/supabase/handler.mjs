@@ -3,6 +3,8 @@ import { CloudModel } from './model.mjs';
 import { sha256 } from './images.mjs';
 
 const maxBody=10*1024*1024+65536;
+const cookieName='__Host-dabaoCMS';
+const sessionCookie=(token,days=30)=>`${cookieName}=${token}; Path=/; Secure; HttpOnly; SameSite=None; Partitioned; Max-Age=${days*86400}`;
 async function readBody(request,limit) {
     const reader=request.body?.getReader();if(!reader)return new Uint8Array();
     const chunks=[];let length=0;
@@ -15,10 +17,11 @@ async function input(request) {
 }
 export function createCloudHandler({services,images,origins,basePath='/functions/v1/dabao-cms'}) {
     let imageJobs=0;
+    const loadModel=(record,actor)=>new CloudModel(record,actor,services.publicMediaBase);
     return async request=>{
         const url=new URL(request.url),origin=request.headers.get('Origin');
         const headers={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','X-Robots-Tag':'noindex, nofollow','Vary':'Origin'};
-        if(origin&&origins.includes(origin))Object.assign(headers,{'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Headers':'Authorization, Content-Type, If-None-Match','Access-Control-Allow-Methods':'GET, POST, PUT, DELETE, OPTIONS','Access-Control-Expose-Headers':'ETag'});
+        if(origin&&origins.includes(origin))Object.assign(headers,{'Access-Control-Allow-Origin':origin,'Access-Control-Allow-Credentials':'true','Access-Control-Allow-Headers':'Authorization, Content-Type, If-None-Match','Access-Control-Allow-Methods':'GET, POST, PUT, DELETE, OPTIONS','Access-Control-Expose-Headers':'ETag'});
         const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{...headers,'Content-Type':'application/json; charset=utf-8'}});
         try{
             if(origin&&!origins.includes(origin))fail('不允許此來源',403);
@@ -28,13 +31,14 @@ export function createCloudHandler({services,images,origins,basePath='/functions
             if(!prefix)fail('找不到 API',404);
             const route=url.pathname.slice(prefix.length),method=request.method;
             const admin=route.startsWith('/api/admin/');
-            const token=(request.headers.get('Authorization')||'').replace(/^Bearer /,'');
+            const cookie=request.headers.get('Cookie')?.split(';').map(part=>part.trim()).find(part=>part.startsWith(cookieName+'='))?.slice(cookieName.length+1)||'';
+            const token=(request.headers.get('Authorization')||'').replace(/^Bearer /,'')||cookie;
             const hash=/^[a-f0-9]{64}$/.test(token)?await sha256(new TextEncoder().encode(token)):'';
             const requireSession=async()=>{if(!hash)fail('請重新登入',401);return services.rpc('session',{hash});};
             if(route==='/healthz'&&method==='GET')return json({ok:true});
             if(route==='/api/admin/session'&&method==='GET'){
                 if(!hash)return json({authenticated:false});
-                try{const session=await requireSession();return json({authenticated:true,username:session.username});}catch(e){if(e.status===401)return json({authenticated:false});throw e;}
+                try{const {record,...session}=await services.rpc('session_bundle',{hash});return json({...session,state:loadModel(record,session.username).adminData()});}catch(e){if(e.status===401){headers['Set-Cookie']=sessionCookie('',0);return json({authenticated:false});}throw e;}
             }
             if(route==='/api/admin/login'&&method==='POST'){
                 if(!origin)fail('登入請求缺少來源',403);
@@ -42,29 +46,44 @@ export function createCloudHandler({services,images,origins,basePath='/functions
                 if(typeof data.username!=='string'||data.username.length>80||typeof data.password!=='string'||data.password.length>128)fail('帳號或密碼錯誤',401);
                 const name=data.username.trim().toLowerCase();
                 const ip=request.headers.get('x-forwarded-for')?.split(',')[0].trim()||'unknown';
-                const attempts=await Promise.all([['account:'+name,5],['ip:'+ip,20]].map(async([bucket,limit])=>services.rpc('attempt',{bucket:await sha256(new TextEncoder().encode(bucket)),limit})));
-                if(attempts.some(result=>!result.allowed))fail('登入嘗試過多，請 15 分鐘後再試',429);
-                const member=await services.rpc('lookup',{name});
+                if(data.remember!==undefined&&typeof data.remember!=='boolean')fail('登入設定不正確',400);
+                const account=await sha256(new TextEncoder().encode('account:'+name));
+                const preparation=await services.rpc('login_prepare',{name,account,ip:await sha256(new TextEncoder().encode('ip:'+ip))});
+                if(!preparation.allowed){headers['Retry-After']=String(preparation.retrySeconds);fail(`登入嘗試過多，請 ${preparation.retrySeconds} 秒後再試`,429);}
+                const member=preparation.member;
                 if(!member)fail('帳號或密碼錯誤',401);
-                const email=await services.emailForUser(member.userId);
-                const verified=await services.signIn(email,data.password);
+                const verified=await services.signIn(member.email,data.password);
                 if(verified.user.id!==member.userId)fail('帳號或密碼錯誤',401);
-                const state=new CloudModel(await services.rpc('read'),name).adminData();
                 const access=[...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,'0')).join('');
-                const session=await services.rpc('login',{userId:member.userId,hash:await sha256(new TextEncoder().encode(access))});
-                return json({...session,token:access,state});
+                const {record,...session}=await services.rpc('login_finish',{userId:member.userId,hash:await sha256(new TextEncoder().encode(access)),remember:data.remember===true,account});
+                headers['Set-Cookie']=data.remember?sessionCookie(access):sessionCookie('',0);
+                return json({...session,token:access,state:loadModel(record,session.username).adminData()});
+            }
+            const mediaRoute=route.match(/^\/(api\/admin\/)?media\/([a-z0-9-]{1,100})\/(full|thumb|original)$/);
+            if(mediaRoute&&method==='GET'){
+                const [,privatePrefix,id,variant]=mediaRoute;
+                // Compatibility for old links only. New pages use Storage URLs
+                // directly: no Edge invocation or database lookup per image.
+                if(variant!=='original'){
+                    return new Response(null,{status:302,headers:{...headers,Location:`${services.publicMediaBase}/${id}/${variant}.webp`}});
+                }
+                if(!privatePrefix)fail('找不到圖片',404);
+                await requireSession();
+                const bytes=await services.getObject(id,'original');
+                return new Response(bytes,{headers:{...headers,'Content-Type':'application/octet-stream','Content-Disposition':'attachment; filename="original.bin"'}});
             }
             let session;
             if(admin){session=await requireSession();if(!['GET','HEAD'].includes(method)&&!origin)fail('管理請求缺少來源',403);}
-            if(route==='/api/admin/logout'&&method==='POST')return json(await services.rpc('logout',{hash}));
+            if(route==='/api/admin/logout'&&method==='POST'){const result=await services.rpc('logout',{hash});headers['Set-Cookie']=sessionCookie('',0);return json(result);}
             if(route==='/api/admin/password'&&method==='POST'){
                 const data=await input(request);
                 if(typeof data.password!=='string'||data.password.length<10||data.password.length>128)fail('新密碼須為 10～128 個字元');
                 if(typeof data.current!=='string'||data.current.length>128)fail('目前密碼錯誤',401);
                 await services.changePassword(await services.emailForUser(session.userId),data.current,data.password,session.userId,()=>services.rpc('revoke',{hash}));
+                headers['Set-Cookie']=sessionCookie('',0);
                 return json({ok:true,loginRequired:true});
             }
-            const model=new CloudModel(await services.rpc('read'),session?.username);
+            const model=loadModel(await services.rpc('read'),session?.username);
             if(route==='/api/admin/state'&&method==='GET')return json(model.adminData());
             if(route==='/api/admin/history'&&method==='GET'){
                 const rows=await services.rpc('history');return json(rows.map(row=>({...row,before_json:row.before_json===null?null:JSON.stringify(row.before_json),after_json:row.after_json===null?null:JSON.stringify(row.after_json)})));
@@ -83,14 +102,6 @@ export function createCloudHandler({services,images,origins,basePath='/functions
                 const candidates=(request.headers.get('If-None-Match')||'').split(',').map(value=>value.trim().replace(/^W\//,''));
                 if(candidates.includes(etag)||candidates.includes('*'))return new Response(null,{status:304,headers:publicHeaders});
                 return new Response(raw,{headers:publicHeaders});
-            }
-            const mediaRoute=route.match(/^\/(api\/admin\/)?media\/([a-z0-9-]{1,100})\/(full|thumb|original)$/);
-            if(mediaRoute&&method==='GET'){
-                const [,privatePrefix,id,variant]=mediaRoute;
-                if(!privatePrefix&&(variant==='original'||!model.mediaActive(id)))fail('圖片未公開',404);
-                if(!model.document.media.some(m=>m.id===id))fail('找不到圖片',404);
-                const bytes=await services.getObject(id,variant);
-                return new Response(bytes,{headers:{...headers,'Content-Type':variant==='original'?'application/octet-stream':'image/webp','Cache-Control':privatePrefix?'no-store':'no-cache, must-revalidate',...(variant==='original'?{'Content-Disposition':'attachment; filename="original.bin"'}:{})}});
             }
             // This guard is independent of CORS and applies to every write path.
             if(!admin||!session)fail('找不到 API',404);

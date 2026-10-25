@@ -7,6 +7,7 @@ import sharp from 'sharp';
 import { createCms } from '../cms/server.mjs';
 import { configuration } from '../cms/config.mjs';
 import { exportPackage, verifyPackage } from '../cms/supabase/migration.mjs';
+import {copyExistingPublicMedia} from '../cms/supabase/public-media.mjs';
 import { sha256 } from '../cms/supabase/images.mjs';
 import { supabaseServices } from '../cms/supabase/services.mjs';
 
@@ -47,7 +48,11 @@ test('Supabase REST adapter: secrets stay server-side, provider errors sanitized
     const update=calls.find(c=>c.options?.method==='PUT');assert.equal(update.options.headers.Authorization,'Bearer provider-token');assert(!update.options.body.includes('server-only-secret'));
     assert(calls.findIndex(c=>c.event==='revoke')<calls.findIndex(c=>c.options?.method==='PUT'));
     await service.putObject('media-id','thumb',new Uint8Array([1]));await service.getObject('media-id','full');
-    assert(calls.some(c=>c.url?.endsWith('/storage/v1/object/authenticated/dabao-cms-media/media-id/full.webp')));
+    assert(calls.some(c=>c.url?.endsWith('/storage/v1/object/authenticated/dabao-cms-public/media-id/full.webp')));
+    assert(calls.some(c=>c.url?.endsWith('/storage/v1/object/dabao-cms-public/media-id/thumb.webp')&&c.options.headers['Cache-Control']==='max-age=86400'));
+    await service.putObject('media-id','original',new Uint8Array([2]));
+    assert(calls.some(c=>c.url?.endsWith('/storage/v1/object/dabao-cms-media/media-id/original.bin')));
+    assert(!calls.some(c=>c.url?.includes('dabao-cms-public/media-id/original')));
     const failing=supabaseServices({url:'https://local-test.invalid',key:'secret',fetcher:async()=>Response.json({message:'SQL PRIVATE TABLE SECRET DETAILS'},{status:500})});
     await assert.rejects(()=>failing.rpc('read'),e=>e.status===503&&!e.message.includes('PRIVATE'));
     const conflict=supabaseServices({url:'https://local-test.invalid',key:'secret',fetcher:async()=>Response.json({message:'CMS_CONFLICT'},{status:400})});
@@ -55,4 +60,21 @@ test('Supabase REST adapter: secrets stay server-side, provider errors sanitized
     const missing=supabaseServices({url:'https://local-test.invalid',key:'secret',fetcher:async()=>Response.json({statusCode:'404',error:'not_found',message:'Object not found',code:'NoSuchKey'},{status:400})});
     await assert.rejects(()=>missing.getObject('missing','full'),e=>e.status===404);
     await assert.rejects(()=>missing.rpc('read'),e=>e.status===503);
+    await service.getLegacyDerivative('media-id','thumb');
+    assert(calls.some(c=>c.url?.endsWith('/storage/v1/object/authenticated/dabao-cms-media/media-id/thumb.webp')));
+    await assert.rejects(()=>service.getLegacyDerivative('media-id','original'));
+    for(const [status,expected] of [[400,401],[429,429],[503,503]]){
+        const auth=supabaseServices({url:'https://local-test.invalid',key:'secret',fetcher:async()=>Response.json({message:'PRIVATE PROVIDER DETAILS'},{status})});
+        await assert.rejects(()=>auth.signIn('admin@example.invalid','test-password'),e=>e.status===expected&&!e.message.includes('PRIVATE')&&(expected===401||!e.message.includes('密碼錯誤')));
+    }
+});
+
+test('one-time copy moves only authorized display images, is repeatable and never overwrites different bytes',async()=>{
+    const objects=new Map(),reads=[];const bytes=new Uint8Array([1,2,3]);
+    const services={rpc:async()=>({document:{media:[{id:'image-1'},{id:'image-2'}]}}),async getLegacyDerivative(id,variant){reads.push(variant);return bytes;},async getObject(id,variant){if(!objects.has(id+'/'+variant))throw Object.assign(Error('missing'),{status:404});return objects.get(id+'/'+variant);},async putObject(id,variant,value){objects.set(id+'/'+variant,value);}};
+    assert.deepEqual(await copyExistingPublicMedia(services),{images:2,copied:4,existing:0,originalsCopied:0});
+    assert.deepEqual(await copyExistingPublicMedia(services),{images:2,copied:0,existing:4,originalsCopied:0});
+    assert(!reads.includes('original'));
+    objects.set('image-1/full',new Uint8Array([9]));await assert.rejects(()=>copyExistingPublicMedia(services),/refusing to overwrite/);
+    assert.deepEqual(objects.get('image-1/full'),new Uint8Array([9]));
 });

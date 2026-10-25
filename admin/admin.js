@@ -4,6 +4,7 @@
     if(!window.DabaoCmsConfig?.enabled){$('#login-error').textContent='管理服務尚未啟用，請使用已啟動的本機 CMS 或已核准的管理服務';$('#login-form button').disabled=true;return;}
     const cloud=window.DabaoCmsConfig.provider==='supabase';
     const transport=cloud?window.DabaoCmsTransport:null;
+    $('#remember-option').hidden=!cloud;
     if(!cloud&&new URL(window.DabaoCmsConfig.apiBase).origin!==location.origin){location.replace(new URL('/admin/',window.DabaoCmsConfig.apiBase));return;}
     const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     const money=value=>`NT$${Number(value).toLocaleString('en-US')}`;
@@ -28,20 +29,7 @@
     async function confirm(message){$('#confirm-message').textContent=message;const dialog=$('#confirm-dialog');dialog.returnValue='';dialog.showModal();return new Promise(resolve=>dialog.addEventListener('close',()=>resolve(dialog.returnValue==='confirm'),{once:true}));}
     const badge=item=>`<span class="status ${item.changed?'pending':item.published?'good':''}">${item.changed?'有未發布草稿':item.published?'已發布':'草稿'}</span>`;
     const actions=(kind,item)=>`<div class="row-actions"><button type="button" data-edit="${kind}" data-id="${item.id}">編輯</button><button type="button" data-unpublish="${kind}" data-id="${item.id}" ${!item.published?'disabled':''}>取消發布</button><button type="button" data-delete="${kind}" data-id="${item.id}" class="danger">刪除</button></div>`;
-    const mediaSource=(id,variant)=>cloud?'':` src="/api/admin/media/${id}/${variant}"`;
-    async function hydrateImages(root){
-        if(!cloud)return;
-        for(const img of root.querySelectorAll('img[data-media-id]')){
-            if(!state||$('#workspace').hidden)return;
-            if(!img.isConnected)continue;
-            try{
-                const src=await transport.image(img.dataset.mediaId,img.dataset.variant||'full');
-                if(!state||$('#workspace').hidden)return;
-                if(!img.isConnected)continue;img.src=src;
-                const link=img.closest('a');if(link)link.href=await transport.image(img.dataset.mediaId,'full');
-            }catch(error){notice(error.message,true);}
-        }
-    }
+    const mediaSource=(id,variant)=>`${cloud?' crossorigin="anonymous"':''} src="${escape(cloud?transport.image(id,variant):`/api/admin/media/${id}/${variant}`)}"`;
     function render(){
         if(!state)return;
         $('#page-title').textContent=labels[page];$('#publish').textContent=`發布${state.pending?`（${state.pending}）`:''}`;$('#publish').disabled=!state.pending;
@@ -64,8 +52,7 @@
     function renderFeedback(){
         const items=state.feedback.filter(f=>!filter||f.description.includes(filter));
         const start=feedbackPage*24,visible=items.slice(start,start+24);
-        $('#content').innerHTML=`<div class="section-actions"><h2>諮詢回饋 <small class="muted">${state.feedback.length}</small></h2><button type="button" id="upload-picker" class="primary">批次上傳圖片</button><input id="feedback-upload" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden></div><div class="filters"><input id="feedback-search" type="search" aria-label="搜尋圖片說明" value="${escape(filter)}" placeholder="搜尋圖片說明"></div><div class="feedback-grid">${visible.map(f=>`<article class="feedback-item"><a ${cloud?'aria-label="查看完整圖片"':`href="/api/admin/media/${f.mediaId}/full"`} target="_blank" rel="noopener noreferrer"><img class="feedback-image" data-media-id="${f.mediaId}" data-variant="thumb"${mediaSource(f.mediaId,'thumb')} loading="lazy" alt="${escape(f.description||'待編輯圖片說明')}"></a><p>${escape(f.description||'尚未填寫說明')}</p><div class="feedback-flags">${badge(f)}${f.isFeatured?'<span class="status">首頁精選</span>':''}</div><small>排序 ${f.sort} · 上傳 ${time(f.uploadedAt)}</small>${actions('feedback',f)}<div class="row-actions"><button type="button" data-move="-1" data-id="${f.id}" aria-label="向上移動圖片" title="向上移動圖片">↑</button><button type="button" data-move="1" data-id="${f.id}" aria-label="向下移動圖片" title="向下移動圖片">↓</button></div></article>`).join('')}</div>${!items.length?'<p class="empty">目前沒有回饋圖片</p>':''}<div class="pager"><button type="button" data-feedback-page="${feedbackPage-1}" ${feedbackPage===0?'disabled':''}>上一頁</button><span>${feedbackPage+1} / ${Math.max(1,Math.ceil(items.length/24))}</span><button type="button" data-feedback-page="${feedbackPage+1}" ${start+24>=items.length?'disabled':''}>下一頁</button></div>`;
-        hydrateImages($('#content'));
+        $('#content').innerHTML=`<div class="section-actions"><h2>諮詢回饋 <small class="muted">${state.feedback.length}</small></h2><button type="button" id="upload-picker" class="primary">批次上傳圖片</button><input id="feedback-upload" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden></div><div class="filters"><input id="feedback-search" type="search" aria-label="搜尋圖片說明" value="${escape(filter)}" placeholder="搜尋圖片說明"></div><div class="feedback-grid">${visible.map(f=>`<article class="feedback-item">${cloud?`<button class="image-trigger" type="button" data-open-media="${f.mediaId}" aria-label="查看完整圖片">`:`<a href="/api/admin/media/${f.mediaId}/full" target="_blank" rel="noopener noreferrer">`}<img class="feedback-image" data-media-id="${f.mediaId}" data-variant="thumb"${mediaSource(f.mediaId,'thumb')} loading="lazy" alt="${escape(f.description||'待編輯圖片說明')}">${cloud?'</button>':'</a>'}<p>${escape(f.description||'尚未填寫說明')}</p><div class="feedback-flags">${badge(f)}${f.isFeatured?'<span class="status">首頁精選</span>':''}</div><small>排序 ${f.sort} · 上傳 ${time(f.uploadedAt)}</small>${actions('feedback',f)}<div class="row-actions"><button type="button" data-move="-1" data-id="${f.id}" aria-label="向上移動圖片" title="向上移動圖片">↑</button><button type="button" data-move="1" data-id="${f.id}" aria-label="向下移動圖片" title="向下移動圖片">↓</button></div></article>`).join('')}</div>${!items.length?'<p class="empty">目前沒有回饋圖片</p>':''}<div class="pager"><button type="button" data-feedback-page="${feedbackPage-1}" ${feedbackPage===0?'disabled':''}>上一頁</button><span>${feedbackPage+1} / ${Math.max(1,Math.ceil(items.length/24))}</span><button type="button" data-feedback-page="${feedbackPage+1}" ${start+24>=items.length?'disabled':''}>下一頁</button></div>`;
     }
     async function renderHistory(){
         $('#content').innerHTML=`<section class="band"><h2>已發布版本</h2><div class="table-wrap"><table><thead><tr><th>版本</th><th>時間</th><th>操作者</th><th>原因</th><th>操作</th></tr></thead><tbody>${state.versions.map(v=>`<tr><td>#${v.id}</td><td>${time(v.created_at)}</td><td>${escape(v.actor)}</td><td>${escape(v.reason)}</td><td><button type="button" data-restore="${v.id}">還原此版本</button></td></tr>`).join('')}</tbody></table></div></section><section><h2>操作紀錄</h2><div id="audit-log"></div></section>`;
@@ -86,34 +73,39 @@
         if(kind==='courses')html=f('name','課程名稱','text',{required:true})+f('shortName','課程簡稱','text',{required:true})+f('position','課程定位')+f('level','課程階序')+f('summary','課程簡介','textarea',{max:1500})+f('audience','適合對象','textarea',{max:1500})+f('sessions','課程堂數','number',{min:1,max:500})+f('minutes','每堂分鐘','number',{min:15,max:1440})+f('introUrl','相關介紹頁網址','text',{full:true})+f('sort','顯示排序','number',{max:10000})+f('isVisible','公開顯示此課程','checkbox');
         if(kind==='cohorts')html=f('courseId','所屬課程','select',{items:state.courses.map(c=>[c.id,c.name])})+f('name','招生期別名稱','text',{required:true})+f('status','招生狀態','select',{items:Object.entries(statuses)})+f('regularPrice','正式報名費（NT$）','number',{required:true})+f('earlyBirdEnabled','啟用公開早鳥優惠','checkbox')+f('earlyBirdPrice','早鳥報名費（NT$）','number')+f('earlyBirdStart','早鳥開始（台北時間，可留空）','datetime-local')+f('earlyBirdEnd','早鳥截止（留空時由管理員關閉）','datetime-local')+f('startDate','預計開課日期','date')+f('endDate','課程結束日期','date')+f('registrationDeadline','報名截止日期','date')+f('weekday','上課星期','select',{items:[['','待確認'],...['日','一','二','三','四','五','六'].map((s,i)=>[i,'星期'+s])]})+f('startTime','上課開始','time')+f('endTime','上課結束','time')+f('sessions','課程堂數','number',{required:true,min:1,max:500})+f('minutes','每堂分鐘','number',{required:true,min:15,max:1440})+f('platform','授課平台','text',{required:true})+f('capacity','招生人數上限（可留空）','number',{min:1,max:100000})+f('enrolled','目前報名人數（可留空）','number',{max:100000})+f('signupUrl','報名入口（HTTPS）','text',{required:true,full:true})+f('notes','補充說明','textarea')+f('sort','顯示排序','number',{max:10000})+f('isFeatured','設為主要推薦班別','checkbox')+f('isVisible','公開顯示此期別','checkbox');
         if(kind==='feedback')html=`<div class="full"><img id="editor-image" class="editor-image" data-media-id="${data.mediaId}"${mediaSource(data.mediaId,'full')} alt="${escape(data.description)}"><button type="button" id="open-redactor">遮蔽敏感資訊</button><input name="mediaId" type="hidden" value="${data.mediaId}"></div>`+f('description','圖片說明','textarea',{max:500})+f('sort','顯示排序','number',{max:100000})+f('isFeatured','首頁精選','checkbox')+f('isVisible','發布後公開顯示','checkbox');
-        $('#editor-fields').innerHTML=html;hydrateImages($('#editor-fields'));$('#editor').showModal();
+        $('#editor-fields').innerHTML=html;$('#editor').showModal();
     }
     function formData(form){const data={};for(const input of form.querySelectorAll('[name]'))data[input.name]=input.type==='checkbox'?input.checked:input.type==='number'||input.name==='weekday'?(input.value===''?null:Number(input.value)):input.value;return data;}
     function renderSettings(){const settings=state.settings[0];$('#content').innerHTML=`<section class="band"><h2>公開網站設定</h2><form id="settings-form" class="settings-form">${field('featuredDesktop','首頁桌面精選數量','number',settings.featuredDesktop,{required:true,min:1,max:24})}${field('featuredMobile','首頁手機精選數量','number',settings.featuredMobile,{required:true,min:1,max:24})}${field('lineUrl','官方 LINE 網址','url',settings.lineUrl,{required:true})}<button class="primary" type="submit">儲存設定草稿</button></form></section><section><h2>變更登入密碼</h2><form id="password-form" class="settings-form"><label>目前密碼<input type="password" name="current" autocomplete="current-password" required></label><label>新密碼<input type="password" name="password" minlength="10" maxlength="128" autocomplete="new-password" required></label><label>再次輸入新密碼<input type="password" name="confirm" minlength="10" maxlength="128" autocomplete="new-password" required></label><button type="submit">變更密碼並重新登入</button></form></section>`;}
-    $('#login-form').addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter,label=button.textContent;button.disabled=true;button.textContent='登入中...';event.target.setAttribute('aria-busy','true');$('#login-error').textContent='';try{const data=Object.fromEntries(new FormData(event.target));const session=await request('login','POST',data);csrf=session.csrf;event.target.reset();await bootstrap(cloud?session:undefined);}catch(error){$('#login-error').textContent=error.message;}finally{button.disabled=false;button.textContent=label;event.target.removeAttribute('aria-busy');}});
+    $('#login-form').addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter,label=button.textContent;button.disabled=true;button.textContent='登入中...';event.target.setAttribute('aria-busy','true');$('#login-error').textContent='';try{const data=Object.fromEntries(new FormData(event.target));if(cloud)data.remember=event.target.elements.remember.checked;const session=await request('login','POST',data);csrf=session.csrf;event.target.reset();await bootstrap(cloud?session:undefined);}catch(error){$('#login-error').textContent=error.message;}finally{button.disabled=false;button.textContent=label;event.target.removeAttribute('aria-busy');}});
+    let mediaGeneration=0;
+    $('#content').addEventListener('click',async event=>{
+        const trigger=event.target.closest('[data-open-media]');if(!trigger)return;
+        const generation=++mediaGeneration,dialog=$('#media-viewer'),image=$('#media-viewer-image');
+        image.removeAttribute('src');$('#media-viewer-status').textContent='圖片載入中...';dialog.showModal();
+        try{image.onload=()=>{if(generation===mediaGeneration&&dialog.open)$('#media-viewer-status').textContent='';};image.onerror=()=>{if(generation===mediaGeneration&&dialog.open)$('#media-viewer-status').textContent='圖片載入失敗，請稍後再試';};image.src=transport.image(trigger.dataset.openMedia,'full');}
+        catch(error){if(generation===mediaGeneration&&dialog.open)$('#media-viewer-status').textContent=error.message;}
+    });
+    $('#media-viewer').addEventListener('close',()=>{mediaGeneration++;$('#media-viewer-image').removeAttribute('src');});
     document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',()=>{page=button.dataset.page;feedbackPage=0;notice('');render();}));
     $('#refresh').addEventListener('click',()=>refresh().then(()=>notice('已重新載入')).catch(error=>notice(error.message,true)));
     $('#preview-target').addEventListener('change',event=>{$('#preview-link').href='/'+event.target.value+'?cms-preview=1';});
-    let previewGeneration=0,previewMedia=new Set();
-    $('#preview-link').addEventListener('click',event=>{if(!cloud)return;event.preventDefault();previewGeneration++;previewMedia.clear();$('#preview-frame').src=$('#preview-link').href;$('#preview-dialog').showModal();});
-    $('#preview-dialog').addEventListener('close',()=>{previewGeneration++;previewMedia.clear();$('#preview-frame').removeAttribute('src');});
+    let previewGeneration=0;
+    $('#preview-link').addEventListener('click',event=>{if(!cloud)return;event.preventDefault();previewGeneration++;$('#preview-frame').src=$('#preview-link').href;$('#preview-dialog').showModal();});
+    $('#preview-dialog').addEventListener('close',()=>{previewGeneration++;$('#preview-frame').removeAttribute('src');});
     window.addEventListener('message',async event=>{
         const frame=$('#preview-frame'),message=event.data,generation=previewGeneration;
         if(!cloud||!$('#preview-dialog').open||event.source!==frame.contentWindow||event.origin!=='null'||message?.type!=='dabao-preview-request'||!Number.isSafeInteger(message.id))return;
         let data,error;
         try{
             if(message.action==='preview'){
-                data=await transport.request('preview');previewMedia=new Set((data.feedback||[]).map(f=>f.mediaId));
-            }else if(message.action==='image'){
-                if(!previewMedia.has(message.mediaId)||!['full','thumb'].includes(message.variant))throw new Error('沒有預覽此圖片的權限');
-                const blob=await transport.imageData(message.mediaId,message.variant);
-                data={bytes:await blob.arrayBuffer(),mime:blob.type};
+                data=await transport.request('preview');
             }else throw new Error('不允許此預覽操作');
         }catch(e){error=e.message;if(e.status===401)showLogin();}
         if(generation!==previewGeneration||!$('#preview-dialog').open)return;
         // Opaque sandbox origin requires '*'; only the exact active iframe can
         // request data, and the bridge never exposes tokens or write methods.
-        frame.contentWindow.postMessage({type:'dabao-preview-response',id:message.id,data,error},'*',data?.bytes?[data.bytes]:[]);
+        frame.contentWindow.postMessage({type:'dabao-preview-response',id:message.id,data,error},'*');
     });
     $('#logout').addEventListener('click',()=>request('logout','POST',{}).then(()=>bootstrap()).catch(error=>notice(error.message,true)));
     $('#publish').addEventListener('click',async()=>{const button=$('#publish');button.disabled=true;try{if(!await confirm(`確定發布 ${state.pending} 項草稿？公開網站的課程與回饋將更新。`))return;await request('publish','POST',{confirm:'publish'});const channel=new BroadcastChannel('dabao-cms');channel.postMessage('published');channel.close();await refresh();notice(localEnvironment?'本機發布成功，本機預覽已使用新資料':'發布成功，公開網站已使用新資料');}catch(error){notice(error.message,true);}finally{button.disabled=!state?.pending;}});
@@ -138,7 +130,7 @@
     let rectangles=[],drawing=null,image=null;
     const canvas=$('#redact-canvas'),ctx=canvas.getContext('2d');
     const draw=()=>{if(!image)return;ctx.drawImage(image,0,0,canvas.width,canvas.height);ctx.fillStyle='#111';for(const r of [...rectangles,...(drawing?[drawing]:[])])ctx.fillRect(r.x*canvas.width,r.y*canvas.height,r.width*canvas.width,r.height*canvas.height);};
-    async function openRedactor(){image=new Image();image.src=$('#editor-image').src;await image.decode();canvas.width=Math.min(1400,image.naturalWidth);canvas.height=Math.round(image.naturalHeight*canvas.width/image.naturalWidth);rectangles=[];drawing=null;draw();$('#redact-error').textContent='';$('#redactor').showModal();}
+    async function openRedactor(){image=new Image();image.crossOrigin='anonymous';image.src=$('#editor-image').src;await image.decode();canvas.width=Math.min(1400,image.naturalWidth);canvas.height=Math.round(image.naturalHeight*canvas.width/image.naturalWidth);rectangles=[];drawing=null;draw();$('#redact-error').textContent='';$('#redactor').showModal();}
     const point=event=>{const r=canvas.getBoundingClientRect();return{x:Math.max(0,Math.min(1,(event.clientX-r.left)/r.width)),y:Math.max(0,Math.min(1,(event.clientY-r.top)/r.height))};};
     let start=null;
     canvas.addEventListener('pointerdown',event=>{start=point(event);canvas.setPointerCapture(event.pointerId);});

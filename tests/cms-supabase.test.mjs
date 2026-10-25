@@ -12,7 +12,8 @@ test('Supabase CMS: real isolated Postgres migration, API lifecycle and authoriz
         const headers={Origin:origin,...(token?{Authorization:'Bearer '+token}:{}),...options.headers};
         const form=body instanceof FormData;
         if(body&&!form)headers['Content-Type']='application/json';
-        const response=await app.handler(new Request(base+route,{method,headers,...(body?{body:form?body:JSON.stringify(body)}:{})}));
+        let response=await app.handler(new Request(base+route,{method,headers,...(body?{body:form?body:JSON.stringify(body)}:{})}));
+        if(response.status===302)response=await app.storage(new Request(response.headers.get('Location'),{headers:options.headers}));
         const data=response.status===304?null:response.headers.get('Content-Type')?.includes('json')?await response.json():new Uint8Array(await response.arrayBuffer());
         return {status:response.status,data,headers:response.headers};
     }
@@ -28,7 +29,8 @@ test('Supabase CMS: real isolated Postgres migration, API lifecycle and authoriz
             assert.equal((await app.handler(new Request(origin+'/dabao-cms-invalid/healthz'))).status,404);
         });
         await t.test('migration is idempotent and touches no existing public tables',async()=>{
-            const sql=await fs.readFile(new URL('../supabase/migrations/202610240001_dabao_cms.sql',import.meta.url),'utf8');await app.pg.exec(sql);
+            const original=await sandbox({fixtures:0,accessMigration:false});
+            try{const sql=await fs.readFile(new URL('../supabase/migrations/202610240001_dabao_cms.sql',import.meta.url),'utf8');await original.pg.exec(sql);}finally{await original.close();}
             assert.equal((await app.pg.query("select count(*)::int n from pg_tables where schemaname='public'")).rows[0].n,0);
         });
         await t.test('anon and authenticated cannot read private schema or invoke service RPC',async()=>{
@@ -39,9 +41,10 @@ test('Supabase CMS: real isolated Postgres migration, API lifecycle and authoriz
                 await app.pg.exec('reset role');
             }
             assert.equal((await app.pg.query("select public from storage.buckets where id='dabao-cms-media'")).rows[0].public,false);
+            assert.equal((await app.pg.query("select public from storage.buckets where id='dabao-cms-public'")).rows[0].public,true);
         });
         await t.test('all protected APIs reject missing/forged sessions',async()=>{
-            for(const route of ['/api/admin/state','/api/admin/preview','/api/admin/history','/api/admin/media/unknown/full'])assert.equal((await call(route)).status,401);
+            for(const route of ['/api/admin/state','/api/admin/preview','/api/admin/history','/api/admin/media/unknown/original'])assert.equal((await call(route)).status,401);
             token='a'.repeat(64);assert.equal((await call('/api/admin/state')).status,401);token='';
             assert.equal((await call('/api/admin/session')).data.authenticated,false);
         });
@@ -73,18 +76,21 @@ test('Supabase CMS: real isolated Postgres migration, API lifecycle and authoriz
             await app.rpc('commit',a.commit(hash));await assert.rejects(()=>app.rpc('commit',b.commit(hash)),e=>e.status===409);
         });
         let item,oldVersion,originalMedia;
-        await t.test('upload validates actual image bytes, strips metadata and stays private',async()=>{
+        await t.test('upload serves authorized derivatives directly; listing metadata stays draft',async()=>{
             const invalid=new FormData();invalid.set('file',new Blob(['<svg/>'],{type:'image/png'}),'bad.png');assert.equal((await call('/api/admin/upload','POST',invalid)).status,422);
             const image=await sharp({create:{width:900,height:1200,channels:3,background:'#45b399'}}).jpeg().withMetadata({exif:{IFD0:{Artist:'PRIVATE TEST'}}}).toBuffer();
             const form=new FormData();form.set('file',new Blob([image],{type:'image/jpeg'}),'test.jpg');
             const result=await call('/api/admin/upload','POST',form);assert.equal(result.status,201,JSON.stringify(result.data));item=result.data.item;originalMedia=item.mediaId;
-            assert.equal(item.isVisible,false);assert.equal((await call('/media/'+item.mediaId+'/full')).status,404);
+            assert.equal(item.isVisible,false);assert.equal((await call('/media/'+item.mediaId+'/full')).status,200);
+            assert(!(await call('/api/public/feedback')).data.items.some(f=>f.mediaId===item.mediaId));
             const full=await call('/api/admin/media/'+item.mediaId+'/full');assert.equal(full.status,200);assert.equal((await sharp(full.data).metadata()).exif,undefined);
             const duplicate=await call('/api/admin/upload','POST',form);assert.equal(duplicate.data.duplicate,true);
         });
         await t.test('publishing exposes derived images, never raw originals',async()=>{
             await call('/api/admin/feedback/'+item.id,'PUT',{data:{...item,isVisible:true,isFeatured:true},revision:item.revision});oldVersion=await publish();
             assert.equal((await call('/media/'+item.mediaId+'/full')).status,200);assert.equal((await call('/media/'+item.mediaId+'/original')).status,404);
+            const image=await call('/media/'+item.mediaId+'/full');
+            assert.equal((await call('/media/'+item.mediaId+'/full','GET',null,{headers:{'If-None-Match':image.headers.get('ETag')}})).status,304);
             assert.equal((await call('/api/public/feedback?offset=0&limit=24')).data.total,7);
         });
         await t.test('redaction changes real pixels and old unsafe versions cannot restore it',async()=>{
@@ -93,12 +99,14 @@ test('Supabase CMS: real isolated Postgres migration, API lifecycle and authoriz
             const current=(await state()).feedback.find(f=>f.id===item.id);
             await call('/api/admin/feedback/'+item.id,'PUT',{data:{...current,mediaId:redact.data.id},revision:current.revision});await publish();
             assert.equal((await call('/api/admin/versions/'+oldVersion+'/restore','POST',{confirm:'restore'})).status,422);
-            assert.equal((await call('/media/'+originalMedia+'/full')).status,404);
+            assert.equal((await call('/media/'+originalMedia+'/full')).status,200);
+            assert(!(await call('/api/public/feedback')).data.items.some(f=>f.mediaId===originalMedia));
         });
-        await t.test('unpublish and soft deletion immediately remove public access',async()=>{
+        await t.test('unpublish and soft deletion remove list entries without image authorization checks',async()=>{
             let current=(await state()).feedback.find(f=>f.id===item.id);
             assert.equal((await call('/api/admin/feedback/'+item.id+'/unpublish','POST',{confirm:item.id,revision:current.revision})).status,200);
-            assert.equal((await call('/media/'+current.mediaId+'/full')).status,404);
+            assert.equal((await call('/media/'+current.mediaId+'/full')).status,200);
+            assert(!(await call('/api/public/feedback')).data.items.some(f=>f.id===item.id));
             current=(await state()).feedback.find(f=>f.id===item.id);
             assert.equal((await call('/api/admin/feedback/'+item.id,'DELETE',{confirm:item.id,revision:current.revision})).status,200);
             assert.equal((await state()).feedback.some(f=>f.id===item.id),false);assert(app.objects.has(originalMedia+'/original'));
@@ -108,8 +116,10 @@ test('Supabase CMS: real isolated Postgres migration, API lifecycle and authoriz
             const stolen=token;assert.equal((await call('/api/admin/logout','POST',{})).status,200);token=stolen;assert.equal((await call('/api/admin/state')).status,401);token='';await login();
         });
         await t.test('password minimum is ten; changing it revokes all CMS sessions',async()=>{
+            const remembered=await call('/api/admin/login','POST',{username:'admin',password:app.password,remember:true});assert.equal(remembered.status,200);
             assert.equal((await call('/api/admin/password','POST',{current:app.password,password:'123456789'})).status,422);
             assert.equal((await call('/api/admin/password','POST',{current:app.password,password:'1234567890'})).status,200);
+            const hash=remembered.data.token;assert.equal((await call('/api/admin/state','GET',null,{headers:{Authorization:'Bearer '+hash}})).status,401);
             assert.equal((await call('/api/admin/state')).status,401);token='';
             assert.equal((await call('/api/admin/login','POST',{username:'admin',password:'1234567890'})).status,200);
         });

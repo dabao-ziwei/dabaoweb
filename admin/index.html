@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob:; connect-src 'self' https://uwktzlxlduqyjyoolgrs.supabase.co; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: https://uwktzlxlduqyjyoolgrs.supabase.co; connect-src 'self' https://uwktzlxlduqyjyoolgrs.supabase.co; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'">
     <title>大寶｜內容管理</title>
     <link rel="stylesheet" href="/admin/admin.css">
     <script src="/cms-config.js"></script>
@@ -18,6 +18,7 @@
             <h1>大寶內容管理</h1>
             <label>管理員帳號<input name="username" autocomplete="username" required maxlength="80"></label>
             <label>密碼<input name="password" type="password" autocomplete="current-password" required maxlength="128"></label>
+            <label class="checkbox" id="remember-option"><input name="remember" type="checkbox">記住我 30 天（限私人裝置）</label>
             <p id="login-error" role="alert"></p>
             <button class="primary" type="submit">登入</button>
             <a href="/index.html">返回官方網站</a>
@@ -46,5 +47,6 @@
     <dialog id="confirm-dialog" aria-labelledby="confirm-title"><form method="dialog"><h2 id="confirm-title">確認操作</h2><p id="confirm-message"></p><div class="dialog-actions"><button value="cancel">取消</button><button class="primary" value="confirm">確認</button></div></form></dialog>
     <dialog id="redactor" aria-labelledby="redactor-title"><div class="dialog-head"><h2 id="redactor-title">遮蔽敏感資訊</h2><button type="button" data-close="redactor" class="icon-button" aria-label="關閉" title="關閉">×</button></div><p>框選需要遮蔽的範圍，儲存後會產生已遮蔽的新圖片</p><canvas id="redact-canvas" aria-label="框選敏感資訊遮蔽範圍"></canvas><div class="dialog-actions"><button type="button" id="redact-undo">取消上一個範圍</button><button type="button" id="redact-save" class="primary">儲存遮蔽圖片</button></div><p id="redact-error" role="alert"></p></dialog>
     <dialog id="preview-dialog" aria-labelledby="preview-title"><div class="dialog-head"><h2 id="preview-title">草稿預覽</h2><button type="button" data-close="preview-dialog" class="icon-button" aria-label="關閉預覽" title="關閉預覽">×</button></div><iframe id="preview-frame" sandbox="allow-scripts" title="未發布的網站草稿預覽"></iframe></dialog>
+    <dialog id="media-viewer" aria-labelledby="media-viewer-title"><div class="dialog-head"><h2 id="media-viewer-title">回饋圖片</h2><button type="button" data-close="media-viewer" class="icon-button" aria-label="關閉圖片" title="關閉圖片">×</button></div><p id="media-viewer-status" role="status"></p><img id="media-viewer-image" class="editor-image" crossorigin="anonymous" alt="回饋完整圖片"></dialog>
 </body>
 </html>
