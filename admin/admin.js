@@ -10,10 +10,10 @@
     const money=value=>`NT$${Number(value).toLocaleString('en-US')}`;
     const time=value=>value?new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Taipei',dateStyle:'short',timeStyle:'short'}).format(new Date(value)):'';
     const localEnvironment=['localhost','127.0.0.1','[::1]'].includes(location.hostname);
-    const itemName=record=>{const item=state?.[record.kind]?.find(item=>item.id===record.entity_id);return item?.name||item?.description||({auth:'帳號與登入',media:'圖片上傳',versions:'發布版本',settings:'網站設定'}[record.kind]||'內容項目');};
     const labels={dashboard:'儀表板',courses:'課程管理',cohorts:'招生期別',feedback:'諮詢回饋',history:'發布紀錄',settings:'系統設定'};
     const statuses={not_open:'尚未開放',open:'招生中',almost_full:'即將額滿',full:'已額滿',closed:'招生結束',paused:'暫停招生'};
     let csrf='',state=null,page='dashboard',editing=null,filter='',feedbackPage=0;
+    let metricsDays=0,metricsGeneration=0;
     const notice=(message,error=false)=>{ $('#notice').textContent=message;$('#notice').classList.toggle('error',error); };
     async function api(url,options={}) {
         if(cloud){try{return await transport.request(url,options);}catch(error){if(error.status===401||url==='password'){showLogin();$('#login-error').textContent=error.message;}throw error;}}
@@ -23,7 +23,7 @@
         return data;
     }
     const request=(url,method,data)=>api(url,{method,body:JSON.stringify(data)});
-    function showLogin(){ document.querySelectorAll('dialog[open]').forEach(dialog=>dialog.close());$('#workspace').hidden=true;$('#login-screen').hidden=false;state=null; }
+    function showLogin(){ metricsGeneration++;document.querySelectorAll('dialog[open]').forEach(dialog=>dialog.close());$('#workspace').hidden=true;$('#login-screen').hidden=false;state=null; }
     async function bootstrap(initial){const session=initial||await api('session');csrf=session.csrf;if(session.authenticated){const next=session.state||await api('state');state=next;$('#account').textContent=`${session.username} · ${localEnvironment?'本機 CMS':'管理環境'} · Asia/Taipei`;$('#login-screen').hidden=true;$('#workspace').hidden=false;render();}else showLogin();}
     async function refresh(){state=await api('state');render();}
     async function confirm(message){$('#confirm-message').textContent=message;const dialog=$('#confirm-dialog');dialog.returnValue='';dialog.showModal();return new Promise(resolve=>dialog.addEventListener('close',()=>resolve(dialog.returnValue==='confirm'),{once:true}));}
@@ -35,8 +35,7 @@
         $('#page-title').textContent=labels[page];$('#publish').textContent=`發布${state.pending?`（${state.pending}）`:''}`;$('#publish').disabled=!state.pending;
         document.querySelectorAll('[data-page]').forEach(button=>button.setAttribute('aria-current',button.dataset.page===page?'page':'false'));
         if(page==='dashboard'){
-            const active=state.publicSummary.cohorts.filter(c=>c.open);
-            $('#content').innerHTML=`<div class="metrics"><div class="metric"><p>課程種類</p><strong>${state.courses.length}</strong></div><div class="metric"><p>已發布諮詢回饋</p><strong>${state.publicSummary.feedbackCount}</strong></div><div class="metric"><p>待發布內容</p><strong>${state.pending}</strong></div></div><section class="band"><h2>目前招生</h2>${active.length?active.map(c=>`<div class="band"><h3>${escape(c.name)}</h3><span class="status good">${statuses[c.effectiveStatus]}</span> <strong>${money(c.price)}</strong>${c.earlyBird?` <span class="muted">原價 ${money(c.regularPrice)}</span>`:''}<p class="muted">${escape(c.startDate||'日期待確認')} 開課 · ${c.sessions} 堂 · ${escape(c.platform)}</p></div>`).join(''):'<p class="muted">目前沒有開放招生的期別</p>'}</section><section><h2>最近修改</h2>${recentTable(state.recent)}</section>`;
+            renderDashboard();
         } else if(page==='courses') {
             $('#content').innerHTML=`<div class="section-actions"><h2>課程種類</h2><button type="button" class="primary" data-new="courses">新增課程</button></div><div class="table-wrap"><table><thead><tr><th>課程</th><th>堂數／時間</th><th>排序／公開</th><th>發布狀態</th><th>操作</th></tr></thead><tbody>${state.courses.map(c=>`<tr><td><strong>${escape(c.name)}</strong><br><span class="muted">${escape(c.position)}</span></td><td>${c.sessions??'—'} 堂 · ${c.minutes??'—'} 分鐘${c.totalHours!==null?`<br>共 ${c.totalHours} 小時`:''}</td><td>${c.sort} · ${c.isVisible?'公開':'停用'}</td><td>${badge(c)}</td><td>${actions('courses',c)}</td></tr>`).join('')}</tbody></table></div>`;
         } else if(page==='cohorts') {
@@ -45,9 +44,31 @@
         else if(page==='history') renderHistory();
         else if(page==='settings')renderSettings();
     }
-    function recentTable(rows){
-        const actions={save_draft:'儲存草稿',publish:'發布',upload:'上傳圖片',restore:'還原版本',unpublish:'取消發布',delete:'刪除',login:'登入',login_failed:'登入失敗',redact:'遮蔽圖片',import:'匯入資料',change_password:'變更密碼',password_sessions_revoked:'密碼變更：撤銷登入'};
-        return `<div class="table-wrap"><table><thead><tr><th>時間</th><th>操作者</th><th>操作</th><th>項目</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${time(r.created_at)}</td><td>${escape(r.actor)}</td><td>${escape(actions[r.action]||r.action)}</td><td>${escape(itemName(r))}</td></tr>`).join('')}</tbody></table></div>`;
+    async function renderDashboard(){
+        const generation=++metricsGeneration;
+        const cards=[['views','頁面瀏覽次數'],['clicks','功能點擊次數'],['line','LINE 點擊次數'],['booking','開啟預約系統次數']];
+        $('#content').innerHTML=`<div class="section-actions"><h2>網站使用統計</h2><label class="metrics-range">統計區間<select id="metrics-days">${[[0,'累計'],[1,'今日'],[7,'近 7 天'],[30,'近 30 天']].map(([days,label])=>`<option value="${days}" ${days===metricsDays?'selected':''}>${label}</option>`).join('')}</select></label></div><p class="muted" id="metrics-period">Asia/Taipei</p><div class="metrics traffic-metrics">${cards.map(([key,label])=>`<div class="metric"><p>${label}</p><strong data-total="${key}">—</strong></div>`).join('')}</div><div id="metrics-result" role="status" aria-busy="true"><p class="muted">正在載入統計…</p></div><p class="muted metrics-note">從新版啟用後開始累計，不包含 GA4 歷史資料<br>數字為瀏覽／點擊次數，不是人數；LINE 點擊不代表已加好友，開啟預約系統不代表已完成預約</p>`;
+        try{
+            const data=cloud?await api('metrics?days='+metricsDays):{enabled:false};
+            if(generation!==metricsGeneration||page!=='dashboard'||!state)return;
+            const result=$('#metrics-result');result.setAttribute('aria-busy','false');
+            if(!data.enabled){result.innerHTML='<p class="muted">網站統計尚未啟用，啟用後才會開始累計</p>';return;}
+            const number=value=>Number(value).toLocaleString('zh-TW');
+            cards.forEach(([key])=>{document.querySelector(`[data-total="${key}"]`).textContent=number(data.totals[key]);});
+            $('#metrics-period').textContent=`${data.from} ～ ${data.to} · Asia/Taipei · ${data.startedAt?'開始累計 '+time(data.startedAt):'尚無累計資料'} · 更新 ${time(data.updatedAt)}`;
+            const table=rows=>`<div class="table-wrap"><table><thead><tr><th>項目</th><th class="numeric">次數</th></tr></thead><tbody>${rows.map(row=>`<tr><td>${escape(row.label)}</td><td class="numeric">${number(row.hits)}</td></tr>`).join('')}</tbody></table></div>`;
+            const countTable=(title,rows,foldZero=false)=>{
+                const visible=foldZero?rows.filter(row=>row.hits>0):rows,zero=foldZero?rows.filter(row=>row.hits===0):[];
+                return `<section class="metrics-section"><h3>${title}</h3>${visible.length?table(visible):'<p class="muted">所選區間尚無點擊</p>'}${zero.length?`<details class="metrics-zero"><summary>尚無點擊的功能（${zero.length}）</summary>${table(zero)}</details>`:''}</section>`;
+            };
+            const sorted=rows=>[...rows].sort((a,b)=>b.hits-a.hits);
+            const sources=sorted(data.rows.filter(row=>row.action==='click'&&['line','booking_system','beginner','enrollment','course','course_signup'].includes(row.target)));
+            result.innerHTML=`${!data.startedAt?'<p class="muted">尚無累計資料，網站啟用後有瀏覽或點擊才會出現數字</p>':''}<div class="metrics-tables">${countTable('各頁面瀏覽',sorted(data.pages))}${countTable('功能與聯繫點擊',sorted(data.targets),true)}</div><section class="metrics-section"><h3>聯繫與課程入口來源</h3>${sources.length?`<div class="table-wrap"><table><thead><tr><th>來源頁面</th><th>位置</th><th>點擊目的</th><th class="numeric">次數</th></tr></thead><tbody>${sources.map(row=>`<tr><td>${escape(row.pageLabel)}</td><td>${escape(row.locationLabel)}</td><td>${escape(row.targetLabel)}</td><td class="numeric">${number(row.hits)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">所選區間尚無相關點擊</p>'}</section>`;
+        }catch(error){
+            if(generation!==metricsGeneration||page!=='dashboard'||!state)return;
+            $('#metrics-result').setAttribute('aria-busy','false');
+            $('#metrics-result').innerHTML='<p class="error">統計目前無法載入，請按「重新整理」再試；其他管理功能仍可使用</p>';
+        }
     }
     function renderFeedback(){
         const items=state.feedback.filter(f=>!filter||f.description.includes(filter));
@@ -88,7 +109,7 @@
     });
     $('#media-viewer').addEventListener('close',()=>{mediaGeneration++;$('#media-viewer-image').removeAttribute('src');});
     document.querySelectorAll('[data-page]').forEach(button=>button.addEventListener('click',()=>{page=button.dataset.page;feedbackPage=0;notice('');render();}));
-    $('#refresh').addEventListener('click',()=>refresh().then(()=>notice('已重新載入')).catch(error=>notice(error.message,true)));
+    $('#refresh').addEventListener('click',()=>(page==='dashboard'?renderDashboard():refresh()).then(()=>notice('已重新載入')).catch(error=>notice(error.message,true)));
     $('#preview-target').addEventListener('change',event=>{$('#preview-link').href='/'+event.target.value+'?cms-preview=1';});
     let previewGeneration=0;
     $('#preview-link').addEventListener('click',event=>{if(!cloud)return;event.preventDefault();previewGeneration++;$('#preview-frame').src=$('#preview-link').href;$('#preview-dialog').showModal();});
@@ -126,6 +147,7 @@
     $('#edit-form').addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter;button.disabled=true;try{const data=formData(event.target);await request(`${editing.kind}${editing.id?'/'+editing.id:''}`,'PUT',{data,revision:editing.data.revision});$('#editor').close();await refresh();notice('草稿已儲存，公開網站尚未改變');}catch(error){$('#form-error').textContent=error.message;}finally{button.disabled=false;}});
     $('#content').addEventListener('input',event=>{if(event.target.id==='feedback-search'){filter=event.target.value;feedbackPage=0;const caret=event.target.selectionStart;renderFeedback();$('#feedback-search').focus();$('#feedback-search').setSelectionRange(caret,caret);}});
     $('#content').addEventListener('change',async event=>{if(event.target.id!=='feedback-upload')return;const files=[...event.target.files];if(files.length>30){notice('每批最多 30 張圖片',true);return;}let done=0,duplicates=0;try{for(const file of files){notice(`正在處理圖片 ${done+1} / ${files.length}`);const form=new FormData();form.set('file',file);const result=await api('upload',{method:'POST',body:form});done++;if(result.duplicate)duplicates++;}await refresh();notice(`已處理 ${done} 張圖片${duplicates?`，${duplicates} 張重複圖片未新增`:''}，新圖片均保留為未發布草稿`);}catch(error){await refresh();notice(`已處理 ${done} 張，${error.message}`,true);}});
+    $('#content').addEventListener('change',event=>{if(event.target.id==='metrics-days'){metricsDays=Number(event.target.value);renderDashboard();}});
     $('#content').addEventListener('submit',async event=>{event.preventDefault();try{if(event.target.id==='settings-form'){await request('settings/site','PUT',{data:formData(event.target),revision:state.settings[0].revision});await refresh();notice('設定草稿已儲存');}if(event.target.id==='password-form'){const data=Object.fromEntries(new FormData(event.target));if(data.password!==data.confirm)throw new Error('兩次新密碼不一致');await request('password','POST',data);await bootstrap();$('#login-error').textContent='密碼已更新，請重新登入';}}catch(error){notice(error.message,true);}});
     let rectangles=[],drawing=null,image=null;
     const canvas=$('#redact-canvas'),ctx=canvas.getContext('2d');

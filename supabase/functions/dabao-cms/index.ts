@@ -17,5 +17,6 @@ const images = lazyImageProcessor(async () => {
     return imageProcessor(magick);
 });
 Deno.serve(createCloudHandler({
-    services: supabaseServices({url, key}), images, origins
+    services: supabaseServices({url, key}), images, origins,
+    metricsEnabled: Deno.env.get('CMS_METRICS_ENABLED') === 'true'
 }));

@@ -12,7 +12,7 @@ import { createCloudHandler } from '../../cms/supabase/handler.mjs';
 import { fail } from '../../cms/validation.mjs';
 import { verifyPackage } from '../../cms/supabase/migration.mjs';
 
-export async function sandbox({origins=['http://localhost:4283'],port=4283,fixtures=6,packageDirectory,accessMigration=true,publicMediaBase='http://localhost:4284/storage/v1/object/public/dabao-cms-public'}={}) {
+export async function sandbox({origins=['http://localhost:4283'],port=4283,fixtures=6,packageDirectory,accessMigration=true,metricsEnabled=false,publicMediaBase='http://localhost:4284/storage/v1/object/public/dabao-cms-public'}={}) {
     const pg=new PGlite();
     // This is a disposable Postgres engine. Only Supabase-owned Auth/Storage
     // infrastructure is stubbed; the actual migration and RPC execute verbatim.
@@ -23,6 +23,7 @@ export async function sandbox({origins=['http://localhost:4283'],port=4283,fixtu
     await pg.exec(migration);
     if(accessMigration)await pg.exec(await fs.readFile(new URL('../../supabase/migrations/202610250001_cms_access_performance.sql',import.meta.url),'utf8'));
     await pg.exec(await fs.readFile(new URL('../../supabase/migrations/202610250002_public_feedback_media.sql',import.meta.url),'utf8'));
+    if(accessMigration)await pg.exec(await fs.readFile(new URL('../../supabase/migrations/202610250003_site_metrics.sql',import.meta.url),'utf8'));
     const rpc=async(operation,payload={})=>{
         try{return (await pg.query('select public.dabao_cms_backend($1,$2::jsonb) as data',[operation,JSON.stringify(payload)])).rows[0].data;}
         catch(e){if(e.message.includes('CMS_UNAUTHORIZED'))fail('請重新登入',401);if(e.message.includes('CMS_CONFLICT'))fail('資料已更新，請重新載入後再儲存',409);if(e.message.includes('CMS_FORBIDDEN'))fail('沒有後台權限',403);throw e;}
@@ -57,6 +58,10 @@ export async function sandbox({origins=['http://localhost:4283'],port=4283,fixtu
     await pg.query('insert into dabao_cms.admins(user_id,login_name) values($1,$2)',[userId,'admin']);
     const services={rpc,async emailForUser(){return 'local-admin@example.invalid';},async signIn(email,value){if(email!=='local-admin@example.invalid'||value!==password)fail('帳號或密碼錯誤',401);return {user:{id:userId},access_token:'test-auth-token'};},async changePassword(email,current,next,id,beforeChange=async()=>{}){if(id!==userId)fail('沒有權限',403);await this.signIn(email,current);await beforeChange();password=next;},async putObject(id,variant,bytes){objects.set(id+'/'+variant,bytes);},async getObject(id,variant){const bytes=objects.get(id+'/'+variant);if(!bytes)fail('找不到圖片',404);return bytes;},async deleteObjects(id){for(const variant of ['original','full','thumb'])objects.delete(id+'/'+variant);}};
     services.publicMediaBase=publicMediaBase;
+    services.metrics=async(operation,payload={})=>{
+        try{return (await pg.query('select public.dabao_cms_metrics($1,$2::jsonb) as data',[operation,JSON.stringify(payload)])).rows[0].data;}
+        catch(error){if(error.message.includes('CMS_UNAUTHORIZED'))fail('請重新登入',401);throw error;}
+    };
     const storage=async request=>{
         const match=new URL(request.url).pathname.match(/^\/storage\/v1\/object\/public\/dabao-cms-public\/([a-z0-9-]{1,100})\/(full|thumb)\.webp$/);
         if(!match||!['GET','HEAD'].includes(request.method))return new Response(null,{status:404});
@@ -65,6 +70,6 @@ export async function sandbox({origins=['http://localhost:4283'],port=4283,fixtu
         if(request.headers.get('If-None-Match')===headers.ETag)return new Response(null,{status:304,headers});
         return new Response(request.method==='HEAD'?null:bytes,{headers});
     };
-    const handler=createCloudHandler({services,images,origins});
+    const handler=createCloudHandler({services,images,origins,metricsEnabled});
     return {pg,rpc,services,images,objects,storage,handler,userId,password,port,async close(){await pg.close();}};
 }

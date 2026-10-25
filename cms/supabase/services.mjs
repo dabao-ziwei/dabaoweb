@@ -23,6 +23,7 @@ export function supabaseServices({url,key,fetcher=fetch}) {
     return {
         publicMediaBase:url+'/storage/v1/object/public/dabao-cms-public',
         rpc:(operation,payload={})=>json('/rest/v1/rpc/dabao_cms_backend','POST',{p_operation:operation,p_payload:payload}),
+        metrics:(operation,payload={})=>json('/rest/v1/rpc/dabao_cms_metrics','POST',{p_operation:operation,p_payload:payload}),
         async emailForUser(id){const user=await json(`/auth/v1/admin/users/${encodeURIComponent(id)}`,'GET');return user.email;},
         async signIn(email,password){
             const response=await fetcher(url+'/auth/v1/token?grant_type=password',{method:'POST',headers:{apikey:key,'Content-Type':'application/json'},body:JSON.stringify({email,password}),signal:AbortSignal.timeout(15000)});
