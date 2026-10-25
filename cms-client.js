@@ -8,7 +8,7 @@
     const absolute=value=>value?new URL(value.startsWith('/')?base+value:value,base+'/').href:'';
     const cloudPreview=preview&&config.provider==='supabase';
     let previewSequence=0;
-    const previewPending=new Map(),previewImages=new Map();
+    const previewPending=new Map();
     window.addEventListener('message',event=>{
         if(!cloudPreview||event.source!==parent||event.origin!==location.origin||event.data?.type!=='dabao-preview-response')return;
         const pending=previewPending.get(event.data.id);if(!pending)return;
@@ -22,14 +22,7 @@
         previewPending.set(id,{resolve,reject,timer});
         parent.postMessage({type:'dabao-preview-request',id,action,...extra},location.origin);
     });
-    const image=async value=>{
-        if(!cloudPreview)return absolute(value);
-        const match=new URL(value,base+'/').pathname.match(/\/api\/admin\/media\/([a-z0-9-]+)\/(full|thumb)$/);
-        if(!match)throw new Error('預覽圖片路徑不正確');
-        const key=match[1]+'/'+match[2];
-        if(!previewImages.has(key))previewImages.set(key,previewRequest('image',{mediaId:match[1],variant:match[2]}).then(data=>URL.createObjectURL(new Blob([data.bytes],{type:data.mime}))).catch(error=>{previewImages.delete(key);throw error;}));
-        return previewImages.get(key);
-    };
+    const image=async value=>absolute(value);
     const normalizeItems=items=>Promise.all(items.map(async f=>({...f,image:absolute(f.image),thumbnail:cloudPreview?await image(f.thumbnail):absolute(f.thumbnail)})));
     const normalize=async data=>({...data,featuredFeedback:await normalizeItems(data.featuredFeedback||[]),...(data.feedback?{feedback:data.feedback.map(f=>({...f,image:absolute(f.image),thumbnail:absolute(f.thumbnail)}))}:{})});
     const previewLinks=()=>{if(preview)document.querySelectorAll('a[href]').forEach(link=>{const url=new URL(link.href);if(url.origin===location.origin&&url.pathname.endsWith('.html')&&!url.pathname.startsWith('/admin/')){url.searchParams.set('cms-preview','1');link.href=url.href;}});};

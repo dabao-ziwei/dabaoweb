@@ -3,14 +3,16 @@ import { kinds, validate, effectiveCohort, fail } from '../validation.mjs';
 export const emptyDocument = () => ({ courses:[], cohorts:[], feedback:[], settings:[], media:[] });
 const same = (a,b) => JSON.stringify(a) === JSON.stringify(b);
 export class CloudModel {
-    constructor(record, actor='') {
+    constructor(record, actor='', mediaBase='') {
         this.document=structuredClone(record.document);
         this.revision=record.revision;
         this.versions=record.versions||[];
         this.recent=record.recent||[];
         this.actor=actor;
         this.audit=[];
+        this.mediaBase=mediaBase;
     }
+    mediaUrl(id,variant,draft=false) { return this.mediaBase?`${this.mediaBase}/${id}/${variant}.webp`:`${draft?'/api/admin':''}/media/${id}/${variant}`; }
     rows(kind, deleted=false) {
         if(!kinds.includes(kind)) fail('找不到資料類型',404);
         return this.document[kind].filter(row=>deleted||!row.deleted_at);
@@ -88,7 +90,6 @@ export class CloudModel {
         if(existing)return {...existing,duplicate:true};
         this.document.media.push(media);this.log('upload','media',media.id,null,{sha256:media.sha256,name:media.original_name});return media;
     }
-    mediaActive(id) { return this.rows('feedback').some(row=>row.published?.mediaId===id&&row.published.isVisible); }
     publicData({draft=false,now=new Date()}={}) {
         const snapshot=this.snapshot(draft);
         if(!snapshot.settings.length)fail('CMS 資料尚未完成匯入',503);
@@ -97,8 +98,7 @@ export class CloudModel {
         const cohorts=snapshot.cohorts.filter(c=>c.isVisible&&courses.some(course=>course.id===c.courseId)).map(c=>effectiveCohort(c,now)).sort((a,b)=>Number(b.isFeatured)-Number(a.isFeatured)||a.sort-b.sort);
         const feedback=snapshot.feedback.filter(f=>f.isVisible).sort((a,b)=>a.sort-b.sort).map(f=>{
             const media=this.document.media.find(m=>m.id===f.mediaId);
-            const prefix=draft?'/api/admin':'';
-            return {id:f.id,mediaId:f.mediaId,description:f.description,sort:f.sort,isFeatured:f.isFeatured,width:media.width,height:media.height,thumbnail:`${prefix}/media/${f.mediaId}/thumb`,image:`${prefix}/media/${f.mediaId}/full`};
+            return {id:f.id,mediaId:f.mediaId,description:f.description,sort:f.sort,isFeatured:f.isFeatured,width:media.width,height:media.height,thumbnail:this.mediaUrl(f.mediaId,'thumb',draft),image:this.mediaUrl(f.mediaId,'full',draft)};
         });
         const latest=this.versions[0];
         return {version:latest?.id||0,publishedAt:latest?.created_at||null,preview:draft,courses,cohorts,settings:{featuredDesktop:settings.featuredDesktop,featuredMobile:settings.featuredMobile,lineUrl:settings.lineUrl},feedbackCount:feedback.length,featuredFeedback:feedback.filter(f=>f.isFeatured).slice(0,Math.max(settings.featuredDesktop,settings.featuredMobile)),feedback};

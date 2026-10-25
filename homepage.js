@@ -17,6 +17,7 @@
     let nextOffset = null;
     const lightbox = document.getElementById('image-lightbox');
     const lightboxImage = document.getElementById('image-lightbox-img');
+    lightboxImage.crossOrigin = 'anonymous';
     const mobile = window.matchMedia('(max-width: 800px)');
     const testimonials = document.getElementById('testimonials');
     const footer = document.getElementById('footer');
@@ -26,6 +27,7 @@
         alt: `第 ${i + 1} 則真實諮詢回饋截圖`
     }));
     let feedback = localFeedback;
+    totalFeedback = localFeedback.length;
     let galleryDirty = true;
     let scrollFrame = 0;
     let scrollTimer = 0;
@@ -180,6 +182,7 @@
             button.setAttribute('aria-label', `查看${alt}大圖`);
             if (fullSrc) button.dataset.full = fullSrc;
             const image = document.createElement('img');
+            image.crossOrigin = 'anonymous';
             image.src = src;
             image.alt = alt;
             image.loading = 'lazy';
@@ -214,6 +217,8 @@
         finally { galleryNext.disabled = false; }
     });
     const updateManagedFeedback = (snapshot) => {
+        // Keep the static images readable while the optional CMS is loading.
+        if (!snapshot) return;
         managedSnapshot = snapshot;
         totalFeedback = snapshot?.feedbackCount || 0;
         const grid = document.getElementById('featured-feedback');
@@ -224,7 +229,7 @@
             const button=document.createElement('button'),image=document.createElement('img');
             button.type='button';button.className='home-feedback';button.dataset.full=item.image;
             button.setAttribute('aria-label',`查看${item.description||'真實諮詢回饋'}大圖`);
-            image.src=item.thumbnail;image.alt=item.description||'真實諮詢回饋';image.width=item.width;image.height=item.height;image.loading='lazy';
+            image.crossOrigin='anonymous';image.src=item.thumbnail;image.alt=item.description||'真實諮詢回饋';image.width=item.width;image.height=item.height;image.loading='lazy';
             button.append(image);grid.append(button);
         });
         if (!grid.childElementCount) { const note=document.createElement('p');note.className='cms-empty';note.textContent=snapshot?'回饋整理中':'回饋資訊暫時無法載入';grid.append(note); }
@@ -234,7 +239,6 @@
         updateFeedbackCount();scheduleSticky();
     };
     if (managed) {
-        updateManagedFeedback(null);
         window.DabaoCMS.subscribe(updateManagedFeedback);
         mobile.addEventListener('change',()=>updateManagedFeedback(managedSnapshot));
     }

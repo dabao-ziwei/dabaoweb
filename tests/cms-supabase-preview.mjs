@@ -11,12 +11,12 @@ const root=fileURLToPath(new URL('../',import.meta.url));
 const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.ico':'image/x-icon'};
 export async function previewServer({port=4283,apiPort=4284,password,packageDirectory}={}){
     const origin=`http://localhost:${port}`,apiOrigin=`http://localhost:${apiPort}`;
-    const app=await sandbox({origins:[origin],port,packageDirectory,fixtures:packageDirectory?0:6});
+    const app=await sandbox({origins:[origin],port,packageDirectory,fixtures:packageDirectory?0:6,publicMediaBase:apiOrigin+'/storage/v1/object/public/dabao-cms-public'});
     if(password)await app.services.changePassword('local-admin@example.invalid',app.password,password,app.userId);
     const api=http.createServer(async(req,res)=>{
         try{
             const request=new Request(apiOrigin+req.url,{method:req.method,headers:req.headers,...(!['GET','HEAD'].includes(req.method)?{body:Readable.toWeb(req),duplex:'half'}:{})});
-            const response=await app.handler(request);
+            const response=await (req.url.startsWith('/storage/')?app.storage(request):app.handler(request));
             res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()));
         }catch{res.writeHead(500);res.end('Local QA server error');}
     });
@@ -32,7 +32,7 @@ export async function previewServer({port=4283,apiPort=4284,password,packageDire
             if(relative.split('/').some(p=>p==='..'||p.startsWith('.'))||/^(cms|supabase|tests|node_modules)\//.test(relative)||!mime[path.extname(relative)])throw new Error('Not found');
             const file=await fs.realpath(path.join(root,relative));if(!file.startsWith(root))throw new Error('Not found');
             let bytes=await fs.readFile(file);
-            if(relative==='admin/index.html')bytes=Buffer.from(bytes.toString().replace("connect-src 'self' https://uwktzlxlduqyjyoolgrs.supabase.co;",`connect-src 'self' https://uwktzlxlduqyjyoolgrs.supabase.co ${apiOrigin};`));
+            if(relative==='admin/index.html')bytes=Buffer.from(bytes.toString().replaceAll('https://uwktzlxlduqyjyoolgrs.supabase.co',`https://uwktzlxlduqyjyoolgrs.supabase.co ${apiOrigin}`));
             res.setHeader('Content-Type',mime[path.extname(relative)]);res.end(req.method==='HEAD'?undefined:bytes);
         }catch{res.writeHead(404);res.end('Not found');}
     });
