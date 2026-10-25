@@ -13,7 +13,18 @@
     const labels={dashboard:'儀表板',courses:'課程管理',cohorts:'招生期別',feedback:'諮詢回饋',history:'發布紀錄',settings:'系統設定'};
     const statuses={not_open:'尚未開放',open:'招生中',almost_full:'即將額滿',full:'已額滿',closed:'招生結束',paused:'暫停招生'};
     let csrf='',state=null,page='dashboard',editing=null,filter='',feedbackPage=0;
-    let metricsDays=0,metricsGeneration=0;
+    let metricsDays=0,metricsGeneration=0,metricsTimer=null,metricsLoading=false;
+    const dashboardMinutes=()=>{const value=state?.dashboardSettings?.refreshMinutes;return Number.isInteger(value)&&value>=1&&value<=60?value:5;};
+    function stopMetricsRefresh(){clearTimeout(metricsTimer);metricsTimer=null;}
+    function scheduleMetricsRefresh(){
+        stopMetricsRefresh();
+        if(!cloud||!state||page!=='dashboard'||document.hidden)return;
+        metricsTimer=setTimeout(()=>{
+            metricsTimer=null;
+            if(document.querySelector('dialog[open]')){scheduleMetricsRefresh();return;}
+            renderDashboard({automatic:true});
+        },dashboardMinutes()*60000);
+    }
     const notice=(message,error=false)=>{ $('#notice').textContent=message;$('#notice').classList.toggle('error',error); };
     async function api(url,options={}) {
         if(cloud){try{return await transport.request(url,options);}catch(error){if(error.status===401||url==='password'){showLogin();$('#login-error').textContent=error.message;}throw error;}}
@@ -23,7 +34,7 @@
         return data;
     }
     const request=(url,method,data)=>api(url,{method,body:JSON.stringify(data)});
-    function showLogin(){ metricsGeneration++;document.querySelectorAll('dialog[open]').forEach(dialog=>dialog.close());$('#workspace').hidden=true;$('#login-screen').hidden=false;state=null; }
+    function showLogin(){ stopMetricsRefresh();metricsGeneration++;metricsLoading=false;document.querySelectorAll('dialog[open]').forEach(dialog=>dialog.close());$('#workspace').hidden=true;$('#login-screen').hidden=false;state=null; }
     async function bootstrap(initial){const session=initial||await api('session');csrf=session.csrf;if(session.authenticated){const next=session.state||await api('state');state=next;$('#account').textContent=`${session.username} · ${localEnvironment?'本機 CMS':'管理環境'} · Asia/Taipei`;$('#login-screen').hidden=true;$('#workspace').hidden=false;render();}else showLogin();}
     async function refresh(){state=await api('state');render();}
     async function confirm(message){$('#confirm-message').textContent=message;const dialog=$('#confirm-dialog');dialog.returnValue='';dialog.showModal();return new Promise(resolve=>dialog.addEventListener('close',()=>resolve(dialog.returnValue==='confirm'),{once:true}));}
@@ -31,6 +42,8 @@
     const actions=(kind,item)=>`<div class="row-actions"><button type="button" data-edit="${kind}" data-id="${item.id}">編輯</button><button type="button" data-unpublish="${kind}" data-id="${item.id}" ${!item.published?'disabled':''}>取消發布</button><button type="button" data-delete="${kind}" data-id="${item.id}" class="danger">刪除</button></div>`;
     const mediaSource=(id,variant)=>`${cloud?' crossorigin="anonymous"':''} src="${escape(cloud?transport.image(id,variant):`/api/admin/media/${id}/${variant}`)}"`;
     function render(){
+        stopMetricsRefresh();
+        if(page!=='dashboard'){metricsGeneration++;metricsLoading=false;}
         if(!state)return;
         $('#page-title').textContent=labels[page];$('#publish').textContent=`發布${state.pending?`（${state.pending}）`:''}`;$('#publish').disabled=!state.pending;
         document.querySelectorAll('[data-page]').forEach(button=>button.setAttribute('aria-current',button.dataset.page===page?'page':'false'));
@@ -44,15 +57,20 @@
         else if(page==='history') renderHistory();
         else if(page==='settings')renderSettings();
     }
-    async function renderDashboard(){
+    async function renderDashboard({automatic=false}={}){
+        if(!state||page!=='dashboard')return;
+        if(automatic&&(metricsLoading||document.hidden))return;
+        stopMetricsRefresh();metricsLoading=true;
         const generation=++metricsGeneration;
         const cards=[['views','頁面瀏覽次數'],['clicks','功能點擊次數'],['line','LINE 點擊次數'],['booking','開啟預約系統次數']];
-        $('#content').innerHTML=`<div class="section-actions"><h2>網站使用統計</h2><label class="metrics-range">統計區間<select id="metrics-days">${[[0,'累計'],[1,'今日'],[7,'近 7 天'],[30,'近 30 天']].map(([days,label])=>`<option value="${days}" ${days===metricsDays?'selected':''}>${label}</option>`).join('')}</select></label></div><p class="muted" id="metrics-period">Asia/Taipei</p><div class="metrics traffic-metrics">${cards.map(([key,label])=>`<div class="metric"><p>${label}</p><strong data-total="${key}">—</strong></div>`).join('')}</div><div id="metrics-result" role="status" aria-busy="true"><p class="muted">正在載入統計…</p></div><p class="muted metrics-note">從新版啟用後開始累計，不包含 GA4 歷史資料<br>數字為瀏覽／點擊次數，不是人數；LINE 點擊不代表已加好友，開啟預約系統不代表已完成預約</p>`;
+        if(!automatic)$('#content').innerHTML=`<div class="section-actions"><h2>網站使用統計</h2><label class="metrics-range">統計區間<select id="metrics-days">${[[0,'累計'],[1,'今日'],[7,'近 7 天'],[30,'近 30 天']].map(([days,label])=>`<option value="${days}" ${days===metricsDays?'selected':''}>${label}</option>`).join('')}</select></label></div><p class="muted" id="metrics-period">Asia/Taipei</p><p class="muted" id="metrics-refresh-status" role="status">每 ${dashboardMinutes()} 分鐘自動刷新</p><div class="metrics traffic-metrics">${cards.map(([key,label])=>`<div class="metric"><p>${label}</p><strong data-total="${key}">—</strong></div>`).join('')}</div><div id="metrics-result" role="region" aria-label="網站統計" aria-busy="true"><p class="muted">正在載入統計…</p></div><p class="muted metrics-note">從新版啟用後開始累計，不包含 GA4 歷史資料<br>數字為瀏覽／點擊次數，不是人數；LINE 點擊不代表已加好友，開啟預約系統不代表已完成預約</p>`;
+        $('#metrics-result').setAttribute('aria-busy','true');
         try{
             const data=cloud?await api('metrics?days='+metricsDays):{enabled:false};
             if(generation!==metricsGeneration||page!=='dashboard'||!state)return;
             const result=$('#metrics-result');result.setAttribute('aria-busy','false');
-            if(!data.enabled){result.innerHTML='<p class="muted">網站統計尚未啟用，啟用後才會開始累計</p>';return;}
+            $('#metrics-refresh-status').textContent=`每 ${dashboardMinutes()} 分鐘自動刷新`;
+            if(!data.enabled){cards.forEach(([key])=>{document.querySelector(`[data-total="${key}"]`).textContent='—';});result.innerHTML='<p class="muted">網站統計尚未啟用，啟用後才會開始累計</p>';return;}
             const number=value=>Number(value).toLocaleString('zh-TW');
             cards.forEach(([key])=>{document.querySelector(`[data-total="${key}"]`).textContent=number(data.totals[key]);});
             $('#metrics-period').textContent=`${data.from} ～ ${data.to} · Asia/Taipei · ${data.startedAt?'開始累計 '+time(data.startedAt):'尚無累計資料'} · 更新 ${time(data.updatedAt)}`;
@@ -63,13 +81,27 @@
             };
             const sorted=rows=>[...rows].sort((a,b)=>b.hits-a.hits);
             const sources=sorted(data.rows.filter(row=>row.action==='click'&&['line','booking_system','beginner','enrollment','course','course_signup'].includes(row.target)));
+            const zeroOpen=result.querySelector('.metrics-zero')?.open;
+            const zeroFocused=result.querySelector('.metrics-zero summary')===document.activeElement;
             result.innerHTML=`${!data.startedAt?'<p class="muted">尚無累計資料，網站啟用後有瀏覽或點擊才會出現數字</p>':''}<div class="metrics-tables">${countTable('各頁面瀏覽',sorted(data.pages))}${countTable('功能與聯繫點擊',sorted(data.targets),true)}</div><section class="metrics-section"><h3>聯繫與課程入口來源</h3>${sources.length?`<div class="table-wrap"><table><thead><tr><th>來源頁面</th><th>位置</th><th>點擊目的</th><th class="numeric">次數</th></tr></thead><tbody>${sources.map(row=>`<tr><td>${escape(row.pageLabel)}</td><td>${escape(row.locationLabel)}</td><td>${escape(row.targetLabel)}</td><td class="numeric">${number(row.hits)}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">所選區間尚無相關點擊</p>'}</section>`;
+            if(automatic&&zeroOpen&&result.querySelector('.metrics-zero'))result.querySelector('.metrics-zero').open=true;
+            if(automatic&&zeroFocused)result.querySelector('.metrics-zero summary')?.focus({preventScroll:true});
         }catch(error){
             if(generation!==metricsGeneration||page!=='dashboard'||!state)return;
             $('#metrics-result').setAttribute('aria-busy','false');
-            $('#metrics-result').innerHTML='<p class="error">統計目前無法載入，請按「重新整理」再試；其他管理功能仍可使用</p>';
+            if(automatic)$('#metrics-refresh-status').textContent=`自動刷新失敗，將於 ${dashboardMinutes()} 分鐘後重試`;
+            else $('#metrics-result').innerHTML='<p class="error">統計目前無法載入，請按「重新整理」再試；其他管理功能仍可使用</p>';
+        }finally{
+            if(generation===metricsGeneration){metricsLoading=false;scheduleMetricsRefresh();}
         }
     }
+    document.addEventListener('visibilitychange',()=>{
+        if(document.hidden){stopMetricsRefresh();return;}
+        if(state&&page==='dashboard'&&!metricsLoading){
+            if(document.querySelector('dialog[open]'))scheduleMetricsRefresh();
+            else renderDashboard({automatic:true});
+        }
+    });
     function renderFeedback(){
         const items=state.feedback.filter(f=>!filter||f.description.includes(filter));
         const start=feedbackPage*24,visible=items.slice(start,start+24);
@@ -97,7 +129,7 @@
         $('#editor-fields').innerHTML=html;$('#editor').showModal();
     }
     function formData(form){const data={};for(const input of form.querySelectorAll('[name]'))data[input.name]=input.type==='checkbox'?input.checked:input.type==='number'||input.name==='weekday'?(input.value===''?null:Number(input.value)):input.value;return data;}
-    function renderSettings(){const settings=state.settings[0];$('#content').innerHTML=`<section class="band"><h2>公開網站設定</h2><form id="settings-form" class="settings-form">${field('featuredDesktop','首頁桌面精選數量','number',settings.featuredDesktop,{required:true,min:1,max:24})}${field('featuredMobile','首頁手機精選數量','number',settings.featuredMobile,{required:true,min:1,max:24})}${field('lineUrl','官方 LINE 網址','url',settings.lineUrl,{required:true})}<button class="primary" type="submit">儲存設定草稿</button></form></section><section><h2>變更登入密碼</h2><form id="password-form" class="settings-form"><label>目前密碼<input type="password" name="current" autocomplete="current-password" required></label><label>新密碼<input type="password" name="password" minlength="10" maxlength="128" autocomplete="new-password" required></label><label>再次輸入新密碼<input type="password" name="confirm" minlength="10" maxlength="128" autocomplete="new-password" required></label><button type="submit">變更密碼並重新登入</button></form></section>`;}
+    function renderSettings(){const settings=state.settings[0];$('#content').innerHTML=`${cloud?`<section class="band"><h2>儀表板設定</h2><form id="dashboard-settings-form" class="settings-form">${field('refreshMinutes','數據自動刷新間隔（分鐘）','number',dashboardMinutes(),{required:true,min:1,max:60})}<button class="primary" type="submit">儲存儀表板設定</button></form></section>`:''}<section class="band"><h2>公開網站設定</h2><form id="settings-form" class="settings-form">${field('featuredDesktop','首頁桌面精選數量','number',settings.featuredDesktop,{required:true,min:1,max:24})}${field('featuredMobile','首頁手機精選數量','number',settings.featuredMobile,{required:true,min:1,max:24})}${field('lineUrl','官方 LINE 網址','url',settings.lineUrl,{required:true})}<button class="primary" type="submit">儲存設定草稿</button></form></section><section><h2>變更登入密碼</h2><form id="password-form" class="settings-form"><label>目前密碼<input type="password" name="current" autocomplete="current-password" required></label><label>新密碼<input type="password" name="password" minlength="10" maxlength="128" autocomplete="new-password" required></label><label>再次輸入新密碼<input type="password" name="confirm" minlength="10" maxlength="128" autocomplete="new-password" required></label><button type="submit">變更密碼並重新登入</button></form></section>`;}
     $('#login-form').addEventListener('submit',async event=>{event.preventDefault();const button=event.submitter,label=button.textContent;button.disabled=true;button.textContent='登入中...';event.target.setAttribute('aria-busy','true');$('#login-error').textContent='';try{const data=Object.fromEntries(new FormData(event.target));if(cloud)data.remember=event.target.elements.remember.checked;const session=await request('login','POST',data);csrf=session.csrf;event.target.reset();await bootstrap(cloud?session:undefined);}catch(error){$('#login-error').textContent=error.message;}finally{button.disabled=false;button.textContent=label;event.target.removeAttribute('aria-busy');}});
     let mediaGeneration=0;
     $('#content').addEventListener('click',async event=>{
@@ -149,6 +181,15 @@
     $('#content').addEventListener('change',async event=>{if(event.target.id!=='feedback-upload')return;const files=[...event.target.files];if(files.length>30){notice('每批最多 30 張圖片',true);return;}let done=0,duplicates=0;try{for(const file of files){notice(`正在處理圖片 ${done+1} / ${files.length}`);const form=new FormData();form.set('file',file);const result=await api('upload',{method:'POST',body:form});done++;if(result.duplicate)duplicates++;}await refresh();notice(`已處理 ${done} 張圖片${duplicates?`，${duplicates} 張重複圖片未新增`:''}，新圖片均保留為未發布草稿`);}catch(error){await refresh();notice(`已處理 ${done} 張，${error.message}`,true);}});
     $('#content').addEventListener('change',event=>{if(event.target.id==='metrics-days'){metricsDays=Number(event.target.value);renderDashboard();}});
     $('#content').addEventListener('submit',async event=>{event.preventDefault();try{if(event.target.id==='settings-form'){await request('settings/site','PUT',{data:formData(event.target),revision:state.settings[0].revision});await refresh();notice('設定草稿已儲存');}if(event.target.id==='password-form'){const data=Object.fromEntries(new FormData(event.target));if(data.password!==data.confirm)throw new Error('兩次新密碼不一致');await request('password','POST',data);await bootstrap();$('#login-error').textContent='密碼已更新，請重新登入';}}catch(error){notice(error.message,true);}});
+    $('#content').addEventListener('submit',async event=>{
+        if(event.target.id!=='dashboard-settings-form')return;
+        event.preventDefault();const button=event.target.querySelector('button[type=submit]');button.disabled=true;
+        try{
+            state.dashboardSettings=await request('dashboard-settings','PUT',{data:formData(event.target),revision:state.dashboardSettings?.revision??0});
+            notice(`已儲存：儀表板每 ${dashboardMinutes()} 分鐘自動刷新`);
+        }catch(error){notice(error.message,true);}
+        finally{button.disabled=false;}
+    });
     let rectangles=[],drawing=null,image=null;
     const canvas=$('#redact-canvas'),ctx=canvas.getContext('2d');
     const draw=()=>{if(!image)return;ctx.drawImage(image,0,0,canvas.width,canvas.height);ctx.fillStyle='#111';for(const r of [...rectangles,...(drawing?[drawing]:[])])ctx.fillRect(r.x*canvas.width,r.y*canvas.height,r.width*canvas.width,r.height*canvas.height);};

@@ -25,6 +25,7 @@ export async function previewServer({port=4283,apiPort=4284,password,packageDire
             const url=new URL(req.url,origin),decoded=decodeURIComponent(url.pathname);
             if(!['GET','HEAD'].includes(req.method)){res.writeHead(405);res.end();return;}
             res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');
+            if(decoded==='/favicon.ico'){res.writeHead(204);res.end();return;}
             if(decoded==='/cms-config.js'){
                 res.setHeader('Content-Type',mime['.js']);res.end(`window.DabaoCmsConfig=${JSON.stringify({enabled:true,provider:'supabase',apiBase:apiOrigin+'/functions/v1/dabao-cms',pollSeconds:60,localMetricsQA:metricsEnabled})};window.DabaoCmsPreview=new URLSearchParams(location.search).get('cms-preview')==='1';`);return;
             }

@@ -123,6 +123,10 @@ export function createCloudHandler({services,images,origins,metricsEnabled=false
             // This guard is independent of CORS and applies to every write path.
             if(!admin||!session)fail('找不到 API',404);
             const commit=()=>services.rpc('commit',model.commit(hash));
+            if(route==='/api/admin/dashboard-settings'&&method==='PUT'){
+                const data=await input(request),settings=model.saveDashboardSettings(data.data,data.revision);
+                await commit();return json(settings);
+            }
             if(route==='/api/admin/publish'&&method==='POST'){
                 if((await input(request)).confirm!=='publish')fail('請確認發布');model.publish();return json(await commit());
             }
